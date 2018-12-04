@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title">明细</h1>
+
+		</header>
+		<div class="mui-content">
+<!--			<ul class="mui-table-view mui-table-view-chevron" style="margin-top: 0px;z-index: 9999;position: fixed;">
+			        <li class="mui-table-view-cell">
+			                
+			        </li>
+			    </ul>-->
+			    
+<!--			     <div id="vcbillcode" class="top-bar-buttom-middle" ></div>-->
+			     <div  class="top-bar-buttom-middle">
+				    <div class="top-bar-buttom-middle-cell">
+				        <span id="vcbillcode"></span>
+				    </div>
+				 </div>
+            
+			<ul id="list" class="mui-table-view mui-table-view-chevron" style="margin-top: 43px;">
+			</ul>
+
+			
+		</div>
+		<div id="copy" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#copy"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+            var  matchingsisids=""
+            var vccustomername="";
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var ibillid = self.ibillid;
+				var vcbillcode = self.vcbillcode;
+			    vccustomername=self.vccustomername;
+			    jQuery("#vcbillcode").html(vcbillcode);
+				//var title="<div>"+vccustomername+"</div>"+"<div style='margin-top:0px'>"+vcbillcode+"</div>"
+				jQuery("#title").html(vccustomername);
+
+				var matchings = JSON.parse(localStorage.salesreturnsslist).dtlids;
+				
+			      matchingsisids = findjsonvalu(matchings, ibillid);
+				
+				ajax(ibillid);
+				queryrate(ibillid,vcbillcode);
+				
+			});
+			//[{"IBILLID":"541154","ISID":"3181727"},{"IBILLID":"541155","ISID":"3181695,3181680,3181706"}]
+			/**
+			 *
+			 * 
+			 * @param {Object} json //
+			 * @param {Object} key    ibillid的值
+			 */
+			var findjsonvalu = function(json, key) {
+				var isids = "";
+				//console.log("888*******"+JSON.stringify(json));
+				jQuery.each(json, function(index, content) {
+					if(key == content.IBILLID) {
+						isids = content.ISID;
+						
+						return false;
+					}
+				});
+				return isids;
+
+			}
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(ibillid) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'SalesReturnApp',
+					method: 'salesReturnAppDtlRows',
+					ibillid: ibillid,
+					token: TOKEN
+				};
+
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				//console.log("*********matchingsisids*************:" + matchingsisids);
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//localStorage.salesnoticeslist = JSON.stringify(response.sysdata.SalesReturnApp_salesReturnAppDtlRows);
+						displayui(response.sysdata.SalesReturnApp_salesReturnAppDtlRows);
+						searchnotice(response.sysdata.SalesReturnApp_salesReturnAppDtlRows);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				var isidarray=matchingsisids.split(",");
+				//console.log("isidarray:len"+isidarray.length);
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+					var flagmatch=false;
+					for(var i=0;i<isidarray.length;i++){
+						if(isidarray[i]==content.ISID){
+							flagmatch=true;
+							break;
+						}
+					}
+					
+					var vcuniversalenameHtml=""
+					if(flagmatch){
+						 vcuniversalenameHtml='<h6 id="vcuniversalname" style="color: red;">通用名：' + content.VCUNIVERSALNAME + '</h6>';
+					}else{
+						 vcuniversalenameHtml='<h6 id="vcuniversalname">通用名：' + content.VCUNIVERSALNAME + '</h6>';
+					}
+                        
+                       jQuery('#list').append(
+						'<li class="mui-table-view-cell">' +
+						'<a class = "mui-navigate-right">' +
+						'<div class="mui-slider-handle" >' +
+						'<span>' + num + '</span>' +
+						 vcuniversalenameHtml +
+						 '<h6 id="vcproductname">商品名：' + content.VCPRODUCTNAME + '</h6>' +
+						'<h6 id="vcproductcode">编码：' + content.VCPRODUCTCODE + '</h6>' +
+						'<h6 id="vcstandard">规格：' + content.VCSTANDARD + '</h6>' +
+						'<h6 id="vcproducername">产地：' + content.VCPRODUCERNAME + '</h6>' +
+						'<h6 id=""vcbatchnumber>批号：' + content.VCBATCHNUMBER + '</h6>' +
+						'<h6 id="numquantity">申请数量：' + content.NUMQUANTITY + '(' + content.VCUNITNAME + ')</h6>' +
+						'<h6 id="numreceived">实到数量：' + content.NUMRECEIVED + '(' + content.VCUNITNAME + ')</h6>' +
+						'<h6 id="ibillid" style="display: none;">' + content.IBILLID + '</h6>' +
+						'<h6 id="isid" style="display: none;">' + content.ISID + '</h6>' +
+						'</div>' +
+						'</li>'
+					);
+                       	
+                       
+				});
+
+
+
+                 //明细行点击事件  暂时不需要  万一有其他用途开启
+				jQuery('#list a').click(function() {
+					//显示商品信息
+					var ibillid = jQuery(this).find('#ibillid').html();
+					var isid = jQuery(this).find('#isid').html();
+					var vcbillcode=jQuery(this).find('#vcbillcode').html();
+					
+					var isid=jQuery(this).find('#isid').html();
+					var vcuniversalname=jQuery(this).find('#vcuniversalname').html();
+					var vcstandard=jQuery(this).find('#vcstandard').html();
+					var vcproductcode=jQuery(this).find('#vcproductcode').html();
+					var vcproductname=jQuery(this).find('#vcproductname').html();
+					var vcproducername=jQuery(this).find('#vcproducername').html();
+					var vccustomername=jQuery("#title").html();//jQuery(this).find('#vccustomername').html();
+				
+					mui.openWindow({
+						url: 'salesReturnAppDtl.html',
+						id: 'salesReturnAppDtl.html',
+						extras: {
+							isid:isid,
+							vcuniversalname: vcuniversalname,
+							vcstandard: vcstandard,
+							vcproductcode: vcproductcode,
+							vcproductname: vcproductname,
+							vccustomername: vccustomername,
+							vcproducername: vcproducername
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+					
+					
+				});
+				
+
+				//右滑复制
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#copy'));
+
+			}
+			
+			/**
+			 * 定义单击事件
+			 * @param {Object} ibillid    id
+			 * @param {Object} vcbillcode 单据编码
+			 */
+			var queryrate=function(ibillid,vcbillcode){
+				jQuery('#btn_rate').click(function() {
+					//显示商品信息
+					
+					mui.openWindow({
+						url: 'salesNoticeRate.html',
+						id: 'salesNoticeRate.html',
+						extras: {
+							ibillid: ibillid,
+							vcbillcode: vcbillcode
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+					
+					
+					
+				});
+				
+			}
+			
+		</script>
+	</body>
+
+</html>

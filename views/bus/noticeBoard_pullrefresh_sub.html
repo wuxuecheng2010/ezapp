@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+
+
+	</head>
+
+	<body>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll" >
+				<ul id="list" class="mui-table-view">
+				
+					
+					
+					
+					
+					
+					
+					
+				        <!--<li class="mui-table-view-cell">
+				        	<div class="mui-card">
+								<div class="mui-card-header mui-card-media">
+									<img src="../../images/completno.png" />
+									<div class="mui-media-body">
+										<span id="creater">小M</span>
+										<p id="dtcreationdate">发表于 2016-06-30 15:30</p>
+									</div>
+								</div>
+									<div class="mui-card-content-inner">
+										<p id="vctitle" style="text-align: center;font-size: 18px;">ssdsd</p>
+										<span id="vccontent">&nbsp;&nbsp;&nbsp;&nbsp;包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作（比如点赞、评论等）</span>
+									</div>
+								<div class="mui-card-footer">
+									<h style="" id="dtlimitedtime">限时:2017-10-13</h>
+									<h style="" id="follower">跟踪:小李</h>
+								</div>
+								<div style="display: none;">
+									
+								</div>
+						    </div>
+			           </li>-->
+			           
+				   </ul>	
+				   
+
+			</div>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			var pagenum=1;
+			var pagesize=20;
+			var flagfinish='';
+			var account='';
+			var nummaxid=0;
+			var numminid=0;
+			var flagaction='autoload';
+			var flagfull='Y';//上一次加载的是否完整一页
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+			     flagfinish=self.flag;
+				 account=getLoginAccount();
+				
+				//加载首页数据  一般为20行
+				ajaxGetList();
+				
+				
+			})
+			
+
+			/**
+			 * 创建查询参数  指定范围了
+			 */
+			var createParams=function(){
+				var param_json=[];
+				var r;
+				if(flagfinish=='N'){
+				    r={'flagfinish':flagfinish,'account':account,'flagaction':flagaction};
+				    
+				}else{
+                    if(nummaxid==0 && numminid==0){
+                    	r={'flagfinish':flagfinish,'account':account,'pagenum':pagenum,'pagesize':pagesize,'flagaction':flagaction};
+                    }else{
+                    	if(flagaction=='pulldown'){
+                    		r={'flagfinish':flagfinish,'account':account,'pagenum':pagenum,'pagesize':pagesize,'nummaxid':nummaxid,'flagaction':flagaction};
+                    	}else if(flagaction=='pullup'){
+                    		r={'flagfinish':flagfinish,'account':account,'pagenum':pagenum,'pagesize':pagesize,'numminid':numminid,'flagaction':flagaction,'flagfull':flagfull};
+                    	}
+                    	
+                    }
+				}
+				
+				param_json.push(r);
+				var params=JSON.stringify(param_json[0]);
+				
+				return params;
+			}
+
+  
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				//
+				if(flagfinish!='N'){
+					flagaction='pulldown';
+				}
+				
+				setTimeout(function() {
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					/*for (var i = cells.length, len = i + 3; i < len; i++) {
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell';
+						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+						//下拉刷新，新纪录插到最前面；
+						table.insertBefore(li, table.firstChild);
+					}*/
+						ajaxGetList();//普通的全部加载进来
+				
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+				}, 1500);
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				if(flagfinish!='N'){
+					flagaction='pullup';
+					pagenum++;
+				}
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+/*					for (var i = cells.length, len = i + 5; i < len; i++) {
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell';
+						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+						table.appendChild(li);
+					}*/
+						ajaxGetList();//普通的全部加载进来
+
+				}, 1500);
+			}
+
+
+
+            /**
+             * 获取消息头信息
+             * @param {Object} params   很多字段的集合  like //{'pagenum':'2','pagesize':'20'}
+             */
+			var ajaxGetList = function() {
+				         
+				        var params=createParams();
+                        console.log(params);
+						//利用RunJS的Echo Ajax功能测试
+						var url =getServerPath(localStorage.netmod)
+						var dataType = 'json';
+						//发送数据
+						var data = {
+							controller: 'Noticeboard',
+							method: 'getNoticeList',
+							params: params,
+							token: TOKEN
+						};
+		
+						mui.ajax(url, {
+							data: data,
+							dataType: dataType, //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: success_GetList,
+							error: err
+						});
+		
+					};
+
+			//成功响应的回调函数
+			//ajaxxing();
+			var success_GetList = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var jsonobj=response.sysdata.Noticeboard_getNoticeList;
+						if(flagfinish=='N'||flagaction=='autoload'){
+							displayui(jsonobj);
+						}else{
+							if(flagaction=='pulldown'){//下拉
+								displayuipulldown(jsonobj);
+							}else if(flagaction=='pullup'){//上拉
+								displayuipullup(jsonobj);
+							}
+							
+						}
+						//加入点击事件
+						setItemClick();
+					}
+				}
+			};
+			
+			function displayuipulldown(jsonobj){
+				var len=getJsonObjLength(jsonobj);
+			
+					if(len>0){
+						nummaxid=jsonobj[0].ITITLEID;
+						//numminid=jsonobj[len-1].ITITLEID;
+					}
+
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					jQuery.each(jsonobj, function(i,c) {
+						var li=createli(c);
+						table.insertBefore(li, table.firstChild);
+					});
+			}
+			
+			function displayuipullup(jsonobj){
+				
+				var len=getJsonObjLength(jsonobj);
+				if(len==pagesize){
+					flagfull='Y';
+				}else{
+					flagfull='N';
+				}
+					if(len>0){
+						//nummaxid=jsonobj[0].ITITLEID;
+						numminid=jsonobj[len-1].ITITLEID;
+					}
+					
+				var table = document.body.querySelector('.mui-table-view');
+				var cells = document.body.querySelectorAll('.mui-table-view-cell');
+                   jQuery.each(jsonobj, function(i,c) {
+						var li=createli(c);
+						table.appendChild(li);
+					});
+			}
+			
+			//创建节点
+			function createli(content){
+				var flagfinish=content.FLAGFINISH;
+                    var flagfinishHtml="";
+                    if(flagfinish=='Y'){
+                    	flagfinishHtml='<img src="../../images/complet.png" />' 
+                    }else{
+                    	flagfinishHtml='<img src="../../images/completno.png" />' 
+                    }
+                    
+				var li = document.createElement('li');
+				li.className = 'mui-table-view-cell';
+				li.innerHTML = '<div class="mui-card">'
+									+'<div class="mui-card-header mui-card-media">'
+										+flagfinishHtml
+										+'<div class="mui-media-body">'
+											+'<span id="creater">'+content.CREATER+'</span>'
+											+'<p id="dtcreationdate">发表于'+content.DTCREATIONDATE+'</p>'
+										+'</div>'
+									+'</div>'
+										+'<div class="mui-card-content-inner">'
+											//+'<p id="vctitle" style="font-size: 14px;"><div style="font-weight:bold;width=10%"># '+content.ITITLEID+' </div>'+content.VCTITLE+'</p>'
+											+'#<span id="ititleid" style="font-weight:bold;">'+content.ITITLEID+'</span>' 
+											+'<span id="vctitle" style="font-size: 14px;text-decoration:underline;margin-left: 10px;">'+content.VCTITLE+'</span><br/>'
+											+'<span id="vccontent">'+(content.VCCONTENT.length>150?content.VCCONTENT.substring(0,150)+'...':content.VCCONTENT)+'</span>'
+										+'</div>'
+									+'<div class="mui-card-footer">'
+										+'<h style="" id="dtlimitedtime">限时:'+content.DTLIMITEDTIME+'</h>'
+										+'<h style="" id="follower">跟进:'+content.FOLLOWER+'</h>'
+									+'</div>'
+									+'<div style="display: none;">'
+										
+									+'</div>'
+							    +'</div>';
+				         
+					return 	li;
+				
+			}
+			
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {//普通的显示  
+				jQuery('#list').find('li').remove();
+				var len=getJsonObjLength(jsonobj);
+				if(pagenum==1){
+					if(len>0){
+						nummaxid=jsonobj[0].ITITLEID;
+						numminid=jsonobj[len-1].ITITLEID;
+					}
+				}
+				jQuery.each(jsonobj, function(i, c) {
+					var table = document.body.querySelector('.mui-table-view');
+					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+					
+					    var li=createli(c);
+						table.appendChild(li);
+				});
+
+				/*jQuery('#list').click(function() {
+					//显示商品信息
+					//ititleid = jQuery(this).find('#ititleid').html();
+					//alert(ititleid);
+					console.log("*************************");
+					//open_dtl(ititleid);
+					
+				});*/
+
+			}
+
+
+
+
+            setItemClick=function(){
+            	
+/*            	jQuery('#list .mui-card').click(function() {
+					//显示商品信息
+					ititleid = jQuery(this).find('#ititleid').html();
+					alert(ititleid);
+					//open_dtl(ititleid);
+				});*/
+				var lis=document.getElementsByTagName('li');//此处如果用jquery去选择  好像和上面的初始化下拉上啦刷新有冲突，使点击不起作用
+				jQuery.each(lis,function(i,c){
+					c.addEventListener('tap',function(){
+					var ititleid=	jQuery(this).find('#ititleid').html();
+					var vctitle=jQuery(this).find('#vctitle').html();
+					var vccontent=jQuery(this).find('#vccontent').html();
+					var creater=jQuery(this).find('#creater').html();
+					var dtcreationdate=jQuery(this).find('#dtcreationdate').html();
+					var dtlimitedtime=jQuery(this).find('#dtlimitedtime').html();
+					var follower=jQuery(this).find('#follower').html();
+					open_dtl(ititleid,vctitle,vccontent,creater,dtcreationdate,dtlimitedtime,follower);
+				})
+				})
+				
+            }
+
+
+			var open_dtl = function(ititleid,vctitle,vccontent,creater,dtcreationdate,dtlimitedtime,follower) {
+							mui.openWindow({
+								url: 'noticeBoarddtl.html',
+								id: 'noticeBoarddtl.html',
+								extras: {
+									ititleid: ititleid,
+									vctitle:vctitle,
+									vccontent:vccontent,
+									creater:creater,
+									dtcreationdate:dtcreationdate,
+									dtlimitedtime:dtlimitedtime,
+									follower:follower
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						}
+
+
+
+			function createRequireFields() {
+				var json = [];
+				var field1 = {
+					"requirefield": 'vcuniversalname',
+					"msg": "商品信息不能为空"
+				};
+				var field2 = {
+					"requirefield": 'vccustomername',
+					"msg": "客户信息不能为空"
+				}
+				//json.push(field1);
+				//json.push(field2);
+				return json;
+
+			}
+
+			function openWidget() {
+				mui.openWindow({
+					url: '../pub/widget_search_6b.html',
+					id: 'widget_search_6b.html',
+					extras: {
+						"requirefields": createRequireFields()
+					}
+				});
+
+			}
+
+			var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			//监听点击事件
+
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+				var json = JSON.parse(jsonvalue)
+				//console.log(value);
+
+				console.log(value.substr(1, value.length - 2));
+				//document.getElementById("ui").innerHTML=jsonvalue;
+				ajax(jsonvalue);
+			});
+
+			
+			
+
+
+		</script>
+	</body>
+
+</html>

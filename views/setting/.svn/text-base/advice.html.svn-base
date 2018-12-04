@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-plus .plus {
+				display: inline;
+			}
+			
+			.plus {
+				display: none;
+			}
+			
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			
+			p {
+				text-indent: 22px;
+			}
+			
+			.mui-popover {
+				height: 300px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">问题和意见</h1>
+			<a class="mui-icon mui-icon-paperplane mui-pull-right" style="font-size: 16px; padding-top: 15px;" id="btn_send">发送</a>
+		</header>
+
+		<div class="mui-content">
+
+			<div class="mui-content-padded">
+
+				<div class="mui-inline">问题和意见</div>
+				<a class="mui-pull-right mui-inline" href="#popover" style="color: #000000;">
+					快捷输入
+					<span class="mui-icon mui-icon-arrowdown"></span>
+				</a>
+				<!--快捷输入具体内容，开发者可自己替换常用语-->
+				<div id="popover" class="mui-popover">
+					<div class="mui-popover-arrow"></div>
+					<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<ul class="mui-table-view">
+								<!--仅流应用环境下显示-->
+								<li class="mui-table-view-cell">
+									<a href="#">xxxx功能数据可能存在问题</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a href="#">xxxx功能有报错</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a href="#">xxxx很难用，不好用</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a href="#">界面太难看，丑哭了</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a href="#">不够人性化，比如xxx，应该这么做。。。</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a href="#">可否增加xxxx功能。</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row mui-input-row">
+				<textarea id='question' class="mui-input-clear question" placeholder="请详细描述你的问题和意见..." style="height: 220px;"></textarea>
+			
+			</div>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+
+		<script>
+			mui.init();
+
+			mui.ready(function() {
+
+			});
+
+			jQuery("#popover li").click(function() {
+				//alert(this.innerText);
+				var tmp = jQuery("#question").val().trim();
+				jQuery("#question").val(tmp + " " + this.innerText);
+				//document.getElementById("question").innerText = tmp + " " + this.innerText;
+				mui('.mui-popover').popover('toggle'); //show hide toggle
+			})
+
+			jQuery("#btn_send").click(function() {
+				var json = [];
+				var desciprion = jQuery("#question").val();
+				desciprion = replaceSeperator(desciprion);
+				console.log(desciprion + "长度:" + desciprion.length);
+				if(desciprion == "" || desciprion == null) {
+					mui.toast("请输入意见和问题");
+					return;
+				} else if(desciprion.length > 200) {
+					mui.toast("字数太多，请删除一部分。再发送");
+					return;
+				}
+				var account = JSON.parse(localStorage.userdata).VCACCOUNT;
+				var row = {
+					desciprion: desciprion,
+					account: account
+				}
+				json.push(row);
+				var params = JSON.stringify(json[0]);
+				ajax(params);
+
+			})
+
+			//设置全局beforeSend
+			mui.ajaxSettings.beforeSend = function(xhr, setting) {
+				//beforeSend演示,也可在$.ajax({beforeSend:function(){}})中设置单个Ajax的beforeSend
+				console.log('beforeSend:::' + JSON.stringify(setting));
+			};
+
+			//设置全局complete
+			mui.ajaxSettings.complete = function(xhr, status) {
+				console.log('complete:::' + status);
+			}
+
+			var ajax = function(params) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json'; //json
+				console.log("url:" + url);
+				//发送数据
+				var data = {
+					controller: 'SysAdvice',
+					method: 'saveAdvice',
+					params: params,
+					token: TOKEN
+				};
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					//console.log(JSON.stringify(response));
+					console.log(response);
+					var syscode = response.syscode;
+					if(syscode == SYSCODE_NO) {
+						mui.toast(RELOGINWARNING);
+					} else {
+						//mui.alert("发送成功");
+						mui.confirm('发送成功', '提示', ['离开', '继续吐槽'], function(e) {
+
+							switch(e.index) {
+								case 0:
+									closeme();
+									break;
+
+								case 1:
+									//document.getElementById("question").innerText = "";
+									//jQuery("#question").val("");
+									clean();
+									break;
+
+								default:
+									break;
+							}
+
+						}, 'div')
+					}
+				}
+			};
+
+			
+			var clean = function() {
+				jQuery("#question").val("");
+			}
+			
+	
+
+			
+		</script>
+	</body>
+
+</html>

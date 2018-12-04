@@ -1,0 +1,616 @@
+<!doctype html>
+<html class="feedback">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta name="misapplication-tap-highlight" content="no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<title>HTML5 Plus 拍照或者相册选择图片上传</title>
+		<link rel="stylesheet" href="../demo/imagedemo/css/mui.min.css">
+		<link rel="stylesheet" href="../../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../demo/imagedemo/css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../demo/imagedemo/css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../demo/imagedemo/css/feedback-page.css" />
+		<link rel="stylesheet" href="../demo/imagedemo/css/font-awesome.min.css">
+
+		<script src="../../js/myglobal.js"></script>
+		<script src="../demo/imagedemo/js/jquery.js"></script>
+		<script type="text/javascript" src="../demo/imagedemo/js/common.js"></script>
+		<script type="text/javascript" src="../demo/imagedemo/js/utitls.js"></script>
+
+		<style type="text/css">
+			.del {
+				position: absolute;
+				top: 1px;
+				right: 1px;
+				display: block;
+				line-height: 1;
+				cursor: pointer;
+				color: #fff;
+			}
+
+			.del:hover {
+				color: #ff3333;
+			}
+		</style>
+		<style>
+			.table-view {  
+                position: relative;  
+                margin-top: 0;  
+                margin-bottom: 0;  
+                padding-left: 0;  
+                list-style: none;  
+                background-color: #f5f5f5;  
+            }  
+              
+            .table-view-cell {  
+                position: relative;  
+                overflow: hidden;  
+                padding: 0px 15px;  
+                -webkit-touch-callout: none;  
+                margin-bottom: 1px;  
+            }  
+              
+            .table-view-cell:after {  
+                position: absolute;  
+                right: 0;  
+                bottom: 0;  
+                left: 0px;  
+                height: 1px;  
+                content: '';  
+                -webkit-transform: scaleY(.5);  
+                transform: scaleY(.5);  
+                background-color: #c8c7cc;  
+            }  
+              
+            .table-view-cell>a:not(.btn) {  
+                position: relative;  
+                display: block;  
+                overflow: hidden;  
+                margin: -0px -15px;  
+                padding: inherit;  
+                white-space: nowrap;  
+                text-overflow: ellipsis;  
+                color: inherit;  
+                background-color: #75b9f4;  
+                height: 40px;  
+                line-height: 40px;  
+            }  
+              
+            .navigate-right:after  
+            {  
+                font-family: Muiicons;  
+                font-size: inherit;  
+                line-height: 1;  
+                position: absolute;  
+                top: 50%;  
+                display: inline-block;  
+                -webkit-transform: translateY(-50%);  
+                transform: translateY(-50%);  
+                text-decoration: none;  
+                color: #666;  
+                -webkit-font-smoothing: antialiased;  
+            }  
+              
+            .table-view-cell.collapse .collapse-content {  
+                position: relative;  
+                display: none;  
+                overflow: hidden;  
+                margin: 0px -15px 0px;  
+                padding: 0px 0px !important;  
+                -webkit-transition: height .35s ease;  
+                -o-transition: height .35s ease;  
+                transition: height .35s ease;  
+                background-color: transparent;  
+            }  
+            .image-item{  
+                position: relative;  
+            }  
+            .image-item .info{  
+                position: absolute;  
+                top:0px;  
+                left:4px;  
+                color: #ff9900;  
+                font-size: 12px;                          
+                  
+            }  
+        </style>
+	</head>
+	<body>
+		<header class="bar bar-nav">
+			<h1 class="title">拍照或者相册选择图片上传</h1>
+			<span class="mui-icon mui-icon-closeempty mui-pull-right" style="font-size: 32px;" onclick="closewindow()"></span>
+
+		</header>
+		<div class="mui-content">
+
+			<ul class="mui-table-view" style="margin-top: 48px;margin-left: 0px;margin-right: 0px;">
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4">客户名称：</div>
+						<div class="mui-col-xs-8 mui-col-sm-8"><span id="txt_customname">台州医院</span></div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<div class="mui-col-xs-4 mui-col-sm-4">送货地址：</div>
+						<div class="mui-col-xs-8 mui-col-sm-8"><span id="txt_inceptaddr">台州医院linhai</span></div>
+					</div>
+				</li>
+				<!--<li class="mui-table-view-cell">
+		                        <div class="mui-row">
+			                    	<div class="mui-col-xs-4 mui-col-sm-4">签收人：</div>
+			                    	<div class="mui-col-xs-3 mui-col-sm-3">小米</div>
+			                    	<div class="mui-col-xs-5 mui-col-sm-5">
+			                    		<img height="40px" style="text-align: center;" src="http://192.168.3.100:85/ezapi/public/index.php/ftp/getFtpImg?fname=ERP_IMAGES/CONSIGNEE/0010091/黄超范.png" />
+			                    	</div>
+			                    </div>
+		                </li>
+		                -->
+			</ul>
+
+			<ul class="mui-table-view" style="margin-top: 0px;margin-left: 0px;margin-right: 0px;" id="imgs">
+
+				<!--<li class="mui-table-view-cell">
+		                        <div class="mui-row">
+			                    	<div class="mui-col-xs-4 mui-col-sm-4">签收人：</div>
+			                    	<div class="mui-col-xs-3 mui-col-sm-3">小米</div>
+			                    	<div class="mui-col-xs-5 mui-col-sm-5">
+			                    		<img height="40px" style="text-align: center;" src="http://192.168.1.108:85/ezapi/public/index.php/ftp/getFtpImg?fname=ERP_IMAGES/CONSIGNEE/0010091/黄超范.png" />
+			                    	</div>
+			                    </div>
+		                </li>
+		                -->
+			</ul>
+
+
+			<div id="jjd">
+				<!-- <div class="content" style="background: #FFFFFF;">
+					<div style="margin-top: 10px;"></div>
+					<div class="collapse-content">
+						<form>
+							<label class="row-label "><span class="mui-badge mui-badge-primary">交接单:123</span></label>
+							<div id='image-55635-S' class="row image-list">
+								<div class="image-item " id="image-55635" onclick="showActionSheet(this);">
+									<input type="hidden" id="transjjdid" name="transjjdid" value="55635">
+								</div>
+							</div>
+						</form>
+					</div>
+					
+					<div class="mui-content-padded mui-text-center">
+						<hr size=1 color=#B5B5B5 width=300>
+						<button type="button" class="mui-btn mui-btn-red " style="margin-bottom: 5px;" onclick="uploadimge(this)">上传
+							<div class="mui-hidden">
+								<span id="transjjdid">55635</span>
+								<span id="ordid">13</span>
+								<span id="divid">image-55635</span>
+							</div>
+						</button>
+					</div>
+				</div> -->
+			</div>
+
+			<!-- <div class="content">  
+	            <div style="margin-top: 10px;"></div>  
+	                <div class="collapse-content" >  
+	                    <form>  
+	                        <label class="row-label"></label>  
+	                        <div id='image-55631-S' class="row image-list">  
+	                            <div class="image-item " id="image-55631" onclick="showActionSheet(this);">
+	                            	<input type="hidden" id="transjjdid" name="transjjdid" value="55631">
+	                            </div>  
+	                    </div>  
+	                    </form>  
+	                </div>  
+	            <div class="mui-content-padded">
+	            	<button type="button" class="mui-btn mui-btn-blue" onclick="uploadimge(this)">上传
+	                         <div class="mui-hidden">
+	                         	<span id="transjjdid">55631</span>
+	                         	<span id="ordid">14</span>
+	                         	<span id="divid">image-55631</span>
+	                         </div>
+	            	</button>
+	            </div>
+	        </div> -->
+		</div>
+
+
+		<script src="../demo/imagedemo/js/mui.min.js"></script>
+
+		<script>
+			var current_order = {};
+			//获取参数
+			function initView() {
+				var self = plus.webview.currentWebview();
+				current_order = self.current_order;
+				//alert(JSON.stringify(current_order));
+				$("#txt_customname").html(current_order.CUSTOMNAME);
+				$("#txt_inceptaddr").html(current_order.INCEPTADDR);
+
+				//获取客户签字样张、客户交接单列表数据等
+				var companyid = current_order.GCOMPANYID;
+				var transid = current_order.TRANSID;
+				var trrecordid = current_order.TRRECORDID;
+				getUploadjjdInfo(companyid, transid, trrecordid);
+			}
+
+			function getUploadjjdInfo(companyid, transid, trrecordid) {
+				//console.log("========================"+transid);
+				var url = getServerPath(localStorage.netmod)
+				//console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'getUploadjjdInfo',
+					trrecordid: trrecordid,
+					companyid: companyid,
+					transid: transid,
+					token: TOKEN
+				};
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			}
+
+			function success(response) {
+				if (response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if (syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						//console.log(JSON.stringify(response));
+						//alert(JSON.stringify(response));
+						var jsons = response.sysdata.TmsTrRecord_getUploadjjdInfo;
+						var imgs = jsons.imgs;
+						var jjd=jsons.jjd;
+						//加载样张
+						displayImg(imgs);
+						//加载交接单列表
+						displayJJD(jjd);
+					}
+				}
+
+			}
+
+			function displayImg(imgs) {
+				var ftp = getFtpServerPath(localStorage.netmod);
+				$.each(imgs, function(i, c) {
+					var url = ftp + '/getFtpImg?fname=' + c.VCBASEURL + '/' + c.VCURL;
+					console.log("imgurl:" + url);
+					var li = '<li class="mui-table-view-cell"> ' +
+						'<div class="mui-row"> ' +
+						'<div class="mui-col-xs-4 mui-col-sm-4">签收人：</div> ' +
+						'<div class="mui-col-xs-3 mui-col-sm-3">' + c.VCCONSIGNEE + '</div> ' +
+						'<div class="mui-col-xs-5 mui-col-sm-5"> ' +
+						'<img height="40px" style="text-align: center;" src="' + url + '" /> ' +
+						'</div> ' +
+						'</div> ' +
+						'</li>';
+					$("#imgs").append(li);
+				});
+
+			}
+			
+function displayJJD(jjd){
+		$.each(jjd, function(i,c) {
+			var transjjdid=c.TRANSJJDID;
+			var li='<div class="content" style="background-color: #FFFFFF;"> '+ 
+	            ' <div style="margin-top: 2px;"></div>  '+ 
+	              '   <div class="collapse-content" >  '+ 
+	                '     <form>  '+ 
+	                     '    <label class="row-label "><span class="mui-badge mui-badge-primary">交接单:'+transjjdid+'</span></label>  '+ 
+	                       '  <div id="image-'+transjjdid+'-S" class="row image-list">  '+ 
+	                        '     <div class="image-item " id="image-'+transjjdid+'" onclick="showActionSheet(this);">'+ 
+	                         '    	<input type="hidden" id="transjjdid" name="transjjdid" value="'+transjjdid+'">'+ 
+	                         '    </div>  '+ 
+	                    ' </div>  '+ 
+	                    ' </form>  '+ 
+	                ' </div>  '+ 
+	           '  <div class="mui-content-padded mui-text-center" style="padding-bottom: 5px;"> '+ 
+						 '<hr size=1 color=#B5B5B5 width=300>'+
+	            ' 	<button type="button" class="mui-btn mui-btn-red"  onclick="uploadimge(this)">上传'+ 
+	                         ' <div class="mui-hidden">'+ 
+	                          '	<span id="transjjdid">'+transjjdid+'</span>'+ 
+	                          //'	<span id="ordid">13</span>'+ 
+	                         ' 	<span id="divid">image-'+transjjdid+'</span>'+ 
+	                         ' </div>'+ 
+	            	 '</button>'+ 
+	            ' </div>'+ 
+	        ' </div>';
+			
+			$("#jjd").append(li);
+		});
+	}
+
+			var procinstid = 0;
+			//初始化页面执行操作  
+			function plusReady() {
+				//Android返回键监听事件  
+				plus.key.addEventListener('backbutton', function() {
+					myclose();
+				}, false);
+
+				plus.storage.clear();
+
+				ajaxxing();
+
+				initView();
+			}
+			if (window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			}
+			//加载页面初始化需要加载的图片信息  
+			//或者相册IMG_20160704_112620.jpg  
+			//imgId:图片名称：1467602809090或者IMG_20160704_112620  
+			//imgkey:字段例如：F_ZDDZZ  
+			//ID：站点编号ID,例如429  
+			//src：src="file:///storage/emulated/0/Android/data/io.dcloud.HBuilder/.HBuilder/apps/HBuilder/doc/upload/F_ZDDZZ-1467602809090.jpg"  
+			function showImgDetail(imgId, imgkey, id, src) {
+				var html = "";
+				html += '<div  id="Img' + imgId + imgkey + '" class="image-item">';
+				html += '    <img id="picBig" data-preview-src="" data-preview-group="1" ' + src + '/>';
+				html += '    <span class="del" onclick="delImg(\'' + imgId + '\',\'' + imgkey + '\',' + id + ');">';
+				html += '        <div class="fa fa-times-circle"></div>';
+				html += '    </span>';
+				html += '</div>';
+				$("#" + imgkey + "-S").append(html);
+			}
+			//删除图片  
+			//imgId:图片名称：IMG_20160704_112614  
+			//imgkey:字段，例如F_ZDDZZ  
+			//ID：站点编号ID，例如429  
+			function delImg(imgId, imgkey, id) {
+				var bts = ["是", "否"];
+				plus.nativeUI.confirm("是否删除图片？", function(e) {
+					var i = e.index;
+					if (i == 0) {
+						// var itemname=id+"img-"+imgkey;//429img-F_ZDDZZ  
+						var itemname = getItemKey(id, 'img-', imgkey);
+						var itemvalue = plus.storage.getItem(itemname);
+						//{IMG_20160704_112614,_doc/upload/F_ZDDZZ-IMG_20160704_112614.jpg,file:///storage/emulated/0/Android/data/io.dcloud...../doc/upload/F_ZDDZZ-1467602809090.jpg}  
+						if (itemvalue != null) {
+							var index = itemvalue.indexOf(imgId + ",");
+							if (index == -1) { //没有找到  
+								delImgfromint(imgId, imgkey, id, index);
+							} else {
+								delImgFromLocal(itemname, itemvalue, imgId, imgkey, index); //修改，加了一个index参数  
+							}
+
+						} else {
+							delImgfromint(imgId, imgkey, id);
+						}
+					}
+				}, "提示", bts);
+				/*var isdel = confirm("是否删除图片？");  
+				if(isdel == false){  
+				    return;  
+				}*/
+
+
+			}
+
+			function delImgFromLocal(itemname, itemvalue, imgId, imgkey, index) {
+				var wa = plus.nativeUI.showWaiting();
+				var left = itemvalue.substr(0, index - 1);
+				var right = itemvalue.substring(index, itemvalue.length);
+				var end = right.indexOf("}");
+				right = right.substring(end + 1, right.length);
+				var newitem = left + right;
+				plus.storage.setItem(itemname, newitem);
+				//myAlert("删除成功");  
+				$("#Img" + imgId + imgkey).remove();
+				wa.close();
+			}
+			//选取图片的来源，拍照和相册  
+			function showActionSheet(conf) {
+				var divid = conf.id;
+				var transjjdid = $(conf).find('#transjjdid').val();
+				//alert(transjjdid);
+				var actionbuttons = [{
+					title: "拍照"
+				}, {
+					title: "相册选取"
+				}];
+				var actionstyle = {
+					title: "选择照片",
+					cancel: "取消",
+					buttons: actionbuttons
+				};
+				plus.nativeUI.actionSheet(actionstyle, function(e) {
+					if (e.index == 1) {
+						getImage(divid, transjjdid);
+					} else if (e.index == 2) {
+						galleryImg(divid, transjjdid);
+					}
+				});
+			}
+
+			function galleryImg(divid, transjjdid) {
+				plus.gallery.pick(function(e) {
+					//alert(e.files.length);
+					var zm = 0;
+					setTimeout(file, 200);
+
+					function file() {
+						plus.io.resolveLocalFileSystemURL(e.files[zm], function(entry) {
+							compressImage(entry.toLocalURL(), entry.name, divid, transjjdid);
+						}, function(e) {
+							plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+						});
+						zm++;
+						if (zm < e.files.length) {
+							setTimeout(file, 200);
+						}
+					}
+
+				}, function(e) {
+					console.log("取消选择图片");
+				}, {
+					filename: "_doc/camera/",
+					filter: "image",
+					multiple: true
+				});
+			}
+			// 拍照  
+			function getImage(divid, transjjdid) {
+				var cmr = plus.camera.getCamera();
+				cmr.captureImage(function(p) {
+					//alert(p);//_doc/camera/1467602809090.jpg  
+					plus.io.resolveLocalFileSystemURL(p, function(entry) {
+						//alert(entry.toLocalURL());//file:///storage/emulated/0/Android/data/io.dcloud...../doc/camera/1467602809090.jpg  
+						//alert(entry.name);//1467602809090.jpg  
+						compressImage(entry.toLocalURL(), entry.name, divid, transjjdid);
+					}, function(e) {
+						plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+					});
+				}, function(e) {}, {
+					filename: "_doc/camera/",
+					index: 1
+				});
+			}
+			//压缩图片  
+			function compressImage(url, filename, divid, transjjdid) {
+				var name = "_doc/upload/" + divid + "-" + filename; //_doc/upload/F_ZDDZZ-1467602809090.jpg  
+				plus.zip.compressImage({
+						src: url, //src: (String 类型 )压缩转换原始图片的路径  
+						dst: name, //压缩转换目标图片的路径  
+						quality: 20, //quality: (Number 类型 )压缩图片的质量.取值范围为1-100  
+						overwrite: true //overwrite: (Boolean 类型 )覆盖生成新文件  
+					},
+					function(event) {
+						//uploadf(event.target,divid);  
+						var path = name; //压缩转换目标图片的路径  
+						//event.target获取压缩转换后的图片url路  
+						//filename图片名称  
+						saveimage(event.target, divid, filename, path, transjjdid);
+					},
+					function(error) {
+						plus.nativeUI.toast("压缩图片失败，请稍候再试");
+					});
+			}
+			//保存信息到本地  
+			/**  
+			 *   
+			 * @param {Object} url  图片的地址  
+			 * @param {Object} divid  字段的名称  
+			 * @param {Object} name   图片的名称  
+			 */
+			function saveimage(url, divid, name, path, transjjdid) {
+				//alert(url);//file:///storage/emulated/0/Android/data/io.dcloud...../doc/upload/F_ZDDZZ-1467602809090.jpg  
+				//alert(path);//_doc/upload/F_ZDDZZ-1467602809090.jpg  
+				var state = 0;
+				var wt = plus.nativeUI.showWaiting();
+				//  plus.storage.clear();   
+				name = name.substring(0, name.indexOf(".")); //图片名称：1467602809090  
+				var id = transjjdid; // document.getElementById("transjjdid").value;  
+				//var itemname=id+"img-"+divid;//429img-F_ZDDZ  
+				var itemname = getItemKey(id, 'img-', divid);
+				var itemvalue = plus.storage.getItem(itemname);
+				if (itemvalue == null) {
+					itemvalue = "{" + name + "," + path + "," + url + "}"; //{IMG_20160704_112614,_doc/upload/F_ZDDZZ-IMG_20160704_112614.jpg,file:///storage/emulated/0/Android/data/io.dcloud...../doc/upload/F_ZDDZZ-1467602809090.jpg}  
+				} else {
+					itemvalue = itemvalue + "{" + name + "," + path + "," + url + "}";
+				}
+				// alert(itemname);
+				plus.storage.setItem(itemname, itemvalue);
+				console.log(itemname);
+				console.log(itemvalue);
+				var src = 'src="' + url + '"';
+				//alert("itemvalue="+itemvalue);  
+				showImgDetail(name, divid, id, src);
+				wt.close();
+
+			}
+			//上传图片，实例中没有添加上传按钮  
+			function uploadimge(dom) {
+				
+				
+				//plus.storage.clear();  
+				var wa = plus.nativeUI.showWaiting();
+				var DkeyNames = [];
+				//var id = document.getElementById("transjjdid").value;
+				var id = $(dom).find('#transjjdid').html();
+				//var ordid = $(dom).find('#ordid').html();
+				var divid = $(dom).find('#divid').html();
+				var length = id.toString().length;
+				var idnmae = id.toString();
+				var numKeys = plus.storage.getLength();
+				//alert(getUrl());
+				var url = getUploadPath(localStorage.netmod) + "/jjd";
+				
+				//判断图片是否存在
+				var _itemkey = getItemKey(id, 'img-', divid);
+				var _images = plus.storage.getItem(_itemkey);//.split("{");
+			 	if(_images==null){
+					mui.toast("请选择或者拍照运输交接单");
+					wa.close();
+					return ;
+				} 
+				
+				
+				
+				//alert(url);
+				var task = plus.uploader.createUpload(url, {
+						method: "POST"
+					},
+					function(t, status) {
+						if (status == 200) {
+							mui.toast("上传成功");
+							//console.log("上传成功");
+							console.log(t.responseText);
+							wa.close();
+						} else {
+							wa.close();
+							mui.toast("上传失败");
+							//console.log("上传失败");
+						}
+					}
+				);
+				task.addData("transjjdid", id);
+				//task.addData('ordid', ordid);
+				//var itemkey=id+"img-"+divid;//429img-F_ZDDZ  
+				var itemkey = getItemKey(id, 'img-', divid);
+				if (plus.storage.getItem(itemkey) != null) {
+					var itemvalue = plus.storage.getItem(itemkey).split("{");
+
+					for (var img = 1; img < itemvalue.length; img++) {
+
+						var imgname = itemvalue[img].substr(0, itemvalue[img].indexOf(","));
+						var imgurl = itemvalue[img].substring(itemvalue[img].indexOf(",") + 1, itemvalue[img].lastIndexOf(","));
+						task.addFile(imgurl, {
+							key: imgurl
+						});
+					}
+				}
+				
+				
+					task.start();
+				
+				
+			}
+
+
+			function getItemKey(id, st, divid) {
+				var itemkey = id + st + divid; //429img-F_ZDDZ  
+				return itemkey;
+			}
+
+			function closewindow() {
+				mui.back();
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #FFF;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">随货信封核销</h1>
+			<a class="mui-icon mui-icon-search mui-pull-right" id="submit"></a>
+		</header>
+
+		<div class="mui-content ">
+
+			<div style="text-align: center;margin-top: 0px;">
+				<input type="text" id="dispatchid" style="height: 60px;width: 100%;font-size: 18px;" class="mui-input-numbox" placeholder="请输入派车单ID" />
+			</div>
+			<div>
+				<span id="info" style="color: red;">
+					
+				</span>
+			</div>
+			
+			<div style="margin-top: 50px;text-align: right;">
+				
+				<button id="btn_more" type="button" class="mui-btn mui-btn-link" style="font-size: 16px;">
+		            查看派车单
+		            <span class="mui-icon mui-icon-forward"></span>
+		        </button>
+				
+			</div>
+
+		</div>
+		
+		<audio id="disp_not_exist">
+				<source src="../../voices/cover/disp_not_exist.mp3" type="audio/mpeg">
+		</audio>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+            var isie=false;
+			mui.plusReady(function() {
+				if(document.all) {
+					isie = true;
+				}
+				
+				init_submit();
+				jQuery("#dispatchid").focus();
+			})
+
+
+			//ajax 请求中。
+			//ajaxxing();
+			var ajax = function(dispatchid) {
+				//利用RunJS的Echo Ajax功能测试
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'getDispatchByID',
+					dispatchid: dispatchid,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//console.log(response.sysdata.TmsDispatch_getDispatchByID[0].DISPATCHID);
+						var dispatchdata=response.sysdata.TmsDispatch_getDispatchByID;
+						if(jQuery.isEmptyObject(dispatchdata)){
+							warning();
+							return ;
+						}
+						dispatchid=response.sysdata.TmsDispatch_getDispatchByID[0].DISPATCHID;
+						if(dispatchid){
+							open_dtl(dispatchid);
+						}else{
+							warning();
+                    		return;
+						}
+					}
+				}
+			};
+			
+			
+			var warning=function(){
+				showInfo("派车单ID不存在");
+				playvoice("disp_not_exist",isie);
+				jQuery("#dispatchid").focus();
+			}
+			
+			var init_submit = function() {
+				jQuery("#submit").click(function() {
+					doSubmit();
+				});
+				
+				jQuery("#dispatchid").bind('keydown', function(e) {
+					var key = e.which;
+					if(key == 13) {
+						doSubmit();
+					}
+				});
+				
+				jQuery("#dispatchid").focus();
+				
+				jQuery("#btn_more").click(function(){
+					open_disp_list();
+				})
+			}
+			
+			function doSubmit(){
+				//1、验证是否数字
+                     var dispatchid=jQuery("#dispatchid").val();
+                    if(dispatchid=="" || isNaN(dispatchid)){//判断是否为数字
+                    	warning();
+                    	return;
+                    }
+                    //2、验证是否存在这个派车单  存在则打开明细页面  不存在  提示一下
+                    ajax(dispatchid)
+			}
+			
+			
+			
+			var showInfo=function(info){
+				jQuery("#dispatchid").val("");
+				jQuery("#info").html(info);
+			}
+
+			var open_dtl = function(dispatchid) {
+				showInfo("");//请空提示
+				jQuery("#dispatchid").val("");
+				mui.openWindow({
+					url: 'tmsEnvelopeCoverDispatchList.html',
+					id: 'tmsEnvelopeCoverDispatchList.html',
+					extras: {
+						dispatchid: dispatchid						
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+			
+			var open_disp_list=function(){
+				
+				//btn_more
+				mui.openWindow({
+					url: 'tmsDispatchDocList.html',
+					id: 'tmsDispatchDocList.html',
+					waiting: {
+						autoShow: false
+					}
+				});
+				
+			}
+		</script>
+	</body>
+
+</html>

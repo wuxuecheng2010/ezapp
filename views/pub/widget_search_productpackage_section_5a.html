@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			.my-label {
+				padding-top: 12px;
+				padding-left: 5px;
+				position: absolute;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				color: #222222;
+			}
+			
+			.my_small_btn {
+				background-color: white;
+			}
+			
+			.mui-row {
+				margin-top: 8px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">选择查询条件</h1>
+
+		</header>
+		<div class="mui-content mui-content-padded">
+
+			<div class="mui-row" style="margin-top: 0px;margin-bottom: -6px;">
+				<div class="mui-col-sm-3  mui-col-xs-3" style="margin-top: 10px;"><span class="my-label">商品信息:</span></div>
+				<div class="mui-col-sm-7  mui-col-xs-7" style="margin-top: 10px; padding-left: 3px;">
+					<input id="txt_vcuniversalname" type="text">
+				</div>
+				<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 8px;">
+					<button id="btn_c_vcu" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" style="margin-right: 2px;" onclick="cleanVcproduct()">清除</button>
+				</div>
+			</div>
+
+			<div class="mui-row">
+				<div class="mui-col-sm-3  mui-col-xs-3"><span class="my-label">库区:</span></div>
+				<div class="mui-col-sm-7  mui-col-xs-7"><button id='btn_area' class="btn mui-btn mui-btn-block my-select-button"></button></div>
+				<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+					<button id="btn_c_vca" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanArea()">清除</button>
+				</div>
+			</div>
+
+			<div class="mui-row">
+				<div class="mui-col-sm-3  mui-col-xs-3"><span class="my-label">分区:</span></div>
+				<div class="mui-col-sm-7  mui-col-xs-7"><button id='btn_section' class="btn mui-btn mui-btn-block my-select-button"></button></div>
+				<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+					<button id="btn_c_vcs" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanSection()">清除</button>
+				</div>
+			</div>
+			
+			<div class="mui-row" style="margin-top: 0px;margin-bottom: -6px;">
+				<div class="mui-col-sm-3  mui-col-xs-3" style="margin-top: 10px;"><span class="my-label">货位信息:</span></div>
+				<div class="mui-col-sm-7  mui-col-xs-7" style="margin-top: 10px; padding-left: 3px;">
+					<input id="txt_posno" type="text">
+				</div>
+				<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 8px;">
+					<button id="btn_c_vcpn" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" style="margin-right: 2px;" onclick="cleanVcposno()">清除</button>
+				</div>
+			</div>
+			
+
+			<div class="mui-row">
+				<div class="mui-col-sm-3  mui-col-xs-3"><span class="my-label">包装信息:</span></div>
+				<div class="mui-col-sm-7  mui-col-xs-7"><button id='btn_package' class="btn mui-btn mui-btn-block my-select-button"></button></div>
+				<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+					<button id="btn_c_vcp" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanPackage()">清除</button>
+				</div>
+			</div>
+
+			<div class="mui-row" style="padding-top: 30px;">
+				<button class="mui-btn-block mui-btn-blue" onclick="doQuery()" style="padding: 10px;">查询</button>
+			</div>
+			<div class="mui-row">
+				<button class="mui-action-back mui-btn-block mui-btn-red" style="padding: 10px;">取消</button>
+			</div>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script>
+			mui.init();
+			var areaname_def="选择库区 ...";
+			var sectionname_def="选择分区 ...";
+			var packageflag_def="有无包装...";
+			
+			var areaid = "";
+			var sectionid = "";
+			var iproductid = "";
+			var vcuniversalname = "";
+			var packageflagid = "";
+			var posno="";
+			
+			var areaPicker = null;
+		    var sectionPicker = null;
+
+			mui.ready(function() {
+				areaid = "";
+				sectionid = "";
+				iproductid = "";
+				vcuniversalname = "";
+				packageflagid = "";
+				posno="";
+				
+				var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+				var btn_area = document.getElementById('btn_area');
+				btn_area.innerHTML=areaname_def;
+				var btn_section = document.getElementById('btn_section');
+				btn_section.innerHTML=sectionname_def;
+				var btn_package = document.getElementById('btn_package');
+				btn_package.innerHTML=packageflag_def;
+				var txt_posno=document.getElementById("txt_posno");
+
+
+
+
+				if(localStorage.lastvcuniversalname) {
+					txt_vcuniversalname.value = localStorage.lastvcuniversalname;
+				}
+				if(localStorage.lastposno){
+					txt_posno.value=localStorage.lastposno;
+				}
+
+				 areaPicker = new mui.PopPicker();
+				 sectionPicker = new mui.PopPicker();
+				var packagePicker = new mui.PopPicker();
+				var areajson = toPickerDataJson(JSON.parse(localStorage.arealist), "AREAID", "AREANAME");
+				var packagejson = toPickerDataJson([{
+					'OPTIONID': "1",
+					'OPTIONNAME': '无'
+				}, {
+					'OPTIONID': "2",
+					'OPTIONNAME': '有'
+				}, {
+					'OPTIONID': "3",
+					'OPTIONNAME': '全部'
+				}], "OPTIONID", "OPTIONNAME");
+				areaPicker.setData(areajson);
+				packagePicker.setData(packagejson);
+
+				
+				if(localStorage.lastareaname != undefined) {
+					btn_area.innerHTML = localStorage.lastareaname;
+					areaid = localStorage.areaid;
+					initSection(areaid);
+				} else {
+					localStorage.areaid = ""
+				}
+
+				if(localStorage.lastsectionname != undefined) {
+					btn_section.innerHTML = localStorage.lastsectionname;
+					sectionid = localStorage.sectionid;
+				} else {
+					localStorage.sectionid = "";
+				}
+				if(localStorage.lastpackageflag != undefined) {
+					btn_package.innerHTML = localStorage.lastpackageflag;
+					packageflagid = localStorage.packageflagid;
+				} else {
+					localStorage.packageflagid = "";
+				}
+
+				btn_area.addEventListener('tap', function(event) {
+					areaPicker.show(function(items) {
+						document.getElementById("btn_area").innerHTML = items[0].text;
+						areaid = items[0].value;
+
+						localStorage.lastareaname = items[0].text;
+						localStorage.areaid = items[0].value;
+
+						//设置分区下拉列表
+						initSection(areaid);
+						cleanSection();
+						/*var sectionjson = getSectionList(areaid);
+						var sj = toPickerDataJson(sectionjson, "SECTIONID", "SECTIONNAME");
+						sectionPicker.setData(sj);*/
+					});
+				}, true);
+
+				btn_section.addEventListener('tap', function(event) {
+					sectionPicker.show(function(items) {
+						document.getElementById("btn_section").innerHTML = items[0].text;
+						sectionid = items[0].value;
+						localStorage.lastsectionname = items[0].text;
+						localStorage.sectionid = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, true);
+
+				btn_package.addEventListener('tap', function(event) {
+					packagePicker.show(function(items) {
+						document.getElementById("btn_package").innerHTML = items[0].text;
+						packageflagid = items[0].value;
+						localStorage.packageflag = items[0].text;
+						localStorage.packageflagid = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, true);
+
+			});
+			
+			function initSection(areaid){
+				var sectionjson = getSectionList(areaid);
+				var sj = toPickerDataJson(sectionjson, "SECTIONID", "SECTIONNAME");
+				sectionPicker.setData(sj);
+			}
+
+			//返回主页面
+			function turnToParent(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "widgetSelectEvent", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+
+			
+
+			function doQuery() {
+				var json = [];
+				var row = {};
+
+				row.vcuniversalname = txt_vcuniversalname.value;
+				row.areaid = areaid;
+				row.sectionid = sectionid;
+				console.log("widget_search_productpackage_section_4a.html::doQuery:sectionid"+sectionid)
+				row.packageflagid = packageflagid;
+				row.posno=txt_posno.value;
+
+				localStorage.areaid = (areaid == undefined || areaid == "undefined" ? "" : areaid);
+				localStorage.sectionid = (sectionid == undefined || sectionid == "undefined" ? "" : sectionid);
+				localStorage.packageflagid = (packageflagid == undefined || packageflagid == "undefined" ? "" : packageflagid);
+
+				localStorage.lastvcuniversalname = txt_vcuniversalname.value;
+				localStorage.lastarename = btn_area.innerHTML;
+				localStorage.lastsectionname = btn_section.innerHTML;
+				localStorage.lastpackageflag = btn_package.innerHTML;
+				localStorage.lastposno=txt_posno.value;
+
+				json.push(row);
+
+				var jsonstr = JSON.stringify(json);
+				var self = plus.webview.currentWebview();
+				
+				console.log("==========="+jsonstr)
+				turnToParent(jsonstr);
+			}
+
+			function doClear() {
+				cleanVcproduct();
+				cleanArea();
+				cleanPackage();
+				cleanSection();
+			}
+
+			var cleanVcproduct = function() {
+				iproductid = "";
+				txt_vcuniversalname.value = "";
+				localStorage.lastvcuniversalname="";
+			}
+			
+			var cleanVcposno = function() {
+				posno = "";
+				txt_posno.value = "";
+				localStorage.lastposno="";
+			}
+			
+			
+			
+			var cleanArea = function() {
+				areaid = "";
+				btn_area.innerHTML = areaname_def;
+				localStorage.lastareaname=areaname_def;
+				localStorage.areaid="";
+			}
+
+			var cleanPackage = function() {
+				packageflagid = "";
+				document.getElementById("btn_package").innerHTML = packageflag_def;
+				localStorage.lastpackageflag = packageflag_def;
+				localStorage.packageflagid = "";
+			}
+
+			var cleanSection = function() {
+				sectionid = "";
+				btn_section.innerHTML = sectionname_def;
+				localStorage.lastsectionname = sectionname_def;
+				localStorage.sectionid = "";
+			}
+
+			/**
+			 * 根据areaid  获取sectionList
+			 * @param {Object} areaid
+			 */
+			var getSectionList = function(areaid) {
+				var obj = JSON.parse(localStorage.sectionlist);
+				var tag = [];
+				jQuery.each(obj, function(i, c) {
+					if(c.AREAID == areaid) {
+						tag.push(c)
+					}
+				})
+				return tag;
+			}
+		</script>
+	</body>
+
+</html>

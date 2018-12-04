@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+<style type="text/css">
+	div {word-break : break-all; }
+	
+	.transform{
+		transform:rotate(7deg);
+		-ms-transform:rotate(7deg); 	/* IE 9 */
+		-moz-transform:rotate(7deg); 	/* Firefox */
+		-webkit-transform:rotate(-7deg); /* Safari 和 Chrome */
+		-o-transform:rotate(7deg); 	/* Opera */
+	}
+</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">商品库存信息详情</h1>
+		</header>
+		<div class="mui-content">
+
+			<div class="mui-card">
+				<div class="mui-card-header">商品信息</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner" id="productinfo">
+						<span id="vcuniversalname"></span><span id="flagquantum" style="color: red;font-size: 12px;"></span>
+						<h6 id="vcproductname"></h6>
+						<h6 id="vcproductcode"></h6>
+						<h6 id="vcstandard"></h6>
+						<h6 id="vcproducername"></h6>
+						<h6 id="numlarge"></h6>
+						<h6 id="vcbuyer"></h6>
+					</div>
+				</div>
+				<!--<div class="mui-card-footer">页脚</div>-->
+			</div>
+			
+			
+			<div class="mui-card" id="pcklimited">
+				<div class="mui-card-header">限销客户(限制销售给下列客户)</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						
+						<ul class="mui-table-view" id="pcklimitedlist">
+							<!--<li class="mui-table-view-cell">
+								<div class="mui-col-sm-12  mui-col-xs-12">台州医院</div>
+							</li>-->
+						</ul>
+
+					</div>
+				</div>
+			</div>
+			
+
+			<div class="mui-card" id="stock">
+				<div class="mui-card-header mui-row" ><div class="mui-col-sm-7 mui-col-xs-7">库存详情</div></div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						
+						<ul class="mui-table-view" id="stockdtl">
+							<li class="mui-table-view-cell">
+								<a>
+									<div class="mui-row">
+										<!--<div class="mui-col-sm-1  mui-col-xs-1"></div>-->
+										<div class="mui-col-sm-4  mui-col-xs-4">批号</div>
+										<div class="mui-col-sm-4  mui-col-xs-4">有效期</div>
+										<div class="mui-col-sm-4  mui-col-xs-4">
+											<div class="mui-row">
+												<div class="mui-col-sm-6  mui-col-xs-6">可开</div> 
+												<div class="mui-col-sm-6  mui-col-xs-6">总数</div>
+											</div>
+										</div>
+									</div>
+								</a>
+							</li>
+							
+
+						</ul>
+
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<div class="mui-row" style="width: 100%;">
+					<div class="mui-col-sm-2 mui-col-xs-2" style="text-align: center;"><span class="mui-badge mui-badge-danger">2</span></div>
+					<div class="mui-col-sm-10 mui-col-xs-10">:&nbsp;代表两票制商品</div>
+						
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="mui-card" id="stock">
+				<div class="mui-card-header">待上架库存</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						
+						<ul class="mui-table-view" id="wmsreceive">
+							<li class="mui-table-view-cell">
+								<a>
+									<div class="mui-row">
+										<!--<div class="mui-col-sm-1  mui-col-xs-1"></div>-->
+										<div class="mui-col-sm-6  mui-col-xs-6">收货日期</div>
+										<div class="mui-col-sm-4  mui-col-xs-4">批号</div>
+										<div class="mui-col-sm-2  mui-col-xs-2">数量</div>
+									</div>
+								</a>
+							</li>
+							
+
+						</ul>
+
+					</div>
+				</div>
+			</div>
+			
+			
+
+			<div class="mui-card">
+				<div class="mui-card-header">来源信息</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<ul class="mui-table-view" id="comesource">
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<div class="mui-card">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<ul class="mui-table-view">		
+       						<li class="mui-table-view-cell mui-collapse">
+							<a class="mui-navigate-right" href="#" style="padding-left: 1px;font-size: 17px;">价格集合</a>
+								<div class="mui-collapse-content">
+									<ul class="mui-table-view" id="pricegroup">
+					   				</ul>
+								</div>
+							</li>
+    					</ul>
+					</div>
+					
+					
+				</div>
+			</div>
+
+
+
+			
+
+		</div>
+
+		<div id="copy" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#copy"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+			mui.plusReady(function() {
+
+				var network = true;
+				if(mui.os.plus) {
+					mui.plusReady(function() {
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+							network = false;
+						}
+					});
+				}
+
+	
+				
+
+				var self = plus.webview.currentWebview();
+				var iproductid = self.iproductid;
+				var vcuniversalname = self.vcuniversalname;
+				var vcproductname=self.vcproductname;
+				var vcstandard = self.vcstandard;
+				var vcproducername = self.vcproducername;
+				var vcproductcode = self.vcproductcode;
+				var numlarge = self.numlarge;
+				var vcbuyer = self.vcbuyer;
+				var flagquantum=self.flagquantum;
+				//alert(vcuniversalname);
+                 
+				jQuery("#vcuniversalname").html(vcuniversalname);
+				jQuery("#flagquantum").html(flagquantum)
+				jQuery("#vcproductname").html( vcproductname);
+				jQuery("#vcstandard").html( vcstandard);
+				jQuery("#vcproducername").html( vcproducername);
+				jQuery("#vcproductcode").html( vcproductcode);
+				jQuery("#numlarge").html('大包：' + numlarge);
+				jQuery("#vcbuyer").html('采购：' + vcbuyer);
+				if(network) {
+					productmixinfo(iproductid);
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+
+
+				//	var productmixinfo = function(iproductid) {
+				function productmixinfo(iproductid) {
+
+
+					var url =getServerPath(localStorage.netmod)
+					var dataType = 'json';
+					//发送数据
+					var data = {
+						controller: 'Product',
+						method: 'product_stock_pricegroup_comesource_v2',
+						iproductid: iproductid,
+						token: TOKEN
+					};
+					//mui.post(url, data, productmixinfo_success, dataType);
+					//ajax 请求中。
+			        ajaxxing();
+					mui.ajax(url, {
+						data: data,
+						dataType: dataType, //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						success: productmixinfo_success,
+						error: err
+					});
+
+				}
+
+				//var productmixinfo_success = function(response) {
+				function productmixinfo_success(response) {
+					//alert("ccc");
+					//库存数据显示
+					var str=JSON.stringify(response);
+					console.log(str);
+
+					if(response != null) {
+						var syscode = response.syscode;
+						var sysreason = response.sysreason;
+						if(syscode == SYSCODE_NO) {
+							tokenOutTime(sysreason);
+						} else {
+							//显示库存 
+							var stock = response.sysdata.Product_product_stock_pricegroup_comesource_v2.stock;
+							console.log("SROCK:***"+JSON.stringify(response.sysdata.Product_product_stock_pricegroup_comesource_v2));
+							if(stock.length > 0) {
+								jQuery("#stock #numcansale").html('<span>' + stock[0]['NUMCANSALE'] + '</span>');
+								jQuery("#stock #numcansale2").html('<span>' + stock[0]['NUMCANSALE2'] + '</span>');
+							}
+							
+							var flagquantum=jQuery("#flagquantum").html();
+ 								
+ 								
+ 							//显示限销客户
+ 							var pcklimited=response.sysdata.Product_product_stock_pricegroup_comesource_v2.pcklimited;
+ 								if(pcklimited.length>0){
+ 									jQuery.each(pcklimited, function(index, content) {
+ 										jQuery("#pcklimitedlist").append("<li class='mui-table-view-cell'>"
+												+"<div class='mui-col-sm-12  mui-col-xs-12'>"+content.VCCUSTOMERNAME+"</div>"
+												+"</li>")
+ 									})
+ 								}else{
+ 									jQuery("#pcklimitedlist").append("<li class='mui-table-view-cell'>"
+												+"<div class='mui-col-sm-12  mui-col-xs-12'>无</div>"
+												+"</li>")
+ 								}
+ 								
+							//显示库存明细
+							var stockdtl = response.sysdata.Product_product_stock_pricegroup_comesource_v2.stockdtl;
+							jQuery.each(stockdtl, function(index, content) {
+							
+							var cansalenum=(content.NUMQTYALL-content.NUMQTYCANSALE-content.NUMWILLOUT)
+							   //console.log("TTTTx:"+flagquantum);
+							   if(flagquantum==FLAGQUANTUM_INFO){
+							   	   cansalenum="<strike style='color:red'>"+cansalenum+"</strike> "
+							   }
+							   var flagtwo="";
+							   if(content.FLAGTWO=='Y'){
+							   	flagtwo='<span class="mui-badge mui-badge-danger">2</span>';
+							   }
+							   
+							   //设置批号与有效期显示问题
+							   var batchHtml=content.VCBATCHNUMBER.length<10?
+							   '<div class="mui-col-sm-4  mui-col-xs-4 ">'+flagtwo+content.VCBATCHNUMBER+'</div>'
+							  +'<div class="mui-col-sm-4  mui-col-xs-4 ">'+content.DTUSEFULLIFE+'</div>'
+							  :
+							  '<div class="mui-col-sm-8  mui-col-xs-8 ">'
+									+'<div class="mui-col-sm-12  mui-col-xs-12 ">'+flagtwo+content.VCBATCHNUMBER+'</div>'
+									+'<div class="mui-col-sm-12  mui-col-xs-12 " style="text-align:right;padding-right: 22px;">'+content.DTUSEFULLIFE+'</div>'
+								+'</div>';
+								
+								var flagimageHtml=content.FLAGIMAGE=='N'?'无税票':'有税票';
+								var flaguploadHtml=content.FLAGUPLOAD=='N'?'未上传':'已上传';
+								var imageuploadHtml=content.FLAGIMAGE=='Y'&&content.FLAGUPLOAD=='Y'? 
+								'<h5 style="color:green">'+flagimageHtml+' '+flaguploadHtml+'</h5>'
+								:
+								'<h5 style="color:red">'+flagimageHtml+' '+flaguploadHtml+'</h5>'
+								
+								jQuery("#stockdtl").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row">'
+								+batchHtml
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">'
+								+       	'<div class="mui-row">'
+								+        		'<div class="mui-col-sm-6  mui-col-xs-6">'
+								+					cansalenum  //NUMQTYALL 总数   NUMQTYCANSALE被锁定数量    即将出库数量---
+								+				' </div>'
+								+				'<div class="mui-col-sm-6  mui-col-xs-6"> '
+								+					content.NUMQTYALL
+								+				'</div>'
+								+'			</div>'
+								+'		</div>'
+								
+								+		'<div class="mui-col-sm-12  mui-col-xs-12">'
+								//+             '<h5>税票：有 但未上传</h5>'
+								+             imageuploadHtml
+								+	    '</div>'
+								
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							});
+							if(stockdtl.length==0){//空数据显示
+								jQuery("#stockdtl").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row">'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">-</div>'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">-</div>'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">'
+								+       	'<div class="mui-row">'
+								+        		'<div class="mui-col-sm-6  mui-col-xs-6">'
+								+					'-'
+								+				' </div>'
+								+				'<div class="mui-col-sm-6  mui-col-xs-6"> '
+								+					'-'
+								+				'</div>'
+								+'			</div>'
+								+'		</div>'
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							}
+							
+							
+							var cansalenumtotal=(stock[0]['NUMCANSALE']-stock[0]['NUMCANSALE2']-stock[0]['NUMWILLOUT']);
+							  
+							   if(flagquantum==FLAGQUANTUM_INFO){
+							   	   cansalenumtotal="<strike style='color:red'>"+cansalenumtotal+"</strike> "
+							   }
+							//合计行
+							jQuery("#stockdtl").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row"> '
+								+		'<div class="mui-col-sm-8  mui-col-xs-8">合计</div>'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">'
+								+       	'<div class="mui-row">'
+								+        		'<div class="mui-col-sm-6  mui-col-xs-6">'
+								+					cansalenumtotal  //(stock[0]['NUMCANSALE']-stock[0]['NUMCANSALE2']-stock[0]['NUMWILLOUT'])
+								+				' </div>'
+								+				'<div class="mui-col-sm-6  mui-col-xs-6"> '
+								+					stock[0]['NUMCANSALE']
+								+				'</div>'
+								+'			</div>'
+								+'</div>'
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							
+							//显示待上架库存信息
+							
+							
+							var wmsreceive = response.sysdata.Product_product_stock_pricegroup_comesource_v2.wmsreceive;
+							jQuery.each(wmsreceive, function(index, content) {
+								//var titleobj=jQuery("#stockdtl").find('li').first();
+								//jQuery("#stockdtl").find('li').remove();
+								jQuery("#wmsreceive").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row">'
+								//+		'<div class="mui-col-sm-1  mui-col-xs-1">'+(index+1)+'</div>'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6">'+content.RECEIVEDATE+'</div>'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">'+content.LOTNO+'</div>'
+								+		'<div class="mui-col-sm-2  mui-col-xs-2">'+content.GOODSQTY+'</div>'	
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							});
+							if(wmsreceive.length==0){//空数据显示
+								jQuery("#wmsreceive").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row">'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6">-</div>'
+								+		'<div class="mui-col-sm-4  mui-col-xs-4">-</div>'
+								+		'<div class="mui-col-sm-2  mui-col-xs-2">-</div>'
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							
+							}
+							
+							
+							
+							
+							
+							//显示价格集合
+							var pricegroup = response.sysdata.Product_product_stock_pricegroup_comesource_v2.pricegroup;
+							if(pricegroup.length > 0) {
+								jQuery('#pricegroup').find('li').remove();
+								jQuery.each(pricegroup, function(index, content) {
+								jQuery("#pricegroup").append(
+									'<li class="mui-table-view-cell">'
+								+'<a>'
+								+	'<div class="mui-row">'
+								+		'<div class="mui-col-sm-10  mui-col-xs-10"><span>'+content.VCCUSTOMERKINDNAME+'</span></div>'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6"><h5>'+'成本价:' + content.NUMASSESSCOST+'</h5></div>'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6"><h5>'+'指导价:' + content.NUMGUIDPRICE+'</h5></div>'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6"><h5>'+'最低价:' + content.NUMLOWPRICE+'</h5></div>'
+								+		'<div class="mui-col-sm-6  mui-col-xs-6"><h5>'+'中标价:' + content.NUMPRICE+'</h5></div>'
+								+	'</div>'
+								+'</a>'
+							    +'</li>'
+							);
+							
+							
+								
+								
+								});
+							}
+							//显示来源信息
+							var comesource = response.sysdata.Product_product_stock_pricegroup_comesource_v2.comesource;
+							if(comesource.length > 0) {
+								jQuery('#comesource').find('li').remove();
+								jQuery.each(comesource, function(index, content) {
+									jQuery('#comesource').append('<li class="mui-table-view-cell"><a>来源属性<h6>' + content.VCPROPERTY + '</h6>配送范围<h6>' + content.VCAREANAME + '</h6></a></li>');
+								});
+							}
+						}
+
+					}
+
+				};
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#copy'));
+
+			});
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

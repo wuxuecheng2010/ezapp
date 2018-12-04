@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			
+			.oa-contact-cell.mui-table .mui-table-cell {
+				padding: 11px 0;
+				vertical-align: middle;
+			}
+			
+			.oa-contact-cell {
+				position: relative;
+				margin: -11px 0;
+			}
+	
+			.oa-contact-avatar {
+				width: 75px;
+			}
+			.oa-contact-avatar img {
+				border-radius: 50%;
+			}
+			.oa-contact-content {
+				width: 100%;
+			}
+			.oa-contact-name {
+				margin-right: 20px;
+			}
+			.oa-contact-name, oa-contact-position {
+				float: left;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">缺货反馈查询</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right" onclick="openWidget()"></a>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar1">
+				<span class="mui-tab-label">全部</span>
+				<span style="font-size: 14px;">(<span id="num1">0</span>)</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar2">
+				<span class="mui-tab-label">未反馈</span>
+				<span style="font-size: 14px;">(<span id="num2">0</span>)</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar3">
+				<span class="mui-tab-label">已反馈</span>
+				<span style="font-size: 14px;">(<span id="num3">0</span>)</span>
+			</a>
+			
+			
+		</nav>
+		<div class="mui-content">
+			
+			<!--<ul id="list" class="mui-table-view" style="margin-top: 1px;">
+
+				<li class="mui-table-view-cell">
+			        	<h5>注射用阿莫西林钠克拉维酸钾</h5>
+			        	<h6>规格：1.2g(1.0g/0.2g)</h6>
+			        	<h6>采购：汤启明</h6>
+			        	<h6>厂家：中孚药业股份有限公司(原山东潍坊制药厂有限公司)</h6>
+			        	<h6>客户：仙居县妇幼保健院</h6>
+			        	<h6>销售：张优</h6>
+			        	<h6>备注：挂网价不一致</h6>
+			        	<h6>库存：9620</h6>
+			        	<h6>缺货：120</h6>
+			        </li>
+
+			</ul>-->
+			
+			
+			<div id="tabbar1" class="mui-control-content mui-active">
+				<ul id="list1" class="mui-table-view" style="margin-top: 1px;">
+								       <!-- <li class="mui-table-view-cell">
+			        	<h5>注射用阿莫西林钠克拉维酸钾</h5>
+			        	<h6>规格：1.2g(1.0g/0.2g)</h6>
+			        	<h6>采购：汤启明</h6>
+			        	<h6>厂家：中孚药业股份有限公司(原山东潍坊制药厂有限公司)</h6>
+			        	<h6>客户：仙居县妇幼保健院</h6>
+			        	<h6>销售：张优</h6>
+			        	<h6>备注：挂网价不一致</h6>
+			        	<h6>库存：9620</h6>
+			        	<h6>缺货：120</h6>
+			        </li>-->
+				</ul>
+			</div>
+			<div id="tabbar2" class="mui-control-content">
+				<ul id="list2" class="mui-table-view" style="margin-top: 1px;">
+					
+				</ul>
+			</div>
+			<div id="tabbar3" class="mui-control-content">
+				<ul id="list3" class="mui-table-view" style="margin-top: 1px;">
+					
+				</ul>
+			</div>
+			
+			
+
+		</div>
+
+		<div id="copy" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#copy"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<!--<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>-->
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+
+			mui.ready(function() {
+
+				init();
+			});
+
+			function init() {
+				var jsonlist = JSON.parse(localStorage.oosrecordlist);
+				displayui(jsonlist);
+
+				/*jQuery(".mui-table-view-cell").click(function(){
+					COPY_INFO="";
+					var array =jQuery(this).children('span ,h6');
+					jQuery.each(array,function(i,obj){
+						COPY_INFO+=jQuery(obj).html()+"\n";
+					})
+					alert(COPY_INFO);
+					
+				});*/
+
+			}
+
+			function openWidget() {
+				mui.openWindow({
+					url: '../pub/widget_search_6b.html',
+					id: 'widget_search_6a.html'
+				});
+			}
+
+			var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			//监听点击事件
+
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+				var json = JSON.parse(value)
+				console.log(value.substr(1, value.length - 2));
+				//document.getElementById("ui").innerHTML=jsonvalue;
+				ajax(jsonvalue);
+			});
+
+			//设置全局beforeSend
+			mui.ajaxSettings.beforeSend = function(xhr, setting) {
+				//beforeSend演示,也可在$.ajax({beforeSend:function(){}})中设置单个Ajax的beforeSend
+				console.log('beforeSend:::' + JSON.stringify(setting));
+			};
+
+			//var iproductid=9999;
+			//设置全局complete
+			mui.ajaxSettings.complete = function(xhr, status) {
+				console.log('complete:::' + status);
+			}
+
+			var ajax = function(params) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'OosRecord',
+					method: 'oosRecord',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+
+				//ajax 请求中。
+				ajaxxing();
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.oosrecordlist = JSON.stringify(response.sysdata.OosRecord_oosRecord);
+						displayui(response.sysdata.OosRecord_oosRecord);
+						searchnotice(response.sysdata.OosRecord_oosRecord);
+					}
+				}
+			};
+			
+			
+			
+		
+			/**
+				 * 将json item  显示到某个列表下面
+				 * @param {Object} listobj   mlist对象；
+				 * @param {Object} content   json单个数据；
+				 */
+				function displayItem(listobj,content){
+					listobj.append(
+						'<li class="mui-table-view-cell">'
+						+'<a>'
+						//+'<div class="mui-slider-left mui-disabled">'
+						//+'<a class="mui-btn mui-btn-red" id="btn_copy">复制</a>'
+						//+'</div>'
+						+'<div class="mui-slider-handle">'+
+			        	'<span>' + content.VCUNIVERSALNAME + '</span>' +
+						'<h6>规格：' + content.VCSTANDARD + '</h6>' +
+						'<h6>编码：' + content.VCPRODUCTCODE + '</h6>' +
+						'<h6>品名：' + content.VCPRODUCTNAME+'</h6>'+
+						'<h6>采购：' + content.VCBUYER + '</h6>' +
+						'<h6>厂家：' + content.VCPRODUCERNAME + '</h6>' +
+						'<h6>客户：' + content.VCCUSTOMERNAME + '</h6>' +
+						'<h6>销售：' + content.VCSALER + '</h6>' +
+						'<h6>处理：' + content.VCEXPLAIN + '</h6>' +
+						'<h6>库存：' + content.NUMSTOCKS + '</h6>' +
+						'<h6>缺货：' + content.NUMQUANTITY + '</h6>' +
+						'<h6>日期：' + content.DTCREATIONDATE + '</h6>' +
+						'<h6>备注：' + content.VCMEMO + '</h6>' +
+						'<h6>开票：' + content.VCEXPLAIN2 + '</h6>' +
+			        	'</div>'+
+						'</a>'+
+						'</li>'
+						);
+				}
+			
+			
+			
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list1').find('li').remove();
+				jQuery('#list2').find('li').remove();
+				jQuery('#list3').find('li').remove();
+				var num1=0;
+				var num2=0;
+				var num3=0;
+				jQuery.each(jsonobj, function(index, content) {
+					//var num=index+1;
+					displayItem(jQuery('#list1'),content);//显示到全部下面
+					num1++;
+					var flagexplan=content.FLAGEXPLAN;
+					if("N"==flagexplan){
+						displayItem(jQuery('#list2'),content);//显示到新单下面
+						num2++;
+					}
+					
+					if("Y"==flagexplan){
+						displayItem(jQuery('#list3'),content);//显示到同意下面
+						num3++;
+					}
+					
+					
+					
+				});
+				
+				// 设置按钮中的行数
+				jQuery("#num1").html(num1);
+				jQuery("#num2").html(num2);
+				jQuery("#num3").html(num3);
+				
+				//右滑复制
+				swiperightcopy(jQuery(".mui-table-view-cell"),'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"),mui('#copy'));
+				
+				/*jQuery(".mui-tab-label").click(function(){
+					init();
+				});*/
+				
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,31 @@
+.my-pandding-top-small{
+	padding-top: 10px;
+	/*padding-bottom: 0px;*/
+}
+.my-date-button{
+	
+	width: 98%;
+}
+
+.my-select-button{
+	
+	width: 98%;
+}
+
+.top-bar-buttom-middle{
+	
+	width: 100%;
+	text-align: center; 
+	height: 50px;
+	display:table;
+	margin:0 auto;
+	z-index: 9999;
+	position: fixed;
+	background-color:#F7F7F7;
+}
+
+.top-bar-buttom-middle-cell{
+	display:table-cell; 
+	vertical-align:middle;
+	font-size: 16px;
+	}

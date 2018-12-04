@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+			.center{
+				text-align: center;
+			}
+			.scaned{
+				color: green;
+			}
+			.unscaned{
+				color: red;
+			}
+			.right{
+				text-align: right;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">装箱清单</h1>
+		</header>
+		<div class="mui-content ">
+
+			<ul class="mui-table-view" style="margin-top: 0px;">
+			        <li class="mui-table-view-cell">
+			            <a id="customname">
+			                客户
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a id="employeename">
+			                复核人
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a id="carrydate">
+			                 时间
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a id="packagetype">
+			                 包装类型
+			            </a>
+			        </li>
+			    </ul>
+			
+			<ul id="list" class="mui-table-view " >
+				<!--<li class="mui-table-view-cell">
+				    <div class="mui-row" >
+		            	<div class="mui-col-sm-2  mui-col-xs-2" ><span>No</span></div> 
+		            	<div class="mui-col-sm-4  mui-col-xs-4" ><span>驾驶员</span></div>
+		            	<div class="mui-col-sm-4  mui-col-xs-4" ><span>线路</span></div>
+		            	<div class="mui-col-sm-2  mui-col-xs-2" ><span>件数</span></div>
+	                </div>
+				</li>-->
+			</ul>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			var keyid = "";//整件或者散件的主键ID
+			var boxcode = "";//条形满
+			var packagetype="";//整件或者散件
+			var flag="";//当前页面有可能是共享使用  传入模式标志
+			var employeename ="";//复核人或者装箱人
+			var customname="";
+			var carrydate="";
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			mui.plusReady(function() {
+				init();
+				setTitle();
+				ajax(keyid, packagetype);
+
+			})
+
+			/*			function getEmployeeid() {
+							var self = plus.webview.currentWebview();
+							return self.employeeid;
+
+						}*/
+
+			function init() {
+				var self = plus.webview.currentWebview();
+				keyid = self.keyid;
+				boxcode = self.boxcode;
+				packagetype=self.packagetype;
+				employeename=self.employeename;
+				flag=self.flag;
+				customname=self.customname;
+				carrydate=self.carrydate;
+			}
+			
+			function setTitle(){
+				jQuery(".mui-title").html(boxcode+"装箱清单");
+				jQuery("#customname").html(customname);
+				jQuery("#employeename").html(employeename);
+				jQuery("#carrydate").html(carrydate);
+				jQuery("#packagetype").html(packagetype=="scatter"?'散件':'整件')
+			}
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(keyid, packagetype) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var loaderid = getEmployeeid();
+				//alert("loaderid"+loaderid)
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'WmsBox',
+					method: 'wmsBoxDtl',
+					keyid: keyid,
+					packagetype: packagetype,
+					token: TOKEN
+				};
+
+				//console.log("loaderid###:" + loaderid + "credate:" + credate);
+				//mui.post(url, data, success, dataType);
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsEmployeeDispatch);
+						displayui(response.sysdata.WmsBox_wmsBoxDtl);
+
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var numdesc=content.DTLID==-1?(content.GOODSQTY/content.PACKSIZE)+'件':content.GOODSQTY+content.GOODSUNIT;
+					var num = index + 1;
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell">' +
+						'<a>' +
+						'<div class="mui-row ">'+
+								'<div class="mui-col-sm-12  mui-col-xs-12 " ><span id="boxcode">' + content.GOODSNAME + '</span></div> ' +
+								'<div class="mui-row">'+
+								    '<div class="mui-col-sm-6  mui-col-xs-6 " ><h5 id="carrydate">' + content.GOODSTYPE + '</h5></div>' +
+								    '<div class="mui-col-sm-3  mui-col-xs-3 " ><h5 id="packageqty">' + (content.PACKSIZE+content.GOODSUNIT+'/件') + '</h5></div> ' +
+								    '<div class="mui-col-sm-3  mui-col-xs-3 " ><h5 id="packageqty">' + numdesc + '</h5></div> ' +
+									//'<div class="mui-col-sm-2  mui-col-xs-2 " ><h5 id="employeename">' + content.GOODSUNIT + '</h5></div>' +
+									
+								'</div>'+
+						'</div>' +
+						'<span style="display: none;" id="keyid">' + content.KEYID + '</span>' +
+						'<span style="display: none;" id="dtlid">' + content.DTLID + '</span>' +
+						'<span style="display: none;" id="goodsid">' + content.GOODSID + '</span>' +
+						'</a>' +
+						'</li>'
+					);
+				});
+
+				/*jQuery('#list a').click(function() {
+									//显示商品信息
+									var keyid = jQuery(this).find('#keyid').html();
+									var boxcode = jQuery(this).find('#boxcode').html();
+									var packagetype = jQuery(this).find('#packagetype').html();
+									var flag="read";
+									showBoxDtl(keyid,boxcode,packagetype,flag);
+								});*/
+
+			}
+
+				/**
+				 * 显示包装箱详细内容
+				 * @param {Object} keyid
+				 * @param {Object} boxcode
+				 * @param {Object} packagetype
+				 * @param {Object} flag
+				 */
+				var showBoxDtl=function(keyid,boxcode,packagetype,flag){
+					mui.openWindow({
+								url: 'wmsBoxDtl.html',
+								id: 'wmsBoxDtl.html',
+								extras: {
+									keyid: keyid,
+									boxcode: boxcode,
+									packagetype: packagetype,
+									flag:flag
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+				}
+
+
+
+			/*			//返回主页面
+						function turnToParent(jsonstr) {
+							var mainPage = null;
+							if(!mainPage) {
+								mainPage = plus.webview.currentWebview().opener();
+							}
+							mui.fire(mainPage, "widgetSelectEvent", {
+								"value": jsonstr
+							});
+							mui.back();
+						}
+
+						var open_dtl = function(dispatchid, drivername, routename) {
+							mui.openWindow({
+								url: 'tmsDispatchdtl.html',
+								id: 'tmsDispatchdtl.html',
+								extras: {
+									dispatchid: dispatchid,
+									drivername: drivername,
+									routename: routename
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						}
+			*/
+		</script>
+	</body>
+
+</html>

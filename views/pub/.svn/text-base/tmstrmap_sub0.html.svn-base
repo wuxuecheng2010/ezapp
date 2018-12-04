@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/mui.picker.css">
+		<link rel="stylesheet" href="../../css/mui.poppicker.css">
+		<style>
+			html,
+			body,
+			.mui-content {
+				width: 100%;
+				height: 100%
+			}
+			.mui-content {
+				font-family: "华文细黑";
+				background: url("../../images/background/bg.jpg") no-repeat;
+				background-size: 100% 100%;
+			}
+			
+			.mui-row {
+				background-color: #FFF;
+				text-align: right;
+				filter:alpha(opacity:70); 
+				opacity:0.6;  
+				-moz-opacity:0.6;
+				-khtml-opacity: 0.6
+			}
+			
+			.inputcell {
+				height: 60px;
+				//border: 0px solid #73AD21;
+				font-size: 18px;
+			}
+			
+			.alignleft{
+				text-align: left;
+			}
+			
+			.un-editable{
+				line-height: 60px;
+				margin-left: 12px;
+			}
+			
+			.inputtxt{
+				border:none #FFFFFF;
+				border-bottom:#777777 solid 1px;
+				font-size: 30px;
+
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-icon mui-icon-closeempty mui-pull-right mui-action-back" style="font-size: 32px;"></span>
+		</header>
+
+		<div class="mui-content">
+
+			<div class="" style="margin-top: 10px;padding: 5px;">
+				<div style="text-align: center;height: 60px;">
+					<h3 style="line-height: 60px;">信息登记</h3>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">车辆|驾驶员：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell alignleft" >
+						<span class="un-editable" ><span id="vehicleno"></span>|<span id="drivername"></span></span>
+					</div>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">开往：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell alignleft" >
+						<span class="un-editable" ><span id="forwardmsg"></span>&nbsp;&nbsp;<span id="totalpieces"></span></span>
+					</div>
+				</div>
+				
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;"><span style="color: red;">*</span>出发里程：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-leavemileage" type="number" pattern="\d*" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;" >
+					</div>
+				</div>
+				
+				<div class="mui-row" id="leavetemppanel">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;"><span style="color: red;">*</span>起运温度：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-leavetemp" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;" >
+					</div>
+				</div>
+				
+
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;"><span style="color: red;">*</span>首站目的地：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-targetadd" type="text"  placeholder="--首站目的地--" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;" readonly="true">
+					</div>
+				</div>
+				
+				<div class="mui-row" style="height: 30px;"></div>
+
+			</div>
+
+			<div class="mui-content-padded" style="margin-top: 20px;">
+				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并出发</button>
+			</div>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/myinput.js"></script>
+		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
+		<script type="text/javascript" src="../../plugs/layer/layer.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false //启用右滑关闭功能
+			});
+			var trrecordid="";
+			var flagcold="";
+			var vehicleno="";
+			var mileages="";//当前车辆数据库中记录的里程值;
+			var trrecord_order_json=[];//原始的查询结果
+			var trrecord_order_list=[];//适应下拉选择的结果集
+			var trrecord_order={};//被选中的结果
+			
+			mui.plusReady(function(){
+				
+				ajaxxing();
+				
+				//初始化信息显示
+				initView();
+				//获取下拉列表的数据
+				//formatOrderListDate();
+				trrecord_order_list=getFormatOrderListDate(trrecord_order_json);
+				
+				//初始化下拉列表
+				initAddSelect();
+				gettmstrmapsub0(trrecordid,vehicleno);
+
+				//初始化按钮选项
+			    initAction();
+				
+			});
+			
+		var initView=function(){
+			var self=plus.webview.currentWebview();
+			var forwardmsg=self.forwardmsg;
+		     vehicleno=self.vehicleno;
+			var drivername=self.drivername;
+			var totalpieces=self.totalpieces;
+			trrecordid=self.trrecordid;
+			flagcold=self.flagcold;
+			trrecord_order_json=self.order_all;
+			//alert(JSON.stringify(order_all));
+			$("#drivername").html(drivername);
+			$("#vehicleno").html(vehicleno);
+			$("#forwardmsg").html(forwardmsg);
+			$("#totalpieces").html("("+totalpieces+"件)");
+			if(flagcold=="N"){
+				$("#leavetemppanel").addClass("mui-hidden");
+			}
+			
+		}
+		
+		
+		/*//转化下拉列表数据格式
+		var formatOrderListDate=function(){
+			$.each(trrecord_order_json, function(i,c) {
+				var step=c.STEP;
+				if(step=="0"){
+					//状态为0的才有机会设置为下一点.
+					var ordid=c.ORDID;
+					var customname=c.CUSTOMNAME;
+					var o={};
+					o.value=ordid;
+					o.text=customname;
+					trrecord_order_list.push(o);
+				}
+			});
+		};*/
+
+		
+		var gettmstrmapsub0=function(trrecordid,vehicleno){
+			
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'gettmstrmapsub0',
+					vehicleno:vehicleno,
+					token: TOKEN
+				};
+				//console.log(data);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async:false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success1,
+					error: err
+				});
+		}
+		
+		var success1 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+					    mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].MILEAGES;
+					}
+				}
+			};
+			
+		
+		
+		var initAction=function(){
+			//温度输入格式控制
+			 $("#txt-leavetemp").keydown(function(e) {  
+			        digitInput($(this), e);  
+			    });  
+			//保存
+			var btnsave=document.getElementById("btn-save");
+			btnsave.addEventListener('tap',function(){
+				saveRecordOrder();
+			});
+			
+		}
+		
+		var saveRecordOrder= function(){
+			var flag=validate();
+			if(flag){
+				//保存 并返回到主界面
+				doSave($("#txt-leavemileage").val(),$("#txt-leavetemp").val(),trrecord_order);
+				
+			}
+		}
+		
+		//返回主页面
+		var  turnToParent=function(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "returnEvent0", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+		
+		var doSave=function( leavemileage,leavetemp,orderobj){
+				var url = getServerPath(localStorage.netmod);
+				var _ordid=orderobj.ORDID;
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'tmstrmapsub0readygo',
+					trrecordid: trrecordid,
+					ordid:_ordid,
+					leavemileage:leavemileage,
+					leavetemp:leavetemp,
+					token: TOKEN
+				};
+				//console.log(JSON.stringify(data));
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async:false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success2,
+					error: err
+				});
+		}
+		
+				var success2= function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var resjson=response.sysdata.TmsTrRecord_tmstrmapsub0readygo;
+						var code=resjson.code;
+						var msg=resjson.msg;
+						var memo=resjson.memo;
+						
+						if(code=="OK"){
+							turnToParent(JSON.stringify(trrecord_order));
+						}else{
+							toast(msg+memo);
+						}
+
+					}
+				}
+			};
+		
+		
+		
+		//保存前校验数字是否合理
+		var validate=function(){
+			//校验表单数字
+			var leavemileage=$("#txt-leavemileage").val();//填写的里程
+			if(leavemileage==""){
+				layer.tips('出发里程不能为空', '#txt-leavemileage', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}
+
+			if(Number(mileages)>Number(leavemileage)){
+				layer.tips('出发里程不能小于当前车辆的里程', '#txt-leavemileage', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}
+			
+			if(flagcold=='Y'){
+				if($("#txt-leavetemp").val()==""){
+					layer.tips('本车次含有冷链药品，请输入起运温度', '#txt-leavetemp', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+					return false;
+					
+				}
+			}
+			
+			
+			if($.isEmptyObject(trrecord_order)){
+				layer.tips('请选择首站目的地', '#txt-targetadd', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}
+			return true;
+		}
+			
+		</script>
+	</body>
+
+</html>

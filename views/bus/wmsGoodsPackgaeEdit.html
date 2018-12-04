@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>外包装信息维护</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<iink rel="stylesheet" type="text/css" href="../../css/mystylebase.css" />
+		<style type="text/css">
+			div {
+				word-break: break-all;
+			}
+			
+			.input_area_input {
+				height: 80px;
+				background-color: #FFFFFF;
+				margin-top: 10px;
+			}
+			
+			.input_area {
+				padding-top: 5px
+			}
+			
+			.input_area input {
+				margin-left: -5px;
+			}
+			
+			.input_area_lab_5 {
+				padding-top: 5px;
+				text-align: center;
+			}
+			
+			.input_area_lab_10 {
+				padding-top: 10px;
+				text-align: center;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">外包装信息维护</h1>
+		</header>
+		<div class="mui-content" style="margin-top: 1px;">
+
+			<div>
+				<ul class="mui-table-view mui-table-view-chevron" id="info" style="margin-top: 1px;">
+					<li class="mui-table-view-cell">
+						<a class="">
+							<h4><span id="goodsname"></span></span></h4>
+							<h5><span id="goodstype"></span></h5>
+							<h5><span id="posno"></span></h5>
+							<h5><span id="packsize"></span></h5>
+						</a>
+
+					</li>
+				</ul>
+			</div>
+
+			<div id="" class="input_area_input" style="height: 35px;padding-top: 1px;">
+				<div class="mui-row">
+					<div class="mui-col-sm-12 mui-col-xs-12 " style="text-align: left;" >
+						<h5><span class="mui-icon mui-icon-location"></span>注意:当前填入的信息代表<span id="baseunitflag" style="color: red;"></span>的长宽高、体积、质量</h5>
+					</div>
+				</div>
+			</div>
+
+			<div id="" class="input_area_input" style="margin-top: 10px;">
+				<div class="mui-row">
+					<div class="mui-col-sm-12 mui-col-xs-12">
+						<h5>单位:厘米</h5>
+					</div>
+					<div class="mui-col-sm-4 mui-col-xs-4 input_area">
+						<div class="mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4 input_area_lab_5">
+								<span>长:</span>
+							</div>
+							<div class="mui-col-sm-8 mui-col-xs-8">
+								<input type="number" id="goodslength" maxlength="5" onkeyup="compute()" onKeyPress="if (event.keyCode!=46  && 
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false" />
+							</div>
+						</div>
+					</div>
+					<div class="mui-col-sm-4 mui-col-xs-4 input_area">
+						<div class="mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4 input_area_lab_5">
+								<span>宽:</span>
+							</div>
+							<div class="mui-col-sm-8 mui-col-xs-8">
+								<input type="number" id="goodswidth" maxlength="5" onkeyup="compute()" onKeyPress="if (event.keyCode!=46  && 
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false" />
+							</div>
+						</div>
+					</div>
+					<div class="mui-col-sm-4 mui-col-xs-4 input_area">
+						<div class="mui-row">
+							<div class="mui-col-sm-4 mui-col-xs-4 input_area_lab_5">
+								<span>高:</span>
+							</div>
+							<div class="mui-col-sm-8 mui-col-xs-8">
+								<input type="number" id="goodsheight" maxlength="5" onkeyup="compute()" onKeyPress="if (event.keyCode!=46  && 
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="" class="input_area_input" style="height: 60px;padding-top: 10px;">
+				<div class="mui-row">
+					<div class="mui-col-sm-2 mui-col-xs-2 input_area_lab_10">
+						<span>体积：</span>
+					</div>
+					<div class="mui-col-sm-8 mui-col-xs-8">
+						<input type="number" maxlength="5" id="goodscubage" disabled="disabled" />
+					</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 input_area_lab_10" style="text-align: left;">
+						<span>立方米</span>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="" class="input_area_input" style="height: 60px;padding-top: 10px;">
+				<div class="mui-row">
+					<div class="mui-col-sm-2 mui-col-xs-2 input_area_lab_10">
+						<span>重量：</span>
+					</div>
+					<div class="mui-col-sm-8 mui-col-xs-8">
+						<input type="number" id="goodsweight" maxlength="5" onKeyPress="if (event.keyCode!=46  && 
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false" />
+					</div>
+					<div class="mui-col-sm-2 mui-col-xs-2 input_area_lab_10" style="text-align: left;">
+						<span>克</span>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="" class="input_area_input" style="height: 120px;padding-top: 40px;">
+				<div class="mui-row" style="text-align: center;">
+					<div class="mui-col-sm-3 mui-col-xs-3 input_area_lab_10">
+
+					</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 ">
+						<div id="btn_reset" class="mui-btn mui-btn-danger " style="font-size: 16px;">
+							重置
+						</div>
+					</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 ">
+						<div id="btn_submit" class="mui-btn mui-btn-primary" style="font-size: 16px;" onclick="submit()">
+							<span>提交</span>
+						</div>
+					</div>
+					<div class="mui-col-sm-3 mui-col-xs-3 input_area_lab_10">
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		  
+		  <div id="hiddenBlock" style="display: none;">
+		  	
+		  </div>
+
+
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			var num_length = document.getElementById("length");
+			var num_width = document.getElementById("width");
+			var num_height = document.getElementById("height");
+
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var goodspackid;
+			var employeeid;
+			var dom;
+			mui.plusReady(function() {
+
+				var self = plus.webview.currentWebview();
+				goodspackid = self.goodspackid;
+				employeeid = getWMSEmployeeID();
+				dom = self.dom;
+				var goodsname = self.goodsname;
+				var goodstype = self.goodstype;
+				var posno = self.posno;
+				var packsize = self.packsize;
+				var baseunitflag = self.baseunitflag;
+				var packsizeval = self.packsizeval;
+
+				jQuery("#goodsname").html(goodsname);
+				jQuery("#goodstype").html(goodstype);
+				jQuery("#posno").html(posno);
+				jQuery("#packsize").html(packsize);
+
+				var tradepackname = self.tradepackname;
+				var packname = self.packname;
+
+				if(baseunitflag == 1 || packsizeval == 9999) {
+					jQuery("#baseunitflag").html("1" + tradepackname);
+				} else {
+					jQuery("#baseunitflag").html("1" + packname);
+				}
+
+				jQuery("#goodslength").val(self.goodslength);
+				jQuery("#goodswidth").val(self.goodswidth);
+				jQuery("#goodsheight").val(self.goodsheight);
+				jQuery("#goodscubage").val(self.goodscubage);
+				jQuery("#goodsweight").val(self.goodsweight);
+
+			});
+
+			var initFocus = function() {
+				num_length.focus();
+			}
+
+			var goodslength;
+			var goodswidth;
+			var goodsheight;
+			var goodscubage;
+			var goodsweight;
+
+			var initparam = function() {
+				goodslength = jQuery("#goodslength").val() == "" ? 0 : jQuery("#goodslength").val();
+				goodswidth = jQuery("#goodswidth").val() == "" ? 0 : jQuery("#goodswidth").val();
+				goodsheight = jQuery("#goodsheight").val() == "" ? 0 : jQuery("#goodsheight").val();
+				goodscubage = (goodslength * goodswidth * goodsheight / 1000000).toFixed(6);
+				goodsweight = jQuery("#goodsweight").val() == "" ? 0 : jQuery("#goodsweight").val();
+			}
+			var compute = function() {
+				var e = event ? event : window.event;
+				var obj = e.srcElement ? e.srcElement : e.target;
+				var $obj = $(obj);
+				var value = $obj.val();
+				//console.log(e.keyCode);
+				initparam();
+				jQuery("#goodscubage").val(goodscubage);
+			}
+
+			var submit = function() {
+
+				initparam();
+				//增加前台校验
+				var reg = /^\d+(?:\.\d{1,2})?$/;
+				if(!(reg.test(goodslength)&&goodslength<1000&&goodslength>0&&jQuery("#goodslength").val()!=="")){
+					mui.toast("长度不合法，整数最多3位，小数最多2位,且大于0")
+					return ;
+				}
+				if(!(reg.test(goodswidth)&&goodslength<1000&&goodslength>0&&jQuery("#goodswidth").val()!=="")){
+					mui.toast("宽度不合法，整数最多3位，小数最多2位,且大于0")
+					return ;
+				}
+				if(!(reg.test(goodsheight)&&goodslength<1000&&goodslength>0&&jQuery("#goodsheight").val()!=="")){
+					mui.toast("高度不合法，整数最多3位，小数最多2位,且大于0")
+					return ;
+				}
+
+
+				//弹出升级对话框  是否需要升级由客户确定
+					mui.confirm('当前填入的信息为：\n 长:'+goodslength+"&nbsp;&nbsp;    宽:"+goodswidth+"&nbsp;&nbsp;    高:"+goodsheight+"\n 对吗？对请按确认，不对按取消", '确认', ['取消', '确认'], function(e) {
+						switch(e.index) {
+							case 0:
+								break;
+							case 1:
+								doSubmit();
+								break;
+							default:
+								break;
+						}
+					}, 'div')
+					
+					
+				
+				
+				
+			}
+			
+			var doSubmit=function(){
+				//弹框显示信息 再提交
+				var network = true;
+				if(mui.os.plus) {
+					mui.plusReady(function() {
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+							network = false;
+						}
+					});
+				}
+				if(network) {
+					ajax();
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+			}
+			
+			
+			var getParams = function() {
+				var json = {};
+				json.employeeid = employeeid;
+				json.goodspackid = goodspackid;
+				json.goodslength = goodslength;
+				json.goodswidth = goodswidth;
+				json.goodsheight = goodsheight;
+				json.goodscubage = goodscubage;
+				json.goodsweight = goodsweight;
+				json.dom = dom;
+				return JSON.stringify(json);
+			}
+			var ajax = function() {
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'WmsGoods',
+					method: 'saveGoodsPackage',
+					params: getParams(),
+					token: TOKEN
+				};
+				//ajax 请求中。
+				ajaxxing();
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+			}
+
+			var success = function(response) {
+				//库存数据显示
+				var str = JSON.stringify(response);
+				console.log(str);
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						var result = response.sysdata.WmsGoods_saveGoodsPackage;
+						console.log(JSON.stringify(result));
+						if(result.code == "OK") {
+							mui.toast(result.mes);
+							saveDom(result.params); //保存到历史节点
+							setTimeout(function() {
+								turnToParent(JSON.stringify(result));
+							}, 200)
+
+						} else {
+							mui.toast(result.mes);
+						}
+
+						//turnToParent(dataString);
+					}
+				}
+
+			};
+
+			var saveDom = function(jsonParams) {
+				var domsStr = localStorage.doms == undefined ? "" : localStorage.doms;
+				var domsJson = domsStr == "" ? [] : JSON.parse(domsStr);
+				var dom = localStorage.dom;
+				//alert("saveDom:" + dom);
+				dom = updateDom(dom, jsonParams);
+				var row = {};
+				row.dom = dom;
+                domsJson=[];
+				domsJson.push(row);
+				localStorage.doms = JSON.stringify(domsJson);
+			}
+			var updateDom = function(dom, jsonParams) {
+				var goodsweight = jsonParams.goodsweight;
+				var goodscubage = jsonParams.goodscubage;
+				var goodslength = jsonParams.goodslength;
+				var goodswidth = jsonParams.goodswidth;
+				var goodsheight = jsonParams.goodsheight;
+				jQuery("#hiddenBlock").html(dom);
+				jQuery("#hiddenBlock #uigoodsweight").html(goodsweight);
+				jQuery("#hiddenBlock #goodsweight").html(goodsweight);
+				
+				jQuery("#hiddenBlock #uigoodscubage").html(goodscubage);
+				jQuery("#hiddenBlock #goodscubage").html(goodscubage);
+				
+				jQuery("#hiddenBlock #goodslength").html(goodslength);
+				jQuery("#hiddenBlock #goodswidth").html(goodswidth);
+				jQuery("#hiddenBlock #goodsheight").html(goodsheight);
+				
+				//alert("updateDom updated:" + jQuery(hiddenBlock).html());
+				return jQuery(hiddenBlock).html();
+			}
+
+			//返回主页面
+			var turnToParent = function turnToParent(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "widgetFreshEvent", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,794 @@
+{
+  "index.html": {
+    "resources": [
+      "images/cbd.jpg",
+      "images/muwu.jpg",
+      "images/yuantiao.jpg",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/shuijiao.jpg",
+      "pages/input.html",
+      "pages/testajax.html",
+      "pages/ajax.html",
+      "pages/productstock.html",
+      "images/ico_stock.png",
+      "images/ico_product.png",
+      "js/update.js",
+      "images/ico_callback.png",
+      "images/ico_buier_edit.png",
+      "images/ico_saleturnback_check.png",
+      "images/ico_salesnote.png",
+      "images/ico_outofstock_callback.png",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/app.js",
+      "images/dog.jpg",
+      "js/myinit.js",
+      "images/ioc_rate.png",
+      "images/ico_dispatch.png",
+      "images/ico_loadtruck.png",
+      "images/ico_salesreturn.png",
+      "js/mynoticeboard.js",
+      "images/ico_dispatchno.png"
+    ],
+    "refer": [
+      "pages/input.html",
+      "pages/testajax.html",
+      "pages/ajax.html",
+      "pages/productstock.html",
+      "index-menu.html",
+      "pages/guide.html",
+      "pages/offcanvas-drag-left-plus-menu.html",
+      "views/outofstock_callback_search.html",
+      "views/busviews/outofstock_callback_search.html",
+      "views/bus/outofstock_callback_search.html",
+      "views/pub/testajax.html",
+      "views/pub/widget_search_6a.html",
+      "views/bus/productstock_search.html",
+      "views/bus/test.html",
+      "views/bus/oosRecord.html",
+      "views/bus/salesReturnApp.html",
+      "views/bus/salesModify.html",
+      "views/setting/advice.html",
+      "views/setting/password.html",
+      "views/bus/salesNoticeInfo.html",
+      "views/bus/salesNotice.html",
+      "views/bus/tmsDispatch.html",
+      "views/bus/tmsLoadtruck.html",
+      "views/setting/myqrcode.html",
+      "views/bus/noticeBoard.html",
+      "views/bus/tmsDispatchNo.html",
+      "views/bus/noticeBoard_pullrefresh_main.html",
+      "views/bus/tmsremarks.html",
+      "views/bus/tmstrmap.html"
+    ]
+  },
+  "pages/input.html": {
+    "resources": [
+      "index.html",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/mytool.js",
+      "js/mypinyintool.js",
+      "pages/testajax.html",
+      "js/mydisplaytool.js"
+    ],
+    "refer": [
+      "index.html",
+      "pages/testajax.html"
+    ]
+  },
+  "pages/testajax.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "index.html",
+      "pages/input.html"
+    ],
+    "refer": [
+      "index.html",
+      "pages/input.html"
+    ]
+  },
+  "pages/ajax.html": {
+    "resources": [
+      "index.html"
+    ],
+    "refer": [
+      "index.html"
+    ]
+  },
+  "pages/productstock.html": {
+    "resources": [
+      "js/mydisplaytool.js",
+      "js/jquery-3.2.1.min.js",
+      "js/mypinyintool.js",
+      "index.html",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "pages/productstock.html"
+    ],
+    "refer": [
+      "index.html",
+      "pages/productstockdtl.html",
+      "pages/card.html",
+      "pages/productstock.html"
+    ]
+  },
+  "pages/productstockdtl.html": {
+    "resources": [
+      "css/app.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": []
+  },
+  "pages/card.html": {
+    "resources": [
+      "images/cbd.jpg",
+      "images/yuantiao.jpg",
+      "images/logo.png"
+    ],
+    "refer": []
+  },
+  "views/outofstock_callback_search.html": {
+    "resources": [
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/mypinyintool.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "views/busviews/outofstock_callback_search.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": [
+      "views/commonviews/productserch.html",
+      "views/commonviews/product.html",
+      "views/publicviews/product.html"
+    ]
+  },
+  "views/commonviews/productserch.html": {
+    "resources": [
+      "js/myglobal.js",
+      "js/mypinyintool.js"
+    ],
+    "refer": []
+  },
+  "views/commonviews/product.html": {
+    "resources": [
+      "js/myglobal.js",
+      "js/mypinyintool.js"
+    ],
+    "refer": []
+  },
+  "views/bus/outofstock_callback_search.html": {
+    "refer": [
+      "views/public/product.html",
+      "views/pub/product.html",
+      "views/pub/employee.html",
+      "views/pub/widget_search_6a.html"
+    ],
+    "resources": [
+      "js/jquery-3.2.1.min.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "css/mystyle.css",
+      "js/myglobal.js",
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "css/mui.picker.min.css",
+      "css/mui.poppicker.css",
+      "js/mui.poppicker.js"
+    ]
+  },
+  "views/pub/product.html": {
+    "resources": [
+      "js/myglobal.js",
+      "js/mypinyintool.js",
+      "js/jquery-3.2.1.min.js",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": []
+  },
+  "views/pub/employee.html": {
+    "resources": [
+      "js/mypinyintool.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": []
+  },
+  "views/pub/testajax.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/mypinyintool.js"
+    ],
+    "refer": []
+  },
+  "views/pub/widget_search_6a.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ],
+    "refer": [
+      "views/pub/product.html",
+      "views/pub/customer.html"
+    ]
+  },
+  "pages/offcanvas-drag-left-plus-menu.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "js/app.js"
+    ],
+    "refer": []
+  },
+  "index-menu.html": {
+    "resources": [
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "views/bus/productstock_search.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/mypinyintool.js",
+      "fonts/mui.ttf",
+      "js/jquery-3.2.1.min.js",
+      "js/mui.min.js",
+      "js/myglobal.js",
+      "views/bus/productstock_search.html",
+      "js/app.js"
+    ],
+    "refer": [
+      "views/bus/productstock_search_detal.html",
+      "views/bus/productstock_search.html"
+    ]
+  },
+  "views/bus/productstock_search_detal.html": {
+    "resources": [
+      "css/app.css",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/app.js"
+    ],
+    "refer": []
+  },
+  "login.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "js/app.js",
+      "js/mui.enterfocus.js",
+      "js/myglobal.js",
+      "fonts/mui.ttf",
+      "js/update.js",
+      "js/myinit.js"
+    ],
+    "refer": [
+      "index.html",
+      "views/tab-webview-main.html",
+      "pages/guide.html"
+    ]
+  },
+  "views/tab-webview-subpage-contact.html": {
+    "resources": [
+      "images/60x60.gif"
+    ],
+    "refer": []
+  },
+  "views/tab-webview-main.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "views/tab-webview-subpage-about.html"
+    ],
+    "refer": [
+      "views/tab-webview-subpage-setting.html",
+      "views/tab-webview-subpage-chat.html",
+      "views/tab-webview-subpage-contact.html",
+      "views/tab-webview-subpage-about.html"
+    ]
+  },
+  "views/tab-webview-subpage-setting.html": {
+    "resources": [
+      "js/mui.locker.js",
+      "js/feedback.js",
+      "js/mui.view.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "views/tab-webview-subpage-about.html": {
+    "resources": [
+      "images/ico_outofstock_callback.png",
+      "images/ico_buier_edit.png",
+      "images/ico_saleturnback_check.png",
+      "images/ico_salesnote.png",
+      "js/mui.min.js",
+      "images/ico_stock.png",
+      "css/mui.min.css",
+      "views/bus/productstock_search.html"
+    ],
+    "refer": [
+      "views/bus/productstock_search.html"
+    ]
+  },
+  "views/bus/test.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/zclip/jquery.zclip.min.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": []
+  },
+  "views/pub/customer.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/mypinyintool.js",
+      "views/pub/customer.html"
+    ],
+    "refer": [
+      "views/pub/customer.html"
+    ]
+  },
+  "views/bus/oosRecord.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/app.js"
+    ],
+    "refer": [
+      "views/pub/widget_search_6a.html",
+      "views/pub/widget_search_6b.html"
+    ]
+  },
+  "views/pub/widget_search_6b.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ],
+    "refer": [
+      "views/pub/customer.html"
+    ]
+  },
+  "views/bus/salesReturnApp.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/app.js"
+    ],
+    "refer": [
+      "views/pub/widget_search_6b.html"
+    ]
+  },
+  "views/bus/salesModify.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "js/app.js"
+    ],
+    "refer": [
+      "views/pub/widget_search_6b.html"
+    ]
+  },
+  "views/setting/advice.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ],
+    "refer": []
+  },
+  "views/setting/password.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": []
+  },
+  "views/bus/salesNoticeInfo.html": {
+    "resources": [
+      "css/app.css",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": [
+      "views/pub/widget_search_6b.html"
+    ]
+  },
+  "views/bus/salesNotice.html": {
+    "resources": [
+      "css/app.css",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js"
+    ],
+    "refer": [
+      "views/bus/salesNotices.html",
+      "views/pub/widget_search_6b.html",
+      "views/bus/salesNoticeRate.html"
+    ]
+  },
+  "views/bus/salesNotices.html": {
+    "refer": [
+      "views/bus/salesNoticeRate.html"
+    ],
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ]
+  },
+  "views/bus/salesNoticeRate.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ]
+  },
+  "views/bus/tmsDispatch.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js"
+    ],
+    "refer": [
+      "views/bus/tmsDispatchdtl.html"
+    ]
+  },
+  "views/bus/tmsLoadtruck.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "voices/barcodeError.mp3",
+      "voices/msg_echo.mp3",
+      "js/myloadtruck.js",
+      "voices/err_data.mp3",
+      "voices/empty_vehicleid.mp3",
+      "voices/not_check.mp3",
+      "voices/not_carray.mp3",
+      "voices/msg_success.mp3",
+      "voices/in_truck.mp3",
+      "voices/save_update_exception.mp3",
+      "voices/err_barcode.mp3",
+      "voices/empty_employeeid.mp3",
+      "voices/empty_barcode.mp3",
+      "voices/success_plus.mp3",
+      "js/immersed.js",
+      "js/common.js",
+      "voices/not_set_loader.mp3",
+      "voices/wrong_loader.mp3",
+      "voices/wrong_disp.mp3",
+      "voices/not_disp_yet.mp3"
+    ],
+    "refer": [
+      "views/pub/barcode_scan.html",
+      "views/pub/widget_dispatch_select_a.html",
+      "views/bus/tmsDispatchdtl.html",
+      "views/bus/tmsLoadtruckDispatchdtl.html"
+    ]
+  },
+  "views/setting/myqrcode.html": {
+    "resources": [
+      "js/mui.zoom.js",
+      "images/myqrcode.png",
+      "js/mui.previewimage.js",
+      "js/mui.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ]
+  },
+  "views/pub/barcode_scan.html": {
+    "resources": [
+      "css/common.css"
+    ]
+  },
+  "views/pub/widget_dispatch_select_a.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "fonts/mui.ttf"
+    ]
+  },
+  "views/bus/tmsLoadtruckDispatchdtl.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ]
+  },
+  "views/bus/tmsDispatchdtl.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "fonts/mui.ttf"
+    ]
+  },
+  "views/bus/noticeBoard.html": {
+    "resources": [
+      "css/app.css",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ],
+    "refer": [
+      "views/pub/widget_search_6b.html"
+    ]
+  },
+  "views/bus/tmsDispatchNo.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "views/bus/tmsDispatchdtl.html",
+      "views/bus/tmsDispatchNodtl.html"
+    ]
+  },
+  "views/bus/noticeBoard_pullrefresh_sub.html": {
+    "resources": [
+      "images/completno.png",
+      "css/app.css",
+      "js/app.js",
+      "js/myglobal.js",
+      "js/jquery-3.2.1.min.js",
+      "images/complet.png"
+    ],
+    "refer": [
+      "views/bus/noticeBoarddtl.html"
+    ]
+  },
+  "views/bus/noticeBoard_pullrefresh_main.html": {
+    "resources": [
+      "views/bus/noticeBoard_pullrefresh_sub.html",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "views/bus/noticeBoard_pullrefresh_sub.html"
+    ]
+  },
+  "views/bus/noticeBoarddtl.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.poppicker.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "js/mui.min.js",
+      "css/app.css",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js"
+    ],
+    "refer": [
+      "views/bus/noticeBoardFB.html",
+      "views/bus/noticeBoardFBList.html"
+    ]
+  },
+  "views/bus/tmsDispatchNodtl.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css",
+      "fonts/mui-icons-extra.ttf",
+      "css/icons-extra.css",
+      "images/640.jpg"
+    ]
+  },
+  "views/bus/noticeBoardFB.html": {
+    "resources": [
+      "js/mui.picker.min.js",
+      "js/mui.min.js",
+      "css/app.css",
+      "js/mui.poppicker.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "js/jquery-3.2.1.min.js",
+      "js/myglobal.js",
+      "css/mui.poppicker.css",
+      "css/mui.picker.min.css",
+      "css/mystyle.css"
+    ]
+  },
+  "views/bus/tmsremarks.html": {
+    "refer": [
+      "views/bus/tmsremarksEdit.html",
+      "views/pub/widget_search_tmsremarks.html"
+    ]
+  },
+  "views/bus/tmstrmap.html": {
+    "refer": [
+      "views/pub/tmstrmap_sub.html"
+    ]
+  }
+}

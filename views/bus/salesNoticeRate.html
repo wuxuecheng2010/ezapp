@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title">订单明细</h1>
+		</header>
+		<div class="mui-content">
+
+			<ul id="list" class="mui-table-view mui-table-view-chevron" style="margin-top: 1px;">
+			</ul>
+			
+			<div class="mui-card">
+				<div class="mui-card-header">库内作业状态</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>状态:<span id="order_usestatus"></span></p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+				    <span style="font-size: 12px;">状态顺序:下单→待拣货→待复核→已出货</span>
+				</div>
+			</div>
+			
+			
+			<div class="mui-card">
+				<div class="mui-card-header">运输任务单状态</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>状态:<span id="tr_usestatus"></span></p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<span style="font-size: 12px;">状态顺序:初始→((确定→派车) OR 不派车)</span>
+				</div>
+			</div>
+			
+			<div class="mui-card">
+				<div class="mui-card-header">派车情况</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>状态:<span id="dis_usestatus"></span></p>
+						<p>派车人:<span id="dispatchman"></span></p>
+						<p>
+							驾驶员:<span id="drivername"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+						</p>
+                        <p><a class="mui-btn mui-btn-primary mui-icon mui-icon-phone" id="btn_tel" style="font-size: 18px;"></a></p>
+						<p>派车时间:<span id="dispatchdate"></span></p>
+					</div>
+				</div>
+				<div class="mui-card-footer ">
+					<span style="font-size: 12px;">状态顺序:初始→在途→运输完成</span>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="copy" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#copy"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+            var  matchingsisids=""
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var ibillid = self.ibillid;
+				var isid=self.isid;
+				var vcbillcode = self.vcbillcode;
+				jQuery("#title").html(vcbillcode+"进度");
+				ajax(ibillid);
+				
+				callphone_init();
+			});
+			
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(ibillid) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'SalesNotice',
+					method: 'salesNoticeRate',
+					ibillid: ibillid,
+					token: TOKEN
+				};
+
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				//console.log("*********matchingsisids*************:" + matchingsisids);
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//localStorage.salesnoticeratelist = JSON.stringify(response.sysdata.SalesNotice_salesNoticeRate);
+						displayui(response.sysdata.SalesNotice_salesNoticeRate);
+						//searchnotice(response.sysdata.SalesNotice_salesNoticeRate);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				//console.log("XXXXXXXXXX:"+jsonobj[0].ORDER_USESTATUS);
+				if(typeof(jsonobj)!=undefined && jsonobj.length>0){
+					jQuery("#order_usestatus").html(jsonobj[0].ORDER_USESTATUS);
+					jQuery("#tr_usestatus").html(jsonobj[0].TR_USESTATUS);
+					jQuery("#dis_usestatus").html(jsonobj[0].DIS_USESTATUS);
+					jQuery("#dispatchman").html(jsonobj[0].DISPATCHMAN);
+					jQuery("#drivername").html(jsonobj[0].DRIVERNAME);
+					jQuery("#dispatchdate").html(jsonobj[0].DISPATCHDATE);
+					
+					jQuery("#btn_tel").html(jsonobj[0].MOBILE);
+				}else{
+					jQuery("#order_usestatus").html("订单尚未到达WMS");
+					jQuery("#tr_usestatus").html("-");
+					jQuery("#dis_usestatus").html("-");
+					jQuery("#dispatchman").html("-");
+					jQuery("#drivername").html("-");
+					jQuery("#dispatchdate").html("-");
+					
+					jQuery("#btn_tel").html("-");
+				}
+				
+				
+
+				
+				/*jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+					var flagmatch=false;
+					for(var i=0;i<isidarray.length;i++){
+						if(isidarray[i]==content.ISID){
+							flagmatch=true;
+							break;
+						}
+					}
+                       
+				});*/
+
+				jQuery('#list a').click(function() {/*
+					//显示商品信息
+					var ibillid = jQuery(this).find('#ibillid').html();
+					var vcbillcode = jQuery(this).find('#vcbillcode').html();
+					mui.openWindow({
+						url: 'salesNotices.html',
+						id: 'salesNotices.html',
+						extras: {
+							ibillid: ibillid,
+							vcbillcode: vcbillcode,
+							matchings: matchings
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+				*/});
+
+				//右滑复制
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#copy'));
+
+			}
+			
+			var callphone_init=function(){
+				jQuery("#btn_tel").click(function(){
+					var tel=jQuery(this).html();
+					call(tel);
+				})
+				
+				
+			}
+		</script>
+	</body>
+
+</html>

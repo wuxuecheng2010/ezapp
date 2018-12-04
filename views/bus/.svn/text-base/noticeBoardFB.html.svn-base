@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #777777;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+
+			.parent {
+			          width:100%;
+			          height:60px;
+			          position:relative;
+			}
+			
+			 .child {
+			            width:100%;
+			            height:20px;
+			            margin: auto;  
+			            position: absolute;  
+			            top: 0; left: 0; bottom: 0; right: 0; 
+			}
+			.mui-bar{
+				background-color: #777777; 
+			}
+			.mui-title{
+				color: white;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav ">
+			<h1 class="mui-title " >反馈</h1>
+		</header>
+		<div class="mui-content ">
+			
+			<div style="background-color: #FFFFFF;margin: 5px ;">
+
+					<div style="margin: 2px;">
+						<h5>反馈信息:</h5>
+						<textarea style="background-color: #FFFFCC;" rows="3" id="fbnote"></textarea>
+					</div>
+
+ 				<h5 style="clear: left;">完成进度：<span id='block-range-val'>0</span>%</h5>   
+		        <div class="mui-input-row mui-input-range">
+		            <input type="range" id='block-range' value="0" min="0" max="100" >
+		        </div>
+
+                    <div class="mui-button-row" style="margin-top: 32px;">
+                    	<button type="button" class="mui-action-back mui-btn mui-btn-danger" >取消</button>
+                    	&nbsp;&nbsp;&nbsp;&nbsp;
+				        <button type="button" class="mui-btn mui-btn-primary" id="submit">确认</button>
+				    </div>
+
+			</div>
+			
+		</div>
+
+		
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			
+			 
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+			
+			var ititleid ='';
+			var account="";
+			var isid="";//任务单明细ID
+			var iemployeeid="";
+			var irate="";
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+			    ititleid = self.ititleid;
+			    account=getLoginAccount();
+				ajax(ititleid,account);
+			})
+
+
+
+			//ajax 请求中。
+			//ajaxxing();
+			var ajax = function(ititleid,account) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var json=[];
+				var r={'ititleid':ititleid,'account':account};
+				json.push(r);
+				var params=JSON.stringify(json[0]);
+				console.log(params);
+				//发送数据
+				var data = {
+					controller: 'Noticeboard',
+					method: 'getNotices',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayui(response.sysdata.Noticeboard_getNotices);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+			 isid=jsonobj[0].ISID;
+			 iemployeeid=jsonobj[0].IEMPLOYEEID;
+			 irate=jsonobj[0].IRATE;
+				document.getElementById("block-range").value = irate;
+				jQuery('#block-range-val').html(irate);
+				//jQuery('#list').find('li').remove();
+				/*jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell" >'+
+							//'<a class="mui-navigate-right">'+
+				                '<div class="mui-row" style="height: 60px;">'+
+				                    '<div class="mui-col-sm-2  mui-col-xs-2"  ><span>'+num+'</span></div> '+
+			            			'<div class="mui-col-sm-8  mui-col-xs-8" ><span>'+content.COMPANYNAME+'</span></div>'+
+			            			'<div class="mui-col-sm-2  mui-col-xs-2" ><span>'+content.TOTALPACKS+'</span></div>'+
+			                    '</div>'+
+			                     '<span style="display: none;" id="dispatchid">'+content.DISPATCHID+'</span>'+
+			                //'</a>'+
+			            '</li>'
+					);
+				});*/
+
+				
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_rate").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					open_rate(ibillid, vcbillcode);
+				});
+
+				jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+					
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode);
+				});
+
+			}
+
+			var open_dtl = function(dispatchid, drivername) {
+				mui.openWindow({
+					url: 'tmsDispatchdtl.html',
+					id: 'tmsDispatchdtl.html',
+					extras: {
+						dispatchid: dispatchid,
+						drivername: drivername
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+			
+			
+			
+			var rangeList = document.querySelectorAll('input[type="range"]');
+	    for(var i=0,len=rangeList.length;i<len;i++){
+	        rangeList[i].addEventListener('input',function(){
+	            if(this.id.indexOf('field')>=0){
+	                document.getElementById(this.id+'-input').value = this.value;
+	            }else{
+	                document.getElementById(this.id+'-val').innerHTML = this.value;
+	            }
+	            
+	
+	        });
+	    }
+	
+		//提交操作
+        document.getElementById('submit').addEventListener('tap',function(){
+        	//1、将反馈意见反馈保存起来 并更新后台总的任务是否完成标志
+        	var fbnote=jQuery("#fbnote").val();
+        	var irate=document.getElementById('block-range').value;
+        	if(fbnote==''||fbnote==null){
+        		mui.toast("请输入反馈信息");
+        		return ;
+        	}
+        	if(irate==0){
+        		mui.toast("请拖动完成进度条，以便反馈您任务的完成进度");
+        		return ;
+        	}
+        	ajaxFBSubmit(fbnote,irate);
+
+        })
+
+
+		var ajaxFBSubmit=function(fbnote,irate){
+			
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var json=[];
+				var account=getLoginAccount();
+				var r={'ititleid':ititleid,'isid':isid,'iemployeeid':iemployeeid,'account':account,'irate':irate,'fbnote':fbnote};
+				json.push(r);
+				var params=JSON.stringify(json[0]);
+				console.log("saveNoticeFb"+params);
+				//发送数据
+				var data = {
+					controller: 'Noticeboard',
+					method: 'saveNoticeFb',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: successfb,
+					error: err
+				});
+
+			
+		}
+
+			var successfb = function(response) {
+							if(response != null) {
+								var syscode = response.syscode;
+								var sysreason = response.sysreason;
+								if(syscode == SYSCODE_NO) {
+									tokenOutTime(sysreason);
+								} else {
+									console.log(JSON.stringify(response));
+									//查询按钮点击时  保存到local  按照文本的形式保存
+									displayuifb(response.sysdata.Noticeboard_saveNoticeFb);
+								}
+							}
+						};
+			
+			
+			function displayuifb(jsonobj) {
+				var flag=jsonobj.FLAG;
+				if(flag=='OK'){
+					//触发事件
+					turnToParent(flag);
+				}else{
+					mui.toast("反馈失败，请重试.")
+				}
+			 /*isid=jsonobj[0].ISID;
+			 iemployeeid=jsonobj[0].IEMPLOYEEID;
+			 irate=jsonobj[0].IRATE;
+				document.getElementById("block-range").value = irate;
+				jQuery('#block-range-val').html(irate);*/
+				
+			}
+			
+			//返回主页面
+			function turnToParent(flag) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "fbUpdateEvent", {
+					"flag": flag
+				});
+				mui.back();
+			}
+
+			
+		</script>
+	</body>
+
+</html>

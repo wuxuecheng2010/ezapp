@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello Customer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<!-- <link rel="stylesheet" type="text/css" href="../css/app.css" /> -->
+
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-arrowdown mui-pull-left"></a>
+			<h1 class="mui-title"> 
+				<form class="mui-input-group">
+				<div class="mui-input-row">
+						<input type="text"  id="vcinfo" placeholder="请输入客户信息查询" class="mui-h5  mui-input" style="background: #F7F7F7;">
+				</div>
+				</form>
+			</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right"></a>
+		</header>
+		<div class="mui-content">
+
+			<ul class="mui-table-view" id="list" style="margin: 0 auto;">
+				<!--查询结果列表-->
+			</ul>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/mypinyintool.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			function search() {
+
+				if(network) {
+					ajax();
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+				document.activeElement.blur(); //隐藏键盘
+			}
+
+			document.getElementById("btn_search").addEventListener('tap', function(e) {
+				console.log(e.detail.value);
+				search();
+
+			});
+
+/*			document.getElementById("vcinfo").addEventListener("change", function(e) {
+				var vcinfo = document.getElementById("vcinfo").innerHTML;
+				mui.toast(vcinfo);
+			});*/
+
+			jQuery("#vcinfo").keyup(function() {
+				//mui.toast(jQuery(this).val());
+				var vcinfo=jQuery(this).val();
+				if(vcinfo.length>=5){
+					search();
+				}
+			});
+
+			var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+				if(mui.os.android) {
+					var main = plus.android.runtimeMainActivity();
+					var Context = plus.android.importClass("android.content.Context");
+					InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+					imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				} else {
+					nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+				}
+			};
+			var showSoftInput = function() {
+				if(mui.os.android) {
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				} else {
+					nativeWebview.plusCallMethod({
+						"setKeyboardDisplayRequiresUserAction": false
+					});
+				}
+				setTimeout(function() {
+					var inputElem = document.querySelector('input');
+					inputElem.focus();
+					inputElem.parentNode.classList.add('mui-active'); //第一个是search，加上激活样式
+				}, 200);
+			};
+			mui.plusReady(function() {
+				initNativeObjects();
+				//showSoftInput();
+			});
+
+			var network = true;
+			if(mui.os.plus) {
+				mui.plusReady(function() {
+					if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+						network = false;
+					}
+				});
+			}
+
+			//返回主页面
+			function turnToParent(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "customerSelectEvent", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					jQuery('#list').append('<li class="mui-table-view-cell"><a class = "mui-navigate-right" ><span id="vccustomername">' + content.VCCUSTOMERNAME + '</span><h6 id="vclinkman">' + content.VCLINKMAN + '</h6><span id="icustomerid" style="display:none">' + content.ICUSTOMERID + '</span>  </a></li>');
+				});
+				jQuery('#list a').click(function() {
+					//列表点击事件
+					var icustomerid = jQuery(this).find('#icustomerid').html();
+					var vccustomername = jQuery(this).find('#vccustomername').html();
+					var vclinkman = jQuery(this).find('#vclinkman').html();
+					var json = [];
+					var row = {};
+					row.icustomerid = icustomerid;
+					row.vccustomername = vccustomername;
+					row.vclinkman = vclinkman;
+					json.push(row);
+					var jsonstr = JSON.stringify(json);
+					turnToParent(jsonstr);
+				});
+
+			}
+
+			//自动加载localStorage中的数据
+			if(localStorage.customerlist) {
+				//从local中获取回来
+				var jsoobj = JSON.parse(localStorage.customerlist);
+				displayui(jsoobj);
+			}
+
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason=response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.customerlist = JSON.stringify(response.sysdata.Customer_customer);
+						displayui(response.sysdata.Customer_customer);
+					}
+
+				}
+
+			};
+			//设置全局beforeSend
+			mui.ajaxSettings.beforeSend = function(xhr, setting) {
+				//beforeSend演示,也可在$.ajax({beforeSend:function(){}})中设置单个Ajax的beforeSend
+				console.log('beforeSend:::' + JSON.stringify(setting));
+			};
+
+			//var iproductid=9999;
+			//设置全局complete
+			mui.ajaxSettings.complete = function(xhr, status) {
+				console.log('complete:::' + status);
+			}
+
+			var ajax = function() {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var vcinfo = ShortPY(document.getElementById('vcinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'Customer',
+					method: 'customer',
+					vcinfo: vcinfo,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+
+			mui('.mui-scroll-wrapper').scroll();
+			mui('body').on('shown', '.mui-popover', function(e) {
+				//console.log('shown', e.detail.id);//detail为当前popover元素
+				//alert('iproductid:'+jQuery('#iproductid').html());
+			});
+			mui('body').on('hidden', '.mui-popover', function(e) {
+				//console.log('hidden', e.detail.id);//detail为当前popover元素
+			});
+		</script>
+	</body>
+
+</html>

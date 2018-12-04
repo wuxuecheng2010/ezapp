@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">销售开票</h1>
+			<a class="mui-icon mui-icon-chat mui-pull-right" id="btn1"></a>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded">
+
+				<div class="mui-card">
+					<div class="mui-card-header">
+						<h4>暂未开通</h4>
+					</div>
+					<div class="mui-card-content">
+
+						<h5>待开发...........</h5>
+					</div>
+
+					<div class="mui-card-header">
+						<div class="mui-card-content">
+							<textarea id="mytext">请输入内容</textarea><br/>
+							<a href="#" id="copy_input" class="copy">复制内容</a>
+
+						</div>
+
+					</div>
+					<ul class="mui-table-view">
+					        <li class="mui-table-view-cell">
+					            <a >
+					                <div class="mui-slider-left mui-disabled">
+						<a class="mui-btn mui-btn-red">删除</a>
+					</div>
+					<div class="mui-slider-handle">
+						右滑显示删除按钮
+					</div>
+					            </a>
+					        </li>
+					        <li class="mui-table-view-cell">
+					            <a class="mui-navigate-right">
+					                 Item 2
+					            </a>
+					        </li>
+					        <li class="mui-table-view-cell">
+					            <a class="mui-navigate-right">
+					                 Item 3
+					            </a>
+					        </li>
+					    </ul>
+
+				</div>
+			</div>
+
+		</div>
+		<footer class="mui-bar mui-bar-footer">
+			<a class="mui-icon mui-icon-clear mui-pull-left" id="btn2"></a>
+			<a class="mui-icon mui-icon-chatboxes mui-pull-right" id="btn3"></a>
+		</footer>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/myglobal.js"></script>
+		<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../../js/zclip/jquery.zclip.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.ready(function() {
+
+				document.getElementById('btn1').addEventListener('tap', function(event) {
+					//ajax1();
+					/*var ezapptoken = localStorage.ezapptoken;
+					document.getElementById('res').innerHTML = ezapptoken;*/
+					document.getElementById('res').innerHTML = getMac();
+				});
+
+				function getMac() {
+					var mac = "xxx-xxx-xxx-xxx";
+					if(plus.os.name == "Android") {
+						//WifiManager 
+						var Context = plus.android.importClass("android.content.Context");
+						var WifiManager = plus.android.importClass("android.net.wifi.WifiManager");
+						var wifiManager = plus.android.runtimeMainActivity().getSystemService(Context.WIFI_SERVICE);
+						var WifiInfo = plus.android.importClass("android.net.wifi.WifiInfo");
+						var wifiInfo = wifiManager.getConnectionInfo();
+						mac = wifiInfo.getMacAddress();
+					}
+					return mac;
+				}
+
+				function ajax1() {
+					var loginInfo = '';
+					var url = getServerPath(localStorage.netmod) + 'Test/test5';
+					var dataType = 'json';
+					//发送数据
+					var data = loginInfo;
+					console.log("xxxx");
+					mui.post(url, data, success, dataType);
+
+				}
+
+				function success(data) {
+					console.log("posted success");
+					var s = JSON.stringify(data);
+					console.log(s);
+					document.getElementById('res').innerHTML = s;
+				}
+
+				//清除
+				document.getElementById('btn2').addEventListener('tap', function(event) {
+					ajax2();
+				});
+
+				function ajax2() {
+					var loginInfo = '';
+					var url = getServerPath(localStorage.netmod) + 'User/cleansession';
+					var dataType = 'json';
+					//发送数据
+					var data = loginInfo;
+					mui.post(url, data, success, dataType);
+
+				}
+
+				/*function success2(data){
+					var s=JSON.stringify(data);
+					console.log(s);
+					document.getElementById('res').innerHTML=s;
+				}*/
+
+				//显示
+				document.getElementById('btn3').addEventListener('tap', function(event) {
+					ajax3();
+				});
+
+				function ajax3() {
+					var loginInfo = '';
+					var url = getServerPath(localStorage.netmod) + 'User/query';
+					var dataType = 'json';
+					//发送数据
+					var data = loginInfo;
+					mui.post(url, data, success, dataType);
+
+				}
+
+				/*function success3(data){
+					var s=JSON.stringify(data);
+					console.log(s);
+					document.getElementById('res').innerHTML=s;
+				}
+				*/
+
+				
+
+			})
+		</script>
+	</body>
+
+</html>

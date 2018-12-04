@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>运输交办</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+        <!--<link rel="stylesheet" href="../../plugs/layui-v2.3.0/layui/css/layui.css" />-->
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		
+		
+		
+		<style>
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;*/
+				
+				margin: 0;
+			}
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.txt{
+                    //border:1px solid #ddd;
+                    //width: 200px;
+                    word-break: break-all;
+                    text-overflow: ellipsis;
+                    display: -webkit-box; /** 将对象作为伸缩盒子模型显示 **/
+                    -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+                    -webkit-line-clamp: 2; /** 显示的行数 **/
+                    overflow: hidden;  /** 隐藏超出的内容 **/
+             }
+             
+             
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">运输交办</h1>
+			
+			<a class="mui-icon mui-icon-plusempty mui-pull-right" style="font-weight: bold;" onclick="openEdit()">
+				
+			</a>
+			<a class="mui-pull-right">&nbsp;&nbsp;</a>
+			<a class="mui-icon mui-icon-search mui-pull-right" style="font-weight: bold;" id="btn-search" onclick="openWidget()">
+				
+			</a>
+		</header>
+		<div class="mui-content">
+			
+			<ul id="list" class="mui-table-view" style="margin-top: -10px;">
+			</ul>
+			
+			<!--<div id="slider" class="mui-slider mui-fullscreen">
+				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<div class="mui-scroll">
+						<a class="mui-control-item mui-active" href="#item1mobile">
+							未完成
+						</a>
+						<a class="mui-control-item" href="#item2mobile">
+							完成
+						</a>
+					</div>
+				</div>-->
+				
+				<!--<ul class="mui-table-view" id="list">
+									
+								</ul>
+-->
+				<!--<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view" id="list">
+									
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>-->
+		</div>
+		
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+        <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+			
+		<script>
+			
+			var maxrmkid=0;//最大值
+			var minrmkid=0;//最小值
+			var flag=0;//加载首页 上拉：1    加载首页：0   下拉：-1    
+			var pagerows=20;
+			var pagenum=1;
+			
+			var pullelem=null;
+
+
+			mui.init();
+			(function($) {
+				//阻尼系数
+				/* var deceleration = mui.os.ios?0.003:0.0009;
+				$('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration:deceleration
+				});*/
+				$.plusReady(function() {
+					ajaxxing();	
+					//初始化组件事件
+					initAction();
+					//打开加载首页
+					loadFirstPage();
+					
+					//循环初始化所有下拉刷新，上拉加载。
+					$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+						$(pullRefreshEl).pullToRefresh({
+							down: {
+								callback: function() {
+									var self = this;
+									pullelem=this;
+									//改为自己的异步加载功能
+									if(localStorage.rmklaststartdate==undefined){
+										loadFirstPage()
+									}else{
+										var content=localStorage.rmkcontent==undefined?"":localStorage.rmkcontent;
+										ajaxsimple(localStorage.rmklaststartdate,localStorage.rmklastenddate,content,localStorage.rmkusestatus,getLoginAccount());
+									}
+									
+
+									/*setTimeout(function() {
+										var ul = self.element.querySelector('.mui-table-view');
+										ul.insertBefore(createFragment(ul, index, 10, true), ul.firstChild);
+										self.endPullDownToRefresh();//pullelem
+									}, 1000);*/
+								}
+							},
+							up: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var ul = self.element.querySelector('.mui-table-view');
+										//ul.appendChild(createFragment(ul, index, 5));
+										self.endPullUpToRefresh();
+									}, 1000);
+								}
+							}
+						});
+					});
+					var createFragment = function(ul, index, count, reverse) {
+						var length = ul.querySelectorAll('li').length;
+						var fragment = document.createDocumentFragment();
+						var li;
+						for (var i = 0; i < count; i++) {
+							li = document.createElement('li');
+							li.className = 'mui-table-view-cell';
+							
+							//li.innerHTML = '第' + (index + 1) + '个选项卡子项-' + (length + (reverse ? (count - i) : (i + 1)));
+							var lll='<div class="mui-card">'+
+										'<div class="mui-card-content">'+
+											'<div class="mui-card-content-inner">'+
+												'这是一个最简单的卡片视图控件；卡片视图常用来显示完整独立的一段信息，比如一篇文章的预览图、作者信息、点赞数量等'+
+											'</div>'+
+										'</div>'+
+									'</div>';
+							li.innerHTML=lll;		
+							fragment.appendChild(li);
+						}
+						return fragment;
+					};
+				});
+			})(mui);
+			
+		function initAction(){
+			
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var json = JSON.parse(value);
+				ajaxsimple(json.dtstartdate,json.dtenddate,json.content,json.usestatus,getLoginAccount());
+			});
+			
+			
+			window.addEventListener('returnEvent', function(event) {
+				var value = event.detail.value;
+				var json = JSON.parse(value);
+				var usestatus=json.usestatus;
+				var operation=json.operation;
+				var rmkid=json.rmkid;
+				var content=json.content;
+				var vcusestatus="";
+				if(operation!="add"){
+					jQuery("li").each(function(i,c){
+						var x=$(c).find("#rmkid").html();
+						if(x==rmkid){
+							
+							$(c).find("#content").html(content);
+							$(c).find("#usestatus").html(usestatus);
+							
+							
+							var badgeclass="";
+							var vcusestatus="";
+							switch (usestatus){
+								case "0":
+								    badgeclass="mui-badge mui-badge-primary";  //初始
+								    vcusestatus="# 初始";
+									break;
+								case "1":
+								    badgeclass="mui-badge mui-badge-success";//完成
+								    vcusestatus="# 完成";
+									break;
+								case "2":
+								    badgeclass="mui-badge mui-badge-warning";//取消
+								    vcusestatus="# 取消";
+									break;
+								default:
+									break;
+							}
+							var str='<span class="'+badgeclass+'"><span id="rmkid">'+rmkid+'</span>'+vcusestatus+'</span>'
+							$(c).find("#badgearea").html(str);
+							
+							//$(c).removeAttr('class');
+							//$(c).addClass(badgeclass);
+							//$(c).find("#badgearea")
+						}
+						//alert(x);
+					})
+					
+				}else{
+					
+					loadFirstPage();
+					
+				}
+				//alert("xxxx return "+value);
+				//ajaxsimple(json.dtstartdate,json.dtenddate,json.content,json.usestatus,getLoginAccount());
+			});
+			
+			
+		}
+		
+		//打开查询框
+        function openWidget(){
+        	//查询按钮
+		 mui.openWindow({
+		    id:'widget_search_tmsremarks.html',
+		    url:'../pub/widget_search_tmsremarks.html'
+					  });
+        }
+        
+        function openEdit(){
+        	mui.openWindow({
+		    id:'tmsremarksEdit.html',
+		    url:'tmsremarksEdit.html',
+		    extras:{
+						"operation":'add'  //扩展参数
+					}
+					  });
+        }
+        
+			
+		
+		function loadFirstPage(){
+			var account=getLoginAccount();
+			ajax(pagenum,pagerows,minrmkid,flag,account);
+		}
+		
+
+		//普通的查询
+		var ajaxsimple=function(dtstartdate,dtenddate,content,usestatus,cremanid){
+			
+			
+				//利用RunJS的Echo Ajax功能测试
+				var url = getServerPath(localStorage.netmod)
+				//console.log(url);
+				
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsRemarks',
+					method: 'findTmsRemarks',
+					dtstartdate: dtstartdate,
+					dtenddate: dtenddate,
+					content: content,
+					usestatus: usestatus,
+					cremanid:cremanid,
+					token: TOKEN
+				};
+				console.log(data);
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success_down,
+					error: err
+				});
+			
+		}
+
+		/**
+		 * 
+		 * @param {Object} usestatus  tms_remarks状态
+		 * @param {Object} pagenum     页码
+		 * @param {Object} pagerows    行数
+		 * @param {Object} minrmkid    最小ID
+		 * @param {Object} minrmkid    最大ID
+		 * @param {Object} flag        标志位 上拉：1    加载首页：0   下拉：-1    
+		 */
+		var ajax = function(pagenum,pagerows,minrmkid,flag,cremanid) {
+				//利用RunJS的Echo Ajax功能测试
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsRemarks',
+					method: 'pageTmsRemarks',
+					pagenum: pagenum,
+					pagerows: pagerows,
+					minrmkid: minrmkid,
+					flag: flag,
+					cremanid:cremanid,
+					token: TOKEN
+				};
+				console.log(data);
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			
+			
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//展现
+						displayUi(response.sysdata.TmsRemarks_pageTmsRemarks);
+						
+						
+					}
+				}
+			};
+			
+			var success_down=function(response){
+				
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//展现
+						displayUi(response.sysdata.TmsRemarks_findTmsRemarks);
+						if(pullelem!=null)
+						pullelem.endPullDownToRefresh();
+						pullelem=null;
+					}
+				}
+			
+			
+				//pullelem.endPullDownToRefresh();//pullelem
+			}
+			
+
+			
+			function displayUi(jsonobj){
+				jQuery("#list").find("li").remove();
+				jQuery.each(jsonobj,function(i,c){
+					
+					var rmkid=c.RMKID;
+					if(i==0){
+						maxrmkid=rmkid;
+					}
+					minrmkid=rmkid;
+					var credate=c.CREDATE;
+					var content=c.CONTENT;
+					var usestatus=c.USESTATUS;
+					var badgeclass="";
+					var vcusestatus="";
+					switch (usestatus){
+						case "0":
+						    badgeclass="mui-badge mui-badge-primary";  //初始
+						    vcusestatus="# 初始";
+							break;
+						case "1":
+						    badgeclass="mui-badge mui-badge-success";//完成
+						    vcusestatus="# 完成";
+							break;
+						case "2":
+						    badgeclass="mui-badge mui-badge-warning";//取消
+						    vcusestatus="# 取消";
+							break;
+						default:
+							break;
+					}
+					var li='<li class="mui-table-view-cell">'+
+					             '<div class="mui-slider-right mui-disabled">'+
+									'<a class="mui-btn mui-btn-red" id="btn-del">删除</a>'+
+								 '</div>'+
+								 '<div class="mui-slider-handle">'+
+										'<div class="mui-card">'+
+											'<div class="mui-card-content">'+
+												'<div class="mui-card-content-inner">'+
+													'<div class="mui-row">'+
+														'<div class="mui-col-sm-6 mui-col-xs-12">'+
+												            '<span id="badgearea"><span class="'+badgeclass+'"><span id="rmkid">'+rmkid+'</span>'+vcusestatus+'</span></span>'+
+												            '<span id="usestatus" class="mui-hidden">'+usestatus+'</span>'+
+												        '</div>'+
+												        '<div class="mui-col-sm-6 mui-col-xs-12">'+
+												            '<h4>'+credate+'</h4>'+
+												        '</div>'+
+												    '</div>'+
+												'<div id="content" class="txt">'+content+'</div>'+
+												'</div>'+
+											'</div>'+
+										'</div>'+
+									'</div>'+
+							'</li>';
+					jQuery("#list").append(li)	;			
+				});
+				
+				jQuery("li .mui-slider-handle").click(function(){
+					
+					var rmkid=$(this).find("#rmkid").html();
+					var usestatus=$(this).find("#usestatus").html();
+					
+			         	mui.openWindow({
+					    id:'tmsremarksEdit.html',
+					    url:'tmsremarksEdit.html',
+					    extras:{
+					    	"rmkid":rmkid,
+					    	"usestatus":usestatus,
+						    "operation":'view'  //扩展参数
+								}
+								  });
+
+					
+				});
+				
+				
+				jQuery("li a").click(function(){
+					
+						var elem = this;
+						var li = elem.parentNode.parentNode;
+						var rmkid=jQuery(li).find("#rmkid").html();
+						
+						var btnArray = ['确认', '取消'];
+						mui.confirm('确认删除该条记录？', '删除确认', btnArray, function(e) {
+							if (e.index == 0) {
+								ajaxdel(rmkid,li);
+								
+								//li.parentNode.removeChild(li);
+							} else {
+								setTimeout(function() {
+									mui.swipeoutClose(li);
+								}, 0);
+							}
+						});
+						
+					
+					});
+				
+			}
+			
+			
+			function ajaxdel(rmkid,li){
+				
+				
+				//利用RunJS的Echo Ajax功能测试
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsRemarks',
+					method: 'delTmsRemarksByrmkid',
+					rmkid: rmkid,
+					token: TOKEN
+				};
+				console.log(data);
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: function(response){
+				
+							if(response != null) {
+								var syscode = response.syscode;
+								var sysreason = response.sysreason;
+								if(syscode == SYSCODE_NO) {
+									tokenOutTime(sysreason);
+								} else {
+									console.log(JSON.stringify(response));
+									
+									var data=response.sysdata.TmsRemarks_delTmsRemarksByrmkid;
+									var code=data.code;
+									var msg=data.msg;
+									if(code=="no"){
+										mui.toast(msg);
+										setTimeout(function() {
+												mui.swipeoutClose(li);
+											}, 0);
+									}else{
+										li.parentNode.removeChild(li);
+									}
+									
+								}
+							}
+			
+					},
+					error: err
+				});
+
+			
+				
+				
+			}
+		</script>
+		
+	</body>
+
+</html>

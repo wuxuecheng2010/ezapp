@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+			<a class="mui-action-menu mui-icon mui-icon-bars mui-pull-right"></a>
+			<h1 class="mui-title">浙江恩泽医药有限公司</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">工作</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-chat" id="chat">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">消息</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon mui-icon-compose"></span>
+				<span class="mui-tab-label">笔记</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-map">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">设置</span>
+			</a>
+		</nav>
+		
+		<div class="mui-content">
+			<div id="tabbar" class="mui-control-content mui-active">
+				<ul id="firstlist" class="mui-table-view mui-grid-view mui-grid-9">
+
+					<!--<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/test.html">
+							<img src="images/ico_salesnote.png" style="width: 50%;" />
+							</span>
+
+							<div class="mui-media-body">销售开票</div>
+						</a>
+					</li>-->
+
+					<!--<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/productstock_search.html">
+							<span>
+		                    <img src="images/ico_stock.png" style="width: 50%;"/>
+		                    </span>
+							<div class="mui-media-body">库存查询</div>
+						</a>
+					</li>
+
+
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/salesReturnApp.html">
+							<img src="images/ico_saleturnback_check.png" style="width: 50%;" />
+							<div class="mui-media-body">销退确认</div>
+						</a>
+					</li>
+					真的吗
+					
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/salesReturn.html">
+							<img src="images/ico_salesreturn.png" style="width: 50%;" />
+							<div class="mui-media-body">销退订单</div>
+						</a>
+					</li>
+					
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/salesModify.html">
+							<img src="images/ico_buier_edit.png" style="width: 50%;" />
+							<div class="mui-media-body">采购修改</div>
+						</a>
+					</li>
+
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/oosRecord.html">
+							<img src="images/ico_outofstock_callback.png" style="width: 50%;" />
+							<div class="mui-media-body">缺货反馈</div>
+						</a>
+					</li>
+
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/tmsDispatch.html">
+							<img src="images/ico_dispatch.png" style="width: 50%;" />
+							<div class="mui-media-body">运输概况</div>
+						</a>
+					</li>
+
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/salesNotice.html">
+							<img src="images/ioc_rate.png" style="width: 50%;" />
+							<div class="mui-media-body">销售进度</div>
+						</a>
+					</li>
+					
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/tmsDispatchNo.html">
+							<img src="images/ico_dispatchno.png" style="width: 50%;" />
+							<div class="mui-media-body">未发运</div>
+						</a>
+					</li>
+-->
+					<!--					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+						<a href="views/bus/tmsLoadtruck.html">
+							<img src="images/ico_loadtruck.png" style="width: 50%;" />
+							<div class="mui-media-body">装车确认</div>
+						</a>
+					</li>-->
+
+				</ul>
+
+			</div>
+			<div id="tabbar-with-chat" class="mui-control-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" id="listN">
+						<div style="height: 40px;">
+							<p style="padding-top:10px;font-size:16px;color:#000000">未完成</p>
+						</div>
+						<!--<span class="mui-badge mui-badge-danger" id="nofinish"></span>-->
+
+					</li>
+					<li class="mui-table-view-cell" id="listY">
+						<div style="height: 40px;">
+							<p style="padding-top:10px;font-size:16px;color:#000000">已完成</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell" id="listA">
+						<div style="height: 40px;">
+							<p style="padding-top:10px;font-size:16px;color:#000000">全部</p>
+						</div>
+					</li>
+				</ul>
+
+			</div>
+			<div id="tabbar-with-contact" class="mui-control-content">
+				<div class="mui-card">
+					<div class="mui-card-header mui-card-media" style="height:40vw;background-image:url(./images/yuantiao.jpg)"></div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+							<p>Start on May 18, 2017</p>
+							<p style="color: #333;">待开发...</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabbar-with-map" class="mui-control-content">
+
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell mui-media">
+						<a class="mui-navigate-right" href="#account" id="account">
+							<img class="mui-media-object mui-pull-left head-img" id="head-img" src="./images/dog.jpg">
+							<div class="mui-media-body">
+								<span id="txt_vcusername"></span>
+								<p id="txt_vcaccount" class='mui-ellipsis'>账号:hellomui</p>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<br/>
+				<ul class="mui-table-view">
+
+					<li class="mui-table-view-cell">
+						<a>
+							网络模式:<span id="text_netmod" style="color: green;"></span>
+						</a>
+					</li>
+
+				</ul>
+				<br />
+				<ul class="mui-table-view">
+
+					
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">
+							基本设置
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" id="btn_password">
+							密码修改
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" id="btn_myqrcode">
+							软件下载二维码
+						</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="margin-top: 25px;">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right " id="btn_advice">
+							关于 问题和意见
+						</a>
+					</li>
+					<li class="mui-table-view-cell ">
+						<a class="mui-navigate-right" id="btn_version">
+							软件版本1.0
+
+						</a>
+
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="margin-top: 25px;">
+					<li class="mui-table-view-cell">
+						<a style="text-align: center;color: #FF3B30;" id="exit">
+							退出登录
+						</a>
+					</li>
+				</ul>
+
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/myglobal.js"></script>
+		<script src="./js/app.js"></script>
+		<script src="js/myinit.js"></script>
+		<script src="js/mynoticeboard.js"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init({
+				swipeBack: false, //启用右滑关闭功能
+				statusBarBackground: '#f7f7f7',
+				beforeback: back
+
+			});
+
+			//增加软件效果
+
+			var aniShow = "pop-in";
+			var menu = null,
+				showMenu = false;
+			var isInTransition = false;
+			var _self;
+			//只有ios支持的功能需要在Android平台隐藏；
+			if(mui.os.android) {
+				var list = document.querySelectorAll('.ios-only');
+				if(list) {
+					for(var i = 0; i < list.length; i++) {
+						list[i].style.display = 'none';
+					}
+				}
+				//Android平台暂时使用slide-in-right动画
+				if(parseFloat(mui.os.version) < 4.4) {
+					aniShow = "slide-in-right";
+				}
+			}
+			//初始化，并预加载webview模式的选项卡			
+			function preload() {
+
+				var menu_style = {
+					left: "-70%",
+					width: '70%',
+					popGesture: "none",
+					render: "always"
+				};
+
+				if(mui.os.ios) {
+					menu_style.zindex = -1;
+				}
+
+				//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+				menu = mui.openWindow({
+					id: 'index-menu',
+					url: 'index-menu.html',
+					styles: menu_style,
+					show: {
+						aniShow: 'none'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+
+			mui.plusReady(function() {
+
+				//绘制顶部图标
+				_self = plus.webview.currentWebview();
+				var titleView = _self.getNavigationbar();
+
+				if(!titleView) {
+					titleView = plus.webview.getLaunchWebview().getNavigationbar();
+				}
+				
+
+				initData();
+
+				//检测版本号
+				checkVersion(UPDATE_MODEL_ONLOAD);
+
+				//启用侧滑拖拽操作，延时的原因是menu页是延时创建的，所以这里需要相应延时
+				setTimeout(function() {
+					_self.drag({
+						direction: "right",
+						moveMode: "followFinger"
+					}, {
+						view: menu,
+						moveMode: "follow"
+					}, function(e) {
+						//console.log(JSON.stringify(e));
+					});
+				}, 350);
+
+				//延时加载侧边栏菜单
+				main = plus.webview.currentWebview();
+
+			});
+
+			function loadMenu() {
+				var usermenu = localStorage.usermenu;
+				//console.log(usermenu)
+				jQuery("#firstlist").find("li").remove();
+				if(usermenu != undefined) {
+					var menujson = JSON.parse(usermenu);
+					jQuery.each(menujson, function(index, item) {
+						//console.log("=========obj.menuicon========="+item.menuicon);
+						var menuHtml = '<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">' +
+							'<a href="' + item.menupath + '">' +
+							'<img src="' + item.menuicon + '" style="width: 50%;" />' +
+							'<div class="mui-media-body">' + item.menuname + '</div>' +
+							'</a>' +
+							'</li>';
+						jQuery("#firstlist").append(menuHtml);
+					})
+				}
+
+			}
+
+			//主列表点击事件
+			mui('#firstlist').on('tap', 'a', function() {
+				var id = this.getAttribute("data-wid");
+				if(!id) {
+					id = this.getAttribute('href');
+				}
+				var href = this.getAttribute('href');
+
+				//非plus环境，直接走href跳转
+				if(!mui.os.plus) {
+					location.href = href;
+					return;
+				}
+
+				var titleType = this.getAttribute("data-title-type");
+
+				var webview_style = {
+					popGesture: "close"
+				}
+				var extras = {};
+				if(titleType == "native") {
+					//如下场景不适用下拉回弹：
+					//1、单webview下拉刷新；2、底部有fixed定位的div的页面
+					if(!~id.indexOf('pullrefresh.html') && !~href.indexOf("pages/tabbar.html")) {
+						webview_style.bounce = "vertical";
+					}
+					//图标页面需要启动硬件加速
+					if(~id.indexOf('icons.html') || ~id.indexOf("echarts.html")) {
+						webview_style.hardwareAccelerated = true;
+					}
+					if(~id.indexOf('im-chat.html')) {
+						extras.acceleration = "none";
+					}
+
+					mui.openWindowWithTitle({
+						url: href,
+						id: id,
+						styles: webview_style,
+						show: {
+							event: "loaded",
+							extras: extras
+						}
+					}, {
+						title: {
+							text: this.innerText.trim()
+						},
+						back: {
+							image: {
+								base64Data: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAb1BMVEUAAAAAev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8Aev8AAACubimgAAAAI3RSTlMAGfUTGfQTGPMSGPIYGhgaGBsXGxcbFxwXHBccFhwWHRYdHWufDPQAAAABYktHRACIBR1IAAAAB3RJTUUH4QETEBwooeTlkQAAAJVJREFUSMft1EkSgkAQRNFGUXFWHBDBibr/HTUwD5B/48Ig1y+io7u6MqUhf5hsNEY+j5hMgZ/FJ8Xc9ovos3T96utjbfqN/Nb0O/m96Uv5g+mP8ifTn+Ur01/ka9Nf5RvTt/I309/lH6Z/yr9Mn+Q71/MT8B34K/E58Enzv8R/K98HvnF8p3lr8F7izce7lbf3kJ/lDQp9HdBhgg3PAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAxLTE5VDE2OjI4OjQwKzA4OjAwpTDFwQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMS0xOVQxNjoyODo0MCswODowMNRtfX0AAAAASUVORK5CYII="
+							}
+						}
+					});
+				} else if(href && ~href.indexOf('.html')) {
+					//侧滑菜单需动态控制一下zindex值；
+					if(~id.indexOf('offcanvas-')) {
+						webview_style.zindex = 9998;
+						webview_style.popGesture = ~id.indexOf('offcanvas-with-right') ? "close" : "none";
+					}
+
+					var extras = {};
+					if(id && id == "viewgroup") { //强制启用截屏
+						extras.acceleration = "capture";
+					}
+
+					var webview = plus.webview.create(this.href, id, webview_style, extras);
+					webview.addEventListener("titleUpdate", function() {
+						setTimeout(function() {
+							webview.show(aniShow, 300);
+						}, 100);
+					});
+				}
+			});
+
+			window.addEventListener("menu:close", closeMenu);
+
+			var _toast = false;
+
+			mui.back = function() {
+				if(parseInt(_self.getStyle().left) > 0) {
+					closeMenu();
+					return;
+				}
+
+				if(!_toast || !_toast.isVisible()) {
+					//_toast = mui.toast('再按一次返回键退出<br>点此可&nbsp;<span style="border-bottom:1px solid #fff" onclick="openFeedback();">反馈意见</span>', {
+
+					_toast = mui.toast('再按一次返回键退出', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else {
+					plus.runtime.quit();
+				}
+			}
+
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(parseInt(_self.getStyle().left) > 0) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
+
+			// 退出时提醒用户参加问题反馈
+
+			function openFeedback() {
+				plus.nativeUI.showWaiting();
+				var _p = plus.os.name === 'Android' ? 'a' : plus.os.name === 'iOS' ? 'i' : '';
+				//TODO：这里使用的是FeedBack云地址，开发者也可以替换为本地页面地址
+				var url = 'http://stream.dcloud.net.cn/wap2app/feedback?p=' + _p;
+				url += "&plus_version=" + plus.runtime.innerVersion;
+				url += "&vendor=" + plus.device.vendor;
+				url += "&md=" + plus.device.model;
+				//开发者需修改的部分   开始
+				url += "&app_name=HelloMUI&app_vendor=DCloud";
+				//如有本地关于页面，则填写关于页面的路径
+				//注意：需要_www/前缀
+				url += "&about=_www/examples/info.html";
+				//开发者需修改的部分   结束
+
+				var feedbackWebview = plus.webview.create(url, "__W2A_FEEDBACK");
+				feedbackWebview.addEventListener('titleUpdate', function() {
+					plus.nativeUI.closeWaiting();
+					feedbackWebview.show('slide-in-right', 300);
+				});
+			}
+
+			//	侧边栏效果 开始
+
+			var main, menu, mask = mui.createMask(_closeMenu);
+			var showMenu = false,
+				mode = 'menu-move';
+			//整体滑动暂不支持android手机，因为两个页面的移动动画，无法保证同步性；
+			if(!mui.os.android) {
+				//整体滑动暂不支持android手机，因为两个页面的移动动画，无法保证同步性；
+				var spans = document.querySelectorAll('.android-only');
+				for(var i = 0, len = spans.length; i < len; i++) {
+					spans[i].style.display = "none";
+				}
+			}
+
+			function back() {
+				if(showMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					closeMenu();
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					menu.close('none');
+					return true;
+				}
+			}
+
+			/*
+			 * 显示菜单菜单
+			 */
+			function openMenu() {
+				if(!showMenu) {
+					//解决android 4.4以下版本webview移动时，导致fixed定位元素错乱的bug;
+					if(mui.os.android && parseFloat(mui.os.version) < 4.4) {
+						document.querySelector("header.mui-bar").style.position = "static";
+						//同时需要修改以下.mui-contnt的padding-top，否则会多出空白；
+						document.querySelector(".mui-bar-nav~.mui-content").style.paddingTop = "0px";
+					}
+
+					//侧滑菜单处于隐藏状态，则立即显示出来；
+					//显示完毕后，根据不同动画效果移动窗体；
+					menu.show('none', 0, function() {
+						switch(mode) {
+							case 'main-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '-70%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'menu-move':
+								menu.setStyle({
+									left: '30%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'all-move':
+								main.setStyle({
+									left: '-70%',
+									transition: {
+										duration: 150
+									}
+								});
+								menu.setStyle({
+									left: '30%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+						}
+					});
+					//显示主窗体遮罩
+					mask.show();
+					showMenu = true;
+				}
+			}
+
+			function closeMenu() {
+				//窗体移动
+				_closeMenu();
+				//关闭遮罩
+				mask.close();
+			}
+
+			//  关闭侧滑菜单(业务部分)
+
+			function _closeMenu() {
+				if(showMenu) {
+					//解决android 4.4以下版本webview移动时，导致fixed定位元素错乱的bug;
+					if(mui.os.android && parseFloat(mui.os.version) < 4.4) {
+						document.querySelector("header.mui-bar").style.position = "fixed";
+						//同时需要修改以下.mui-contnt的padding-top，否则会多出空白；
+						document.querySelector(".mui-bar-nav~.mui-content").style.paddingTop = "44px";
+					}
+
+					switch(mode) {
+						case 'main-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'menu-move':
+							//主窗体开始侧滑；
+							menu.setStyle({
+								left: '100%',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'all-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							//menu页面同时移动
+							menu.setStyle({
+								left: '100%',
+								transition: {
+									duration: 150
+								}
+							});
+
+							break;
+					}
+					//等窗体动画结束后，隐藏菜单webview，节省资源；
+					setTimeout(function() {
+						menu.hide();
+					}, 300);
+					showMenu = false;
+				}
+			}
+
+			//变换侧滑动画移动效果；
+			mui('.mui-input-group').on('change', 'input', function() {
+				if(this.checked) {
+					switch(this.value) {
+						case 'main-move':
+							//仅主窗口移动的时候，menu页面的zindex值要低一点；
+							menu.setStyle({
+								left: '30%',
+								zindex: 9997
+							});
+							//							menu.hide();
+							mode = 'main-move';
+							break;
+						case 'menu-move':
+							menu.setStyle({
+								left: '100%',
+								zindex: 9999
+							});
+							mode = 'menu-move';
+							break;
+						case 'all-move':
+							//切换为整体移动
+							//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
+							menu.setStyle({
+								left: '100%'
+							});
+							mode = 'all-move';
+							break;
+					}
+				}
+			});
+
+			//点击侧滑图标，打开侧滑菜单；
+			document.querySelector('.mui-action-menu').addEventListener('tap', openMenu);
+			//在android4.4中的swipe事件，需要preventDefault一下，否则触发不正常
+			//故，在dragleft，dragright中preventDefault
+			window.addEventListener('dragright', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			window.addEventListener('dragleft', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			//主界面向左滑动，若菜单未显示，则显示菜单；否则不做任何操作；
+			//window.addEventListener("swipeleft", openMenu);
+			//主界面向右滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			//window.addEventListener("swiperight", closeMenu);
+			//menu页面向右滑动，关闭菜单；
+			window.addEventListener("menu:swiperight", closeMenu);
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(showMenu) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
+
+			//	侧边栏效果 结束
+
+			//=====================设置页功能 Start==================
+			//标题显示****************
+			var txt_vcusername = document.getElementById('txt_vcusername');
+			var txt_vcaccount = document.getElementById('txt_vcaccount');
+			var text_netmod=document.getElementById("text_netmod");
+
+			//修改设置页信息
+			var displaySetting = function() {
+				txt_vcusername.innerText = JSON.parse(localStorage.userdata).VCUSERNAME;
+				txt_vcaccount.innerText = JSON.parse(localStorage.userdata).VCACCOUNT;
+				//设置网络模式
+				var netmod=localStorage.netmod;
+				switch (netmod){
+					case "0":
+					text_netmod.innerText="内网"
+						break;
+						
+					case "1":
+					text_netmod.innerText="外网"
+						break;
+						
+					case "2":
+					text_netmod.innerText="测试"
+						break;
+						
+					default:
+					    text_netmod.innerText="外网"
+						break;
+				}
+			}
+
+			//加载侧边栏
+			var preloadoffcanvas = function() {
+				menu = mui.preload({
+					id: 'offcanvas-drag-left-plus-menu',
+					url: 'pages/offcanvas-drag-left-plus-menu.html',
+					styles: {
+						left: "30%",
+						width: '70%',
+						zindex: 9997
+					}
+				});
+			}
+			//TODO
+			window.addEventListener('show', function(event) {
+
+
+				//加载菜单
+				loadMenu();
+
+				mui.later(function() {
+					//var state = app.getState();
+
+					//延时加载侧边栏
+					preloadoffcanvas();
+
+					//设置主界面页面设置信息
+					setting();
+					//alert(JSON.parse(localStorage.userdata).VCACCOUNT);
+				}, 1000);
+			});
+
+			//退出操作******************
+
+			var setting = function() {
+				//设置页面用户信息
+				displaySetting();
+
+				//设置消息页
+				//setNoticePage();
+
+				document.getElementById('exit').addEventListener('tap', function() {
+
+					/*if(mui.os.ios) {
+						app.setState({});
+						mui.openWindow({
+							url: 'login.html',
+							id: 'login',
+							show: {
+								aniShow: 'pop-in'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+						return;
+					}*/
+					var btnArray = [{
+						title: "注销当前账号"
+					}, {
+						title: "直接关闭应用"
+					}];
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: btnArray
+					}, function(event) {
+						var index = event.index;
+						switch(index) {
+							case 1:
+								//注销账号
+								app.setState({});
+								/*
+								 * 注意：
+								 * 1、因本示例应用启动页就是登录页面，因此注册成功后，直接显示登录页即可；
+								 * 2、如果真实案例中，启动页不是登录页，则需修改，使用mui.openWindow打开真实的登录页面
+								 */
+								plus.webview.getLaunchWebview().show("pop-in");
+								//若启动页不是登录页，则需通过如下方式打开登录页
+								//						mui.openWindow({
+								//							url: 'login.html',
+								//							id: 'login',
+								//							show: {
+								//								aniShow: 'pop-in'
+								//							}
+								//						});
+								break;
+							case 2:
+
+								if(mui.os.ios) {
+									plus.runtime.restart();
+								} else {
+									plus.runtime.quit();
+								}
+								break;
+						}
+					});
+				}, false);
+
+				//问题和意见反馈
+				document.getElementById('btn_advice').addEventListener('tap', function() {
+					mui.openWindow('./views/setting/advice.html', 'advice.html', {});
+				})
+
+				//密码修改
+				document.getElementById('btn_password').addEventListener('tap', function() {
+					mui.openWindow('./views/setting/password.html', 'password.html', {});
+				})
+
+				//软件下载二维码
+				document.getElementById('btn_myqrcode').addEventListener('tap', function() {
+					mui.openWindow('./views/setting/myqrcode.html', 'myqrcode.html', {});
+				})
+
+				//显示版本号：
+				document.getElementById("btn_version").innerHTML = "版本：" + VERSION;
+				isLatestVersion(VERSION, jQuery(document.getElementById("btn_version")));
+				//添加按钮点击事件
+				document.getElementById("btn_version").addEventListener('tap', function() {
+					checkVersion(UPDATE_MODEL_ONCLICK);
+				});
+
+				//初始化wms用户相关数据
+				Ajaxloadwms();
+
+			}
+
+			//保存页面是   刷新时执行，保证测试效果；
+			//setting();
+
+			//=====================设置页功能 end==================
+			//=====================设置消息面板=======================
+
+			document.getElementById('chat').addEventListener('tap', function() {
+				setNoticePage();
+				console.log("ttttoookken:" + localStorage.ezapptoken)
+			})
+			
+			
+			
+			
+		</script>
+
+	</body>
+
+</html>

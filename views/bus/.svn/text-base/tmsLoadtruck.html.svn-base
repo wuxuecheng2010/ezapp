@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			.label-note {
+				font-size: 18px;
+			}
+			
+			.inputobj {
+				font-size: 16px;
+				height: 58px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">装车确认</h1>
+		</header>
+
+		<div class="mui-content">
+
+			<h5 class="mui-content-padded label-note">运输任务:<span id="lab_dispatchid"></span>&nbsp<span id="lab_vehicleid" style="display: none;"></span><span class="mui-hidden" id="lab_tkdocid"></span><span id="lab_credate" style="float: right;"></span></h5>
+			<!--<button id='btn_vehicle' class="btn mui-btn mui-btn-block  inputobj">选择运输任务...</button>-->
+			<button id='btn_dispatch' class="btn mui-btn mui-btn-block  inputobj"><span id="lab_title">选择运输任务...</span></button>
+
+			<h5 class="mui-content-padded label-note">请扫描条码:</h5>
+			<input type="text" id="barcode" style="font-size: 20px; height: 58px; text-align: center;" />
+
+			<div style="height: 70px;">
+				<div>
+
+					<ul class="mui-table-view" style="text-align: center;">
+						<li class="mui-table-view-cell">
+							<div class="mui-row">
+								<div class="mui-col-sm-4  mui-col-xs-4"><span>任务件数</span></div>
+								<div class="mui-col-sm-4  mui-col-xs-4"><span>已扫描件数</span></div>
+								<div class="mui-col-sm-4  mui-col-xs-4"><span>未扫描件数</span></div>
+							</div>
+						</li>
+						<li class="mui-table-view-cell" id="li_dtl">
+							<div class="mui-row">
+								<div class="mui-col-sm-4  mui-col-xs-4"><span id="ctn_totalpacks">0</span></div>
+								<div class="mui-col-sm-4  mui-col-xs-4"><span id="ctn_scanpacks">0</span></div>
+								<div class="mui-col-sm-4  mui-col-xs-4"><span id="ctn_noscanpacks">0</span></div>
+							</div>
+						</li>
+						<li class="mui-table-view-cell" id="currentCustomerInfo">
+							<h5 id="info" style="color:#333333;">
+									&nbsp;
+							</h5>
+							<div>
+								<h5 id="cucrrentCustomer" style="color: green;"></h5>
+								<h5 style="color: green;" id="customerPack"></h5>
+								<span style="display: none;" id="currentTransid"></span>
+							</div>
+						</li>
+
+					</ul>
+
+				</div>
+
+				<div style="padding-top: 16px;">
+					<button id="btn_submit" class="mui-btn mui-btn-block mui-btn-blue" style="padding-top: 10px;">提交</button>
+
+					<button id="btn_scan" class="mui-btn mui-btn-block mui-btn-yellow" style="padding-top: 10px; display: none;" onclick="clicked('../pub/barcode_scan.html',true,true)">扫一扫</button>
+
+					<!--<span style="display: none;" id="companyid"></span>-->
+					<span style="display: none;" id="transid"></span>
+				</div>
+			</div>
+
+			<!--<button id="btn_scan" class="mui-btn mui-btn-block mui-btn-grey mui-action-back " style="padding: 10px;">退出</button>-->
+
+			<audio id="success">
+				<source src="../../voices/msg_success.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="success_plus">
+				<source src="../../voices/success_plus.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="empty_vehicleid">
+				<source src="../../voices/empty_vehicleid.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="empty_barcode">
+				<source src="../../voices/empty_barcode.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="empty_employeeid">
+				<source src="../../voices/empty_employeeid.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="err_barcode">
+				<source src="../../voices/err_barcode.mp3" type="audio/mpeg">
+			</audio>
+			
+			<audio id="err_barcode_style">
+				<source src="../../voices/err_barcode_style.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="err_data">
+				<source src="../../voices/err_data.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="save_update_exception">
+				<source src="../../voices/save_update_exception.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="not_carray">
+				<source src="../../voices/not_carray.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="in_truck">
+				<source src="../../voices/in_truck.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="not_check">
+				<source src="../../voices/not_check.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="not_set_loader">
+				<source src="../../voices/not_set_loader.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="wrong_disp">
+				<source src="../../voices/wrong_disp.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="wrong_loader">
+				<source src="../../voices/wrong_loader.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="not_disp_yet">
+				<source src="../../voices/not_disp_yet.mp3" type="audio/mpeg">
+			</audio>
+			
+			<audio id="worning_current_dispatch_compleate">
+				<source src="../../voices/worning_current_dispatch_compleate.mp3" type="audio/mpeg">
+			</audio>
+			
+			<audio id="worning_last_customer_compleate">
+				<source src="../../voices/worning_last_customer_compleate.mp3" type="audio/mpeg">
+			</audio>
+			
+			<audio id="worning_switch_customer">
+				<source src="../../voices/worning_switch_customer.mp3" type="audio/mpeg">
+			</audio>
+			
+			<audio id="worning_mulit_count_sure">
+				<source src="../../voices/worning_mulit_count_sure.mp3" type="audio/mpeg">
+			</audio>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myloadtruck.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/immersed.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var employeeid = "";
+			var barcode = "";
+
+			var isie = false;
+			mui.ready(function() {
+				init();
+				setCurrentCustomerClick();
+				if(document.all) {
+					isie = true;
+				}
+				mui.later(function() {
+					employeeid = getWMSEmployeeID();
+					console.log("employeeid:" + employeeid);
+				}, 300);
+
+			});
+
+			var init = function() {
+				/*		选择车牌号底部弹出框		
+ 				var vehiclePicker = new mui.PopPicker();
+				var vehiclejson = toPickerDataJson(JSON.parse(localStorage.vehiclelist), "VEHICLEID", "VEHICLENO");
+				vehiclePicker.setData(vehiclejson);
+				var btn_vehicle = document.getElementById('btn_vehicle');
+				btn_vehicle.addEventListener('tap', function(event) {
+					vehiclePicker.show(function(items) {
+						document.getElementById("btn_vehicle").innerHTML = items[0].text;
+						vehicleid = items[0].value;
+
+						//alert(ibuyerid);
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, true);
+				*/
+
+				jQuery("#barcode").bind('keydown', function(e) {
+					var key = e.which;
+					if(key == 13) {
+						dosubmit();
+					}
+				});
+
+				var li_dtl = document.getElementById("li_dtl");
+				li_dtl.addEventListener('tap', function(event) {
+					var dispatchid = jQuery("#lab_dispatchid").html();
+					var title = jQuery("#lab_title").html();
+					if(dispatchid == null || dispatchid == '') {
+						mui.toast("请先选择装车任务");
+						return;
+					}
+					mui.openWindow({
+						url: 'tmsLoadtruckDispatchdtl.html',
+						id: 'tmsLoadtruckDispatchdtl.html',
+						extras: {
+							'dispatchid': dispatchid,
+							'title': title
+						}
+					})
+				});
+
+				var btn_dispatch = document.getElementById('btn_dispatch');
+				btn_dispatch.addEventListener('tap', function(event) {
+					//1、判断用户信息
+
+					//2、打开运输任务单选择窗口
+					mui.openWindow({
+						url: '../pub/widget_dispatch_select_a.html',
+						id: 'widget_dispatch_select_a.html',
+						show: {
+							autoShow: true,
+							aniShow: "slide-in-bottom",
+							duration: "600"
+						},
+						extras: {
+							"employeeid": employeeid
+						}
+					});
+				});
+
+				var btn_submit = document.getElementById("btn_submit");
+				btn_submit.addEventListener('tap', function() {
+					//alert("cccc");
+					//var x=NO_BARCODE;
+					//alert(x.info);
+					//jQuery("#source").attr("src",x.voice);
+					//document.getElementById("source").src=x.voice;
+					//playvoice("save_update_exception");
+
+					//alert(vehicleid);
+					dosubmit();
+
+				});
+
+				//监听自定义选择返回事件
+				window.addEventListener('widgetSelectEvent', function(event) {
+					var value = event.detail.value;
+					var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+					var json = JSON.parse(jsonvalue)
+					console.log(value.substr(1, value.length - 2));
+					//console.log("console******:" + console);
+					displaypanl(json);
+					setfocus();
+				});
+
+			}
+
+			var displaypanl = function(json) {
+				var dispatchid = json.dispatchid;
+				var vehicleno = json.vehicleno;
+				var routename = json.routename;
+				var dtcredate = json.dtcredate;
+				var vehicleid = json.vehicleid;
+				var tkdocid=json.tkdocid;
+				setTitle(dispatchid, vehicleno, routename, dtcredate, vehicleid,tkdocid);
+				var transid=jQuery("#transid").html();
+				setContent(dispatchid,transid);
+
+			}
+
+			var setContent = function(dispatchid,transid) {
+				docAjax(dispatchid,transid);
+			}
+
+			var docAjax = function(dispatchid,transid) {
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				console.log("#############"+transid);
+				//发送数据
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'tmsDispatchDoc',
+					dispatchid: dispatchid,
+					transid:transid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: docSuccess,
+					error: err
+				});
+			}
+
+			var docSuccess = function(response) {
+				console.log(JSON.stringify(response));
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log("=================="+JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayQTY(response.sysdata.TmsDispatch_tmsDispatchDoc);
+					}
+				}
+			};
+  
+			var displayQTY = function(json) {
+				var totalpacks = json[0].TOTALPACKS;
+				var loadqty = json[0].LOADQTY;
+				jQuery("#ctn_totalpacks").html(totalpacks);
+				jQuery("#ctn_scanpacks").html(loadqty);
+				jQuery("#ctn_noscanpacks").html(totalpacks - loadqty);
+				
+				
+				//显示当前扫描的包装相关的客户件数信息
+				var customerData=json[0].CUSDATA;
+				if(!jQuery.isEmptyObject(customerData)){
+					jQuery("#cucrrentCustomer").html(customerData[0].CUSTOMNAME);
+					var packsHtml="<span>一共:"+customerData[0].TOTALPACKS+"</span>&nbsp;&nbsp;"+
+								"<span>已扫:"+customerData[0].LOADQTY+"</span>&nbsp;&nbsp;"+
+								"<span>未扫:"+customerData[0].NOTLOADQTY+"</span>"
+					jQuery("#customerPack").html(packsHtml)	;
+					jQuery("#currentTransid").html(customerData[0].TRANSID);
+				}else{//设置空，清除显示
+					jQuery("#cucrrentCustomer").html("");
+					jQuery("#customerPack").html("");
+					jQuery("#currentTransid").html("");
+				}
+				
+				
+				if(totalpacks==loadqty){//派车单整体完成  提示当前派车单完成
+					playvoice("worning_current_dispatch_compleate");
+					jQuery("transid").html("");//置空
+				}else{//如果客户地址都完成了  提示一下
+					if(json[0].TRFLAG==true && (jQuery("#transid").html()!=null||jQuery("#transid").html()!="")){
+					playvoice("worning_last_customer_compleate");
+					jQuery("transid").html("");
+					}
+				}
+				
+			}
+
+			var setCurrentCustomerClick=function(){
+				
+				var currentCustomerInfo = document.getElementById("currentCustomerInfo");
+				currentCustomerInfo.addEventListener('tap', function(event) {
+					
+					var dispatchid = jQuery("#lab_dispatchid").html();
+					var currentTransid=jQuery("#currentTransid").html();
+					var title = jQuery("#lab_title").html();
+					//var title = jQuery("#lab_title").html();
+					if(dispatchid == null || dispatchid == ''||currentTransid==null||currentTransid=='') {
+						mui.toast("当前还没有成功扫描到包装箱，请扫描成功后再试");
+						return;
+					}
+					mui.openWindow({
+						url: 'tmsLoadtruckDispatchdtl.html',
+						id: 'tmsLoadtruckDispatchdtl.html',
+						extras: {
+							'dispatchid': dispatchid,
+							'transid':currentTransid,
+							'title': title
+						}
+					})
+					
+				});
+				
+				
+			}
+
+
+			var setTitle = function(dispatchid, vehicleno, routename, dtcredate, vehicleid,tkdocid) {
+				jQuery("#lab_title").html(vehicleno + " | " + routename);
+				jQuery("#lab_dispatchid").html(dispatchid);
+				jQuery("#lab_credate").html(dtcredate);
+				jQuery("#lab_vehicleid").html(vehicleid);
+				jQuery("#lab_tkdocid").html(tkdocid);
+			}
+
+			var dosubmit = function() {
+				var res = frontvalidata();
+				if(res == "") {
+					//增加判断 当前提交的箱子的运输地址和之前的是否一致  如果一致就不提示  不一致且
+					var transid=jQuery("#transid").html();
+					if(transid==null || transid==""){
+						ajax();
+					}else{
+						switchAjax();
+					}
+					
+				} else {
+					dispaly(res);
+				}
+				setfocus();
+			}
+			
+			/**
+			 * 扫描时  出现了和上一个条码不一致运输地址时
+			 */
+			var switchAjax=function(){
+				
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dispatchid = jQuery("#lab_dispatchid").html();
+				var transid = jQuery("#transid").html();
+				var dataType = 'json';
+				
+				//发送数据
+				var data = {
+					controller: 'TmsLoadTruck',
+					method: 'beforeDoLoadTruck',
+					dispatchid: dispatchid,
+					barcode: barcode,
+					transid:transid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: beforeDoLoadTruckSuccess,
+					error: err
+				});
+
+			}
+			
+			var beforeDoLoadTruckSuccess = function(response) {
+				console.log(".........." + JSON.stringify(response));
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						//给出处理意见
+						var deed=response.sysdata.TmsLoadTruck_beforeDoLoadTruck.deed;
+						if(deed=="NOCARE"){
+							ajax();
+						}else{
+							//弹框提示，是否要继续ajax
+							    playvoice("worning_switch_customer");
+								mui.confirm('刚才的客户扫描未完成，开始扫描新客户吗', '提示', ['取消', '确认'], function(e) {
+								switch(e.index) {
+									case 0:
+										break;
+									case 1:
+										ajax();
+										break;
+									default:
+										break;
+								}
+							}, 'div')
+						}
+						
+					}
+				}
+			};
+			
+
+			//初始校验
+			var frontvalidata = function() {
+				//1、车牌号校验
+				var vehicleid = jQuery("#lab_vehicleid").html();
+				if(vehicleid == "" || vehicleid == undefined) {
+					//
+					return NO_VEHICLEID;
+				}
+				//2、条码内容是否为空
+				barcode = jQuery("#barcode").val();
+				barcode=initCode(barcode);
+				if(barcode == "" || barcode == undefined ) {
+					return NO_BARCODE;
+				}
+				
+				
+				//2.1、条码格式错误
+				if(!barcode.startsWith("ZQ")&&!barcode.startsWith("ZO")&&!barcode.startsWith("SO")){
+					return ERR_BARCODE_STYLE;
+				}
+				
+				
+				//3、账号核实 判断当前账号有无对应的wms账号
+				if(employeeid == "") {
+					return NO_WMSEMPLOYEE;
+				}
+
+				return "";
+			}
+
+/*			function playvoice(code) {
+				if(!isie) { //不为ie
+					console.log("code:" + code);
+					//jQuery("#"+code)[0].play();
+					document.getElementById(code).play();
+				}
+			}*/
+
+			var dispaly = function(res) {
+
+				//var jsonflag=isJSON(res);
+				//console.log("jsonflag:"+jsonflag);
+				if(res != "") {
+					jQuery("#info").html(res.info);
+					playvoice(res.code);
+				} else {
+					jQuery("#info").html(res);
+				}
+
+			}
+
+			var setfocus = function() {
+				jQuery("#barcode").focus();
+				jQuery("#barcode").val("");
+			}
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function() {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dispatchid = jQuery("#lab_dispatchid").html();
+				var vehicleid = jQuery("#lab_vehicleid").html();
+				var dataType = 'json';
+
+				//发送数据
+				var data = {
+					controller: 'TmsLoadTruck',
+					method: 'checkBarcode',
+					dispatchid: dispatchid,
+					vehicleid: vehicleid,
+					barcode: barcode,
+					employeeid: employeeid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				console.log("&&&&&&&&&&&&&&&&&&" + JSON.stringify(response));
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						
+						dealWithCheckResult(response.sysdata.TmsLoadTruck_checkBarcode);
+						
+						/*//设置运输地址  
+						if(response.sysdata.TmsLoadTruck_checkBarcode.code=="OK"){
+							console.log(response.sysdata.TmsLoadTruck_doLoadTruck.transid)
+							jQuery("#transid").html(response.sysdata.TmsLoadTruck_doLoadTruck.transid);
+						}
+						
+						var dispatchid = jQuery("#lab_dispatchid").html();
+						var transid=jQuery("#transid").html();
+						setContent(dispatchid,transid);
+						//console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayui(response.sysdata.TmsLoadTruck_doLoadTruck);*/
+					}
+				}
+			};
+			/**
+			 * 处理条码的校验结果
+			 * @param {Object} json
+			 */
+			var dealWithCheckResult=function(jsonobj){
+				//console.log("++++++++++++++++++"+JSON.stringify(json));
+				var code = jsonobj.code;
+				var qty=jsonobj.qty;
+				//设置显示屏  有错误的时候提示并且显示
+				if(code==SYSCODE_OK){
+					//如果有多件  弹出对话框  提示先清点  再确认  数量不对点取消 
+					if(qty>1){
+						playvoice("worning_mulit_count_sure");
+						mui.confirm('当前扫描的条码包含'+qty+"件,数量一致时，点确认，否则点取消.", '提示', ['取消', '确认'], function(e) {
+								switch(e.index) {
+									case 0:
+										break;
+									case 1:
+										ajax2();
+										break;
+									default:
+										break;
+								}
+							}, 'div')
+						}
+					else{
+						ajax2();
+					}
+	
+				}else{
+					displayui(jsonobj);
+				}
+				   
+			}
+			
+			
+			var ajax2 = function() {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dispatchid = jQuery("#lab_dispatchid").html();
+				var vehicleid = jQuery("#lab_vehicleid").html();
+				var tkdocid=jQuery("#lab_tkdocid").html();
+				var dataType = 'json';
+
+				//发送数据
+				var data = {
+					controller: 'TmsLoadTruck',
+					method: 'doLoadTruck',
+					dispatchid: dispatchid,
+					vehicleid: vehicleid,
+					tkdocid:tkdocid,
+					barcode: barcode,
+					employeeid: employeeid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success2,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success2 = function(response) {
+				//console.log("&&&&&&&&&&&&&&&&&&" + JSON.stringify(response));
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						//设置运输地址  
+						if(response.sysdata.TmsLoadTruck_doLoadTruck.code=="OK"){
+							//jQuery("#transid").html(response.sysdata.TmsLoadTruck_doLoadTruck.transid);
+							console.log(response.sysdata.TmsLoadTruck_doLoadTruck.transid)
+							jQuery("#transid").html(response.sysdata.TmsLoadTruck_doLoadTruck.transid);
+						}
+						
+						var dispatchid = jQuery("#lab_dispatchid").html();
+						var transid=jQuery("#transid").html();
+						setContent(dispatchid,transid);
+						//console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayui(response.sysdata.TmsLoadTruck_doLoadTruck);
+					}
+				}
+			};
+			
+			
+			
+			
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				var mes = jsonobj.mes;
+				var code = jsonobj.code;
+				var notevoice = jsonobj.notevoice;
+				var qty = jsonobj.qty;
+				var vehicleno = jsonobj.vehicleno;
+				//设置显示屏
+				jQuery("#info").html(barcode + " " + mes);
+				if(vehicleno != null) {
+					jQuery("#info").html(jQuery("#info").html() + "(" + vehicleno + ")")
+				}
+				//发出提示音
+				if(qty != null && qty > NUM_WHOLE_PACKAGES_LIMIT) {
+					playvoice("success_plus");
+				} else { //写死  超过10件的条码  直接告知很多件。
+					playvoice(notevoice);
+				}
+
+			}
+
+			/**
+			 * 
+			 * 扫描成功处理结果
+			 * @param {Object} t
+			 * @param {Object} r  条码值
+			 * @param {Object} f
+			 */
+			function scaned(t, r, f) {
+				//alert()
+				jQuery("#barcode").val(r);
+				mui.later(function() {
+					dosubmit();
+				}, 500);
+
+				//alert(r);
+			}
+		</script>
+	</body>
+
+</html>

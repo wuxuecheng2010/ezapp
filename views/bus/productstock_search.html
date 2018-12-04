@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<!-- <link rel="stylesheet" type="text/css" href="../css/app.css" /> -->
+
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">
+				<form class="mui-input-group">
+				<div class="mui-input-row">
+						<input type="text"  id="vcproductinfo" placeholder="请输入商品信息查询" class="mui-h5  mui-input" style="background: #F7F7F7; font-size: 18px;">
+				</div>
+				</form>
+			</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right"></a>
+		</header>
+		<div class="mui-content">
+
+			<ul class="mui-table-view" id="productlist" style="margin: 0 auto;">
+				<!--查询结果列表-->
+			</ul>
+
+		</div>
+
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_zero_set">
+					<a href="#" style="color: #FF3B30;" id="pop_btn_zero_set_text">屏蔽库存为0的数据</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#pop_memu"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/mypinyintool.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			var STOCK_ZERO_SHOW = 1;
+			var STOCK_ZERO_HIDE = 0;
+			var count = 0;
+			mui.init({
+				swipeBack: false, //启用右滑关闭功能
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var searchproduct = function() {
+				if(network) {
+					ajax();
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+				document.activeElement.blur(); //隐藏键盘
+			}
+
+			//键盘查询按钮事件
+			/*document.getElementById("btn_search").addEventListener('keypress', function(e) {
+				console.log(e.detail.value);
+				if(e.keyCode == 13) {
+					searchproduct();
+				}
+			});*/
+			
+			jQuery("#vcproductinfo").bind('keydown', function(e) {
+					var key = e.which;
+					if(key == 13) {
+						searchproduct();
+					}
+				});
+
+			var nativeWebview, imm, InputMethodManager;
+			var initNativeObjects = function() {
+				if(mui.os.android) {
+					var main = plus.android.runtimeMainActivity();
+					var Context = plus.android.importClass("android.content.Context");
+					InputMethodManager = plus.android.importClass("android.view.inputmethod.InputMethodManager");
+					imm = main.getSystemService(Context.INPUT_METHOD_SERVICE);
+				} else {
+					nativeWebview = plus.webview.currentWebview().nativeInstanceObject();
+				}
+			};
+			var showSoftInput = function() {
+				if(mui.os.android) {
+					imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+				} else {
+					nativeWebview.plusCallMethod({
+						"setKeyboardDisplayRequiresUserAction": false
+					});
+				}
+				setTimeout(function() {
+					var inputElem = document.querySelector('input');
+					inputElem.focus();
+					inputElem.parentNode.classList.add('mui-active'); //第一个是search，加上激活样式
+				}, 200);
+			};
+			mui.plusReady(function() {
+				initNativeObjects();
+				init_dispaly();
+				//showSoftInput();
+			});
+
+			var network = true;
+			if(mui.os.plus) {
+				mui.plusReady(function() {
+					if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+						network = false;
+					}
+				});
+			}
+
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				//console.log("jsonobj*****"+JSON.stringify(jsonobj));
+				jQuery('#productlist').find('li').remove();
+				var showflag = "";
+				if(localStorage.productstock_show_zero == undefined) {
+					localStorage.productstock_show_zero = STOCK_ZERO_SHOW;
+				} else {
+					showflag = localStorage.productstock_show_zero;
+				}
+				jQuery.each(jsonobj, function(index, content) {
+					var flagquantum="";
+					var quantity=(content.NUMCANSELL-content.NUMCANSELL2-content.NUMWILLOUT) + '/' + content.NUMCANSELL;
+					if(content.FLAGQUANTUM=='Y'){
+						//console.log("(定额供应)"+content.FLAGQUANTUM)
+						flagquantum=FLAGQUANTUM_INFO;//+"<strike>今天天气真好！</strike> "
+						//quantity="<strike style='color:red'>"+quantity+"</strike> "
+					}
+					
+					if((showflag == STOCK_ZERO_HIDE && content.NUMCANSELL > 0) || showflag == STOCK_ZERO_SHOW) {
+						jQuery('#productlist').append(
+							'<li class="mui-table-view-cell">' +
+							'<a class = "mui-navigate-right" >'+
+							'<span id="vcuniversalname">' + content.VCUNIVERSALNAME +'</span>' +
+							'<span id="flagquantum" style="color: red;font-size: 12px;">'+flagquantum +'</span>'+
+							'<h6 id="vcproductcode">' + '编码：' + content.VCPRODUCTCODE + '</h6>' +
+							'<h6 id="vcproductname">' + '品名：' + content.VCPRODUCTNAME + '</h6>' +
+							'<h6 id="vcstandard">' + '规格：' + content.VCSTANDARD + '</h6>' +
+							'<h6 id="vcproducername">' + '厂家：' + content.VCPRODUCERNAME + '</h6>' +
+							'<span id="iproductid" style="display:none">' + content.IPRODUCTID + '</span> ' +
+							'<span id="numlarge" style="display:none">' + content.NUMLARGE + '</span> ' +
+							'<span id="vcbuyer" style="display:none">' + content.VCBUYER + '</span> ' +
+							'<span id="numcansale" class="mui-badge">' + quantity + '</span> ' +
+							' </a>' +
+							'</li>');
+					}
+
+				});
+
+				jQuery('#productlist a').click(function() {
+					//显示商品信息
+					var iproductid = jQuery(this).find('#iproductid').html();
+					var vcuniversalname = jQuery(this).find('#vcuniversalname').html();
+					var vcproductname = jQuery(this).find('#vcproductname').html();
+					var vcstandard = jQuery(this).find('#vcstandard').html();
+					var vcproducername = jQuery(this).find('#vcproducername').html();
+					var vcproductcode = jQuery(this).find('#vcproductcode').html();
+					var numlarge = jQuery(this).find('#numlarge').html();
+					var vcbuyer = jQuery(this).find('#vcbuyer').html();
+					var flagquantum=jQuery(this).find('#flagquantum').html();
+					mui.openWindow({
+						url: 'productstock_search_detal.html',
+						id: 'productstock_search_detal.html',
+						extras: {
+							iproductid: iproductid,
+							vcuniversalname: vcuniversalname,
+							vcstandard: vcstandard,
+							vcproductname: vcproductname,
+							vcproducername: vcproducername,
+							vcproductcode: vcproductcode,
+							numlarge: numlarge,
+							vcbuyer: vcbuyer,
+							flagquantum:flagquantum
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+				});
+
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+
+				loogtap_valueget(); //设置长按时 赋值
+
+				if(count <= 1)
+					cus_popmenu_init(); //自定义附带的pop选项事件
+
+			}
+			var loogtap_valueget = function() {
+
+				jQuery.each(jQuery(".mui-card-content-inner,.mui-table-view-cell"), function(i, elem) {
+					elem.addEventListener('longtap', function() {
+
+						var showflag = "";
+						//显示商品信息
+						if(localStorage.productstock_show_zero == undefined) {
+							localStorage.productstock_show_zero = STOCK_ZERO_SHOW;
+						}
+						showflag = localStorage.productstock_show_zero;
+						var txt = "";
+						if(showflag == STOCK_ZERO_SHOW) {
+							txt = "隐藏库存为0 的数据";
+						} else {
+							txt = "显示库存为0 的数据";
+						}
+						//alert("else:"+txt);
+						jQuery("#pop_btn_zero_set_text").html(txt);
+
+					});
+				});
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_zero_set").click(function() {
+					//alert("xxxx");
+					if(localStorage.productstock_show_zero == undefined) {
+						localStorage.productstock_show_zero = STOCK_ZERO_HIDE;
+					} else {
+						var showflag = localStorage.productstock_show_zero;
+						if(showflag == STOCK_ZERO_HIDE) {
+							localStorage.productstock_show_zero = STOCK_ZERO_SHOW;
+						} else {
+							localStorage.productstock_show_zero = STOCK_ZERO_HIDE;
+						}
+					}
+					//alert("localStorage.productstock_show_zero:"+localStorage.productstock_show_zero);
+					init_dispaly();
+					count += 1;
+					mui("#pop_memu").popover('toggle');
+				});
+			}
+
+			var init_dispaly = function() {
+				//自动加载localStorage中的数据
+				if(localStorage.productlist) {
+					//从local中获取回来
+					var jsoobj = JSON.parse(localStorage.productlist);
+					displayui(jsoobj);
+					//console.log("localStorage.productlist:"+localStorage.productlist)
+				}
+			}
+
+			//var respnoseEl = document.getElementById("response");
+			//成功响应的回调函数
+			function success(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//var jsoobj = JSON.parse(localStorage.productlist);
+
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.productlist = JSON.stringify(response.sysdata.Product_product_stock_once_many);
+						displayui(response.sysdata.Product_product_stock_once_many);
+						searchnotice(response.sysdata.Product_product_stock_once_many);
+					}
+
+				}
+			};
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function() {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//localStorage.
+				var vcproductinfo = document.getElementById('vcproductinfo').value.toUpperCase().trim();
+				if(vcproductinfo.length < 1) {
+					mui.toast("查询条件不能为空");
+					return;
+				}
+				//发送数据
+				var data = {
+					controller: 'Product',
+					method: 'product_stock_once_many',
+					vcproductinfo: vcproductinfo,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//发送请求按钮的点击事件
+			document.getElementById("btn_search").addEventListener('tap', function() {
+				if(network) {
+					ajax();
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+			});
+
+			mui('.mui-scroll-wrapper').scroll();
+			mui('body').on('shown', '.mui-popover', function(e) {
+				//console.log('shown', e.detail.id);//detail为当前popover元素
+				//alert('iproductid:'+jQuery('#iproductid').html());
+			});
+			mui('body').on('hidden', '.mui-popover', function(e) {
+				//console.log('hidden', e.detail.id);//detail为当前popover元素
+			});
+		</script>
+	</body>
+
+</html>

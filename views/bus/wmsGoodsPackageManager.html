@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			
+			
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">WMS货品信息</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right" onclick="openWidget()"></a>
+		</header>
+		
+		<div class="mui-content" >
+          <div id="tabbar1" class="mui-control-content mui-active">
+			<ul id="list" class="mui-table-view " style="margin-top: 1px;">
+
+			</ul>
+          </div>
+          <div id="tabbar2" class="mui-control-content mui-active">
+			<ul id="list2" class="mui-table-view " style="margin-top: 1px;">
+
+			</ul>
+          </div>
+                    
+          <div style="height: 50px;visibility: hidden;">固定占位区，防止content被tap挡住</div>
+          
+		</div>
+		
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar1">
+				<span class="mui-tab-label">查询结果</span>
+				<span style="font-size: 14px;">(<span id="num1">0</span>)</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar2">
+				<span class="mui-tab-label">刚处理的</span>
+				<span style="font-size: 14px;">(<span id="num2">0</span>)</span>
+			</a>
+			
+		</nav>
+
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#pop_memu"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+
+			var areaid = "";
+			var sectionid = "";
+			var vcuniversalname = "";
+			var packageflagid = "";
+			var goodspackid="";
+			
+
+			mui.ready(function() {
+				init();
+			});
+
+			function init() {
+				if(localStorage.goodspackinfolist != undefined) {
+					var jsonlist = JSON.parse(localStorage.goodspackinfolist);
+					displayui(jsonlist);//jsonlistdtls
+					loogtap_valueget();//设置长按时 赋值
+				}
+			}
+
+			function createRequireFields() {
+				var json = [];
+				var field1 = {
+					"requirefield": 'areaid',
+					"msg": "库区不能为空"
+				};
+				var field2 = {
+					"requirefield": 'packageflagid',
+					"msg": "有无包装不能为空"
+				}
+				json.push(field1);
+				json.push(field2);
+				return json;
+
+			}
+
+			function openWidget() {
+				mui.openWindow({
+					url: '../pub/widget_search_productpackage_section_5a.html',
+					id: 'widget_search_productpackage_section_5a.html',
+					extras: {
+						"requirefields": createRequireFields()
+					}
+				});
+
+			}
+
+			//var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			//监听点击事件
+
+           // var selectParams="";
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var json=JSON.parse(value);
+				    //增加wms 员工号
+				    json.employeeid = getWMSEmployeeID();
+				var jsonvalue=JSON.stringify(json[0]);
+				localStorage.selectParams=jsonvalue;
+				//var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+				//var json = JSON.parse(jsonvalue)
+				//console.log(value.substr(1, value.length - 2));
+				ajax(jsonvalue);
+			});
+			window.addEventListener('widgetFreshEvent', function(event) {
+				
+				ajax(localStorage.selectParams);
+				
+			});
+			
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(params) {
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'WmsGoods',
+					method: 'goodsPackage_v2',
+					params: params,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.goodspackinfolist = JSON.stringify(response.sysdata.WmsGoods_goodsPackage_v2);
+						displayui(response.sysdata.WmsGoods_goodsPackage_v2);
+						//loogtap_valueget();//设置长按时 赋值
+					}
+				}
+			};
+			
+			
+			
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				var total=(jsonobj.total)[0].TOTAL;
+				console.log("total:"+total);
+				jQuery("#num1").html(""+jsonobj.datatop.length+"/"+total);
+				jQuery('#list').find('li').remove();
+				
+				//显示历史处理结果
+				displayuiDoms();
+				
+				//显示查询结果
+				jQuery.each(jsonobj.datatop, function(index, content) {
+					var num = index + 1;
+					
+	jQuery('#list').append('<li class="mui-table-view-cell">' +
+						'<a class = "mui-navigate-right">' +
+						'<div class="mui-slider-handle">' +
+						'<span id="goodsname">' + content.GOODSNAME + '</span>' +
+						'<div class="mui-row">'+
+							'<div class="mui-col-sm-10 mui-col-xs-10">'+
+							   '<h6>厂家：' + content.FACTNAME + '</h6>' +
+							'</div>'+
+						'</div>'+						
+						'<div class="mui-row">'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+							   '<h6 id="goodstype">规格：' + content.GOODSTYPE + '</h6>' +
+							'</div>'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+								'<h6>编码：' + content.GOODSNO + '</h6>' +
+							'</div>'+
+						'</div>'+
+						'<div class="mui-row">'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+							   '<h6>分区：' + content.SECTIONNAME + '</h6>' +
+							'</div>'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+								'<h6 id="posno">货位：' + content.POSNO + '</h6>' +
+							'</div>'+
+						'</div>'+
+						
+						'<div class="mui-row">'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+							   '<h6>批号：' + content.LOTNO + '</h6>' +
+							'</div>'+
+							'<div class="mui-col-sm-6 mui-col-xs-6">'+
+								'<h6>库存：' + content.POSQTY +content.TRADEPACKNAME+ '</h6>' +
+							'</div>'+
+						'</div>'+
+						
+						'<div class="mui-row" id="pinfo">'+
+							'<div class="mui-col-sm-12 mui-col-xs-12">'+
+								 '<h6 id="packsize">包装：' + (content.PACKSIZE==9999?1:content.PACKSIZE) +content.TRADEPACKNAME+(content.BASEUNITFLAG==1&&content.PACKSIZE!=9999?'':'/'+(content.PACKNAME==0?'件':content.PACKNAME)) +'</h6>' +
+							'</div>'+
+							'<div class="mui-col-sm-6 mui-col-xs-6" id="pinfoh">'+
+							   '<h6>重量：<span id="uigoodsweight">' + content.GOODSWEIGHT + '</span></h6>' +
+							'</div>'+
+							'<div class="mui-col-sm-6 mui-col-xs-6" id="pinfoc">'+
+								'<h6>体积：<span id="uigoodscubage">' + content.GOODSCUBAGE + '</span></h6>' +
+							'</div>'+
+						'</div>'+
+					
+						'<div style="display: none;">'+
+						'<span id="goodspackid">'+content.GOODSPACKID+'</span>'+
+						//'<span id="goodspackage">'+content.GOODSPACKID+'</span>'+
+						'<span id="goodsid">'+content.GOODSID+'</span>'+
+						'<span id="baseunitflag">'+content.BASEUNITFLAG+'</span>'+
+						'<span id="tradepackname">'+content.TRADEPACKNAME+'</span>'+
+						'<span id="packsizeval">'+content.PACKSIZE+'</span>'+
+						'<span id="packname">'+(content.PACKNAME==0?'件':content.PACKNAME)+'</span>'+
+						'<span id="goodscubage">'+(content.GOODSCUBAGE==0?'':content.GOODSCUBAGE)+'</span>'+
+						'<span id="goodsweight">'+(content.GOODSWEIGHT==0?'':content.GOODSWEIGHT)+'</span>'+
+						'<span id="goodslength">'+(content.GOODSLENGTH==0?'':content.GOODSLENGTH)+'</span>'+
+						'<span id="goodswidth">'+(content.GOODSWIDTH==0?'':content.GOODSWIDTH)+'</span>'+
+						'<span id="goodsheight">'+(content.GOODSHEIGHT==0?'':content.GOODSHEIGHT)+'</span>'+
+						'</div>'+
+						
+						'</div>' +
+						'</a>'+
+						'</li>'
+					);
+				});
+
+
+				jQuery('.mui-content ul li a').click(function() {
+					//显示商品信息
+					var goodspackid = jQuery(this).find('#goodspackid').html();
+					//alert(goodspackid);
+					var goodsname=jQuery(this).find("#goodsname").html();
+					var goodstype=jQuery(this).find("#goodstype").html();
+					var posno=jQuery(this).find("#posno").html();
+					var packsize=jQuery(this).find("#packsize").html();
+					var baseunitflag=jQuery(this).find("#baseunitflag").html();
+					
+					var tradepackname=jQuery(this).find("#tradepackname").html();
+					var packname=jQuery(this).find("#packname").html();
+					var packsizeval=jQuery(this).find('#packsizeval').html();
+					
+					var goodscubage=jQuery(this).find("#goodscubage").html();
+					var goodsweight=jQuery(this).find("#goodsweight").html();
+					var goodslength=jQuery(this).find("#goodslength").html();
+					var goodswidth=jQuery(this).find("#goodswidth").html();
+					var goodsheight=jQuery(this).find("#goodsheight").html();
+					
+					localStorage.dom=jQuery(this).parent().html();
+					//alert(jQuery(this).parent().html());
+                   // console.log("localStorage.dom:=========="+localStorage.dom);
+					var row={};
+					row.goodspackid=goodspackid;
+					row.goodsname=goodsname;
+					row.goodstype=goodstype;
+					row.posno=posno;
+					row.packsize=packsize;
+					row.baseunitflag=baseunitflag;
+					row.tradepackname=tradepackname;
+					row.packname=packname;
+					row.packsizeval=packsizeval;
+					row.goodscubage=goodscubage;
+					row.goodsweight=goodsweight;
+					row.goodslength=goodslength;
+					row.goodswidth=goodswidth;
+					row.goodsheight=goodsheight;
+					
+					open_edt(row);
+				});
+
+				
+
+				//右滑直接看进度
+
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+
+				cus_popmenu_init(); //自定义附带的pop选项事件
+
+			}
+			
+			/**
+			 * 显示
+			 */
+			function displayuiDoms(){
+				jQuery('#list2').find('li').remove();
+				//localStorage.doms="";//*************************************************
+				var domsStr=localStorage.doms==undefined?"":localStorage.doms;
+				
+				//console.log("displayuiDoms:domsStr............"+domsStr);
+				var domsJson=domsStr==""?[]:JSON.parse(localStorage.doms)
+				jQuery("#num2").html(domsJson.length);
+				jQuery.each(domsJson,function(i,c){
+					jQuery("#list2").append('<li class="mui-table-view-cell">' +
+					c.dom+
+					'</li class="mui-table-view-cell">'
+					);
+				})
+				
+				
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_rate").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					//open_rate(ibillid, vcbillcode);
+				});
+
+				jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+					
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode,vccustomername);
+				});
+
+			}
+
+			var open_edt = function(row) {
+				mui.openWindow({
+					url: 'wmsGoodsPackgaeEdit.html',
+					id: 'wmsGoodsPackgaeEdit.html',
+					extras: row,
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+
+			
+			var loogtap_valueget=function(){
+				jQuery.each(jQuery(".mui-card-content-inner,.mui-table-view-cell"), function(i, elem) {
+					elem.addEventListener('longtap', function() {
+						
+						//显示商品信息
+					ibillid = jQuery(this).find('#ibillid').html();
+					vcbillcode = jQuery(this).find('#vcbillcode').html();
+					//alert(vcbillcode);
+						//getCopyInfo(elem);
+						//alert(COPY_INFO);
+						//mobj.popover('toggle');
+					});
+				});
+				
+				
+			}
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<style type="text/css">
+			div {
+				word-break: break-all;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">销退入库情况</h1>
+		</header>
+		<div class="mui-content">
+
+			<div class="mui-card">
+				<div class="mui-card-header">销退单概况</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner" id="productinfo">
+						<span id="vcuniversalname"></span>
+						<h6 id="vcproductname"></h6>
+						<h6 id="vcproductcode"></h6>
+						<h6 id="vcstandard"></h6>
+						<h6 id="vcproducername"></h6>
+						<h6 id="vccustomername"></h6>
+						<h6 id="usestatus">状态：</h6>
+					</div>
+				</div>
+				<div class="mui-card-footer">顺序:取消|下单->处理中->准备上架中->上架完成</div>
+			</div>
+
+			<div class="mui-card" id="stock">
+				<div class="mui-card-header">销退单明细概况</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<ul class="mui-table-view" id="wmsreceive">
+							<li class="mui-table-view-cell">
+								<a>
+									<div class="mui-row">
+										<div class="mui-col-sm-3  mui-col-xs-3">批号</div>
+										<div class="mui-col-sm-3  mui-col-xs-3">有效期</div>
+										<div class="mui-col-sm-3  mui-col-xs-3" style="text-align: center;">数量</div>
+										<div class="mui-col-sm-3  mui-col-xs-3">状态</div>
+									</div>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="mui-card-footer">顺序:临时->收货完成->准备上架->上架完成</div>
+			</div>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+			mui.plusReady(function() {
+
+				var network = true;
+				if(mui.os.plus) {
+					mui.plusReady(function() {
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+							network = false;
+						}
+					});
+				}
+
+				var self = plus.webview.currentWebview();
+				var isid = self.isid;
+
+				var vcuniversalname = self.vcuniversalname;
+				var vcproductname = self.vcproductname;
+				var vcstandard = self.vcstandard;
+				var vcproducername = self.vcproducername;
+				var vcproductcode = self.vcproductcode;
+				var vccustomername = self.vccustomername;
+
+				jQuery("#vcuniversalname").html(vcuniversalname);
+				jQuery("#vcproductname").html(vcproductname);
+				jQuery("#vcstandard").html(vcstandard);
+				jQuery("#vcproducername").html(vcproducername);
+				jQuery("#vcproductcode").html(vcproductcode);
+				jQuery("#vccustomername").html(vccustomername);
+
+				if(network) {
+					ajax(isid);
+				} else {
+					mui.toast("当前网络不给力，请稍后再试");
+				}
+
+				function ajax(isid) {
+					var url =getServerPath(localStorage.netmod)
+					var dataType = 'json';
+					//发送数据
+					var data = {
+						controller: 'SalesReturnApp',
+						method: 'salesReturnAppDtl',
+						isid: isid,
+						token: TOKEN
+					};
+					//ajax 请求中。
+					ajaxxing();
+					mui.ajax(url, {
+						data: data,
+						dataType: dataType, //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						success: success,
+						error: err
+					});
+				}
+
+				function success(response) {
+					//库存数据显示
+					var str = JSON.stringify(response);
+					console.log(str);
+					if(response != null) {
+						var syscode = response.syscode;
+						var sysreason = response.sysreason;
+						if(syscode == SYSCODE_NO) {
+							tokenOutTime(sysreason);
+						} else {
+
+							var doc = response.sysdata.SalesReturnApp_salesReturnAppDtl.DOC;
+							var dtl = response.sysdata.SalesReturnApp_salesReturnAppDtl.DTL;
+							var prt=response.sysdata.SalesReturnApp_salesReturnAppDtl.PRT;
+							prt=prt==0?'<span style="color:green">(未打印)</span>':'<span style="color:red">(已打印)</span>';
+							
+							if(jQuery.isEmptyObject(doc)) {
+								jQuery("#usestatus").append("<span style='color: red;'>暂未提交到wms处理,请确认原始销退单<span>");
+								appendEmpty();
+							} else {
+								var porderstatus = doc[0].PORDERSTATUS;
+								jQuery("#usestatus").append(porderstatus+prt);
+
+								if(!jQuery.isEmptyObject(dtl)) {
+									jQuery.each(dtl, function(index, content) {
+										jQuery("#wmsreceive").append(
+											'<li class="mui-table-view-cell">' +
+											'<a>' +
+											'<div class="mui-row">' +
+											'<div class="mui-col-sm-3  mui-col-xs-3">' + content.LOTNO + '</div>' +
+											'<div class="mui-col-sm-3  mui-col-xs-3">' + content.VALIDDATE + '</div>' +
+											'<div class="mui-col-sm-3  mui-col-xs-3" style="text-align: center;">' + content.GOODSQTY + '</div>' +
+											'<div class="mui-col-sm-3  mui-col-xs-3">' + content.USESTATUS + '</div>' +
+											'</div>' +
+											'</a>' +
+											'</li>'
+										);
+									});
+								}else{
+									appendEmpty();
+								}
+
+							}
+
+						}
+					}
+
+				};
+
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#copy'));
+
+			});
+			
+			function appendEmpty(){
+				jQuery("#wmsreceive").append(
+											'<li class="mui-table-view-cell">' +
+											'<a>' +
+											'<div class="mui-row">' +
+											'<div class="mui-col-sm-3  mui-col-xs-3">-</div>' +
+											'<div class="mui-col-sm-3  mui-col-xs-3">-</div>' +
+											'<div class="mui-col-sm-2  mui-col-xs-2">-</div>' +
+											'<div class="mui-col-sm-4  mui-col-xs-4">-</div>' +
+											'</div>' +
+											'</a>' +
+											'</li>'
+										);
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			
+			.animated {
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			@-webkit-keyframes bounceInDown {
+				0%, 60%, 75%, 90%, 100% {
+					-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+					transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+				}
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+				60% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 25px, 0);
+					transform: translate3d(0, 25px, 0);
+				}
+				75% {
+					-webkit-transform: translate3d(0, -10px, 0);
+					transform: translate3d(0, -10px, 0);
+				}
+				90% {
+					-webkit-transform: translate3d(0, 5px, 0);
+					transform: translate3d(0, 5px, 0);
+				}
+				100% {
+					-webkit-transform: none;
+					transform: none;
+				}
+			}
+			@keyframes bounceInDown {
+				0%, 60%, 75%, 90%, 100% {
+					-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+					transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+				}
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+				60% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 25px, 0);
+					transform: translate3d(0, 25px, 0);
+				}
+				75% {
+					-webkit-transform: translate3d(0, -10px, 0);
+					transform: translate3d(0, -10px, 0);
+				}
+				90% {
+					-webkit-transform: translate3d(0, 5px, 0);
+					transform: translate3d(0, 5px, 0);
+				}
+				100% {
+					-webkit-transform: none;
+					transform: none;
+				}
+			}
+			.bounce-in-down {
+				-webkit-animation-name: bounceInDown;
+				animation-name: bounceInDown;
+			}
+			@-webkit-keyframes fadeInDown {
+				0%, 60%, 75%, 90%, 100% {
+					-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+					transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+				}
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+				60% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				75% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				90% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				100% {
+					-webkit-transform: none;
+					transform: none;
+				}
+			}
+			@keyframes fadeInDown {
+				0%, 60%, 75%, 90%, 100% {
+					-webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+					transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+				}
+				0% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+				60% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				75% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				90% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				100% {
+					-webkit-transform: none;
+					transform: none;
+				}
+			}
+			.fade-in-down {
+				-webkit-animation-name: fadeInDown;
+				animation-name: fadeInDown;
+			}
+			@-webkit-keyframes bounceOutUp {
+				20% {
+					-webkit-transform: translate3d(0, -10px, 0);
+					transform: translate3d(0, -10px, 0);
+				}
+				40%,
+				45% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 20px, 0);
+					transform: translate3d(0, 20px, 0);
+				}
+				100% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+			}
+			@keyframes bounceOutUp {
+				20% {
+					-webkit-transform: translate3d(0, -10px, 0);
+					transform: translate3d(0, -10px, 0);
+				}
+				40%,
+				45% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 20px, 0);
+					transform: translate3d(0, 20px, 0);
+				}
+				100% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+			}
+			.bounce-out-up {
+				-webkit-animation-name: bounceOutUp;
+				animation-name: bounceOutUp;
+			}
+			@-webkit-keyframes fadeOutUp {
+				20% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				40%,
+				45% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				100% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+			}
+			@keyframes fadeOutUp {
+				20% {
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				40%,
+				45% {
+					opacity: 1;
+					-webkit-transform: translate3d(0, 0px, 0);
+					transform: translate3d(0, 0px, 0);
+				}
+				100% {
+					opacity: 0;
+					-webkit-transform: translate3d(0, -100%, 0);
+					transform: translate3d(0, -100%, 0);
+				}
+			}
+			.fade-out-up {
+				-webkit-animation-name: fadeOutUp;
+				animation-name: fadeOutUp;
+			}
+			.menu-open {
+				height: 100%;
+				width: 100%;
+			}
+			.menu-open .mui-scroll-wrapper {
+				position: absolute;
+				top: 48;
+				bottom: 0;
+				left: 0;
+				z-index: 1;
+				width: 100%;
+				overflow: hidden;
+				-webkit-backface-visibility: hidden;
+			}
+			.menu-backdrop {
+				display: none;
+			}
+			.menu-open .menu-backdrop {
+				position: fixed;
+				top: 0;
+				bottom: 0;
+				height: 100%;
+				width: 100%;
+				display: block;
+				z-index: 998;
+			}
+			.menu-wrapper {
+				position: absolute;
+				margin-top: -50px;
+				top: 48px;
+				left: 0;
+				right: 0;
+				z-index: 999;
+				text-align: center;
+				background-color: #F2F2F2;
+				width: 100%;
+			}
+			.menu-wrapper.hidden {
+				-webkit-transform: translate3d(0, -100%, 0);
+				transform: translate3d(0, -100%, 0);
+				z-index: -1;
+			}
+			.menu {
+				width: 100%;
+			}
+			.menu .mui-table-view-inverted {
+				color: gray;
+				font-size: 19px;
+			}
+			.menu .mui-table-view-inverted .mui-table-view-cell:after {
+				height: 4px;
+				left: 0;
+				right: 0;
+			}
+			.menu-wrapper.mui-active,
+			.menu-wrapper.mui-active .menu {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+			#info{
+			  	padding: 20px 10px ;
+			 }
+			 
+			 
+			 
+			 
+			body, html,.mui-content
+			 {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
+			
+			
+			#allmap {
+				width: 100%;
+				height: 60%;
+				overflow: hidden;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
+			
+			.nav-btn{
+				border-width: 0px;
+				font-size: 16px;
+			}
+			
+			
+			.mui-off-canvas-left {
+				color: #fff;
+			}
+			.title {
+				margin: 35px 15px 10px;
+				color: #bbb;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			#schedual-div {
+				display: none;
+				width:92%;
+				//height: 42px;
+				//border: 1px solid #ccc;
+				//border-right: 2px solid #888;
+				//border-bottom: 2px solid #888;
+				background-color: #FFFFFF;
+				//margin-top: 12px;
+				//top: 340px;
+				left: 12px;
+				position: absolute;
+				z-index: 8888;
+				filter: alpha(opacity : 60);
+				opacity: 0.6;
+				-moz-opacity: 0.6;
+				-khtml-opacity: 0.6
+			}
+			
+			.mui-progressbar-success span {
+				background-color: #4cd964;
+			}
+			.mui-progressbar-warning span {
+				background-color: #f0ad4e;
+			}
+			.mui-progressbar-danger span {
+				background-color: #dd524d;
+			}
+			.mui-progressbar-royal span {
+				background-color: #8a6de9;
+			}
+			
+			
+		</style>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=rsQL4CUkAClgjVOhwTyWEqEhFkUc9Thz"></script>
+		<title>地图展示</title>
+	</head>
+
+	<body>
+		
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable" >
+			<!--侧滑菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-right">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="title" id="aside_title">当前目的地：</div>
+						<div class="content">
+							<p style="font-size: large;font-weight: 600;color: #FF5053;" id="aside_custom"></p>
+							<p id="aside_addr"></p>
+							
+						</div>
+						<div class="title" style="margin-bottom: 25px;">客户清单:</div>
+						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted" id="asidelist">
+							<li class="mui-table-view-cell" style="color: #FF5053;">
+								<a class="mui-navigate-right">
+									
+									<div class="mui-row">
+										<div class="mui-col-sm-2 mui-col-xs-2">
+											<span class="mui-badge mui-badge-warning" style="margin: 0 auto; margin-top: 12px;">1</span>
+										</div>
+										<div class="mui-col-sm-10 mui-col-xs-10">
+											<div  class="mui-row">
+												<div class="mui-col-sm-6 mui-col-xs-12">
+													<span>浙江省临海市</span>
+												</div>
+											</div>
+											<div  class="mui-row">
+												<div class="mui-col-sm-6 mui-col-xs-12">
+													<span>浙江省临海市</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+								</a>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+			</aside>
+		<!--主界面部分-->
+	<div class="mui-inner-wrap">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="font-weight:bold;"></a>
+			<!--<a id="icon-menu" class="mui-icon mui-icon-arrowthinup mui-pull-left" style="margin-left: 10px;"></a>-->
+			<!--<button type="button" class="mui-btn mui-btn-outlined mui-pull-left nav-btn mui-btn-primary" style="margin-left: 10px;" id="btn-lm">列表</button>-->
+			<button type="button" class="mui-btn mui-btn-outlined mui-pull-left nav-btn mui-btn-primary" style="margin-left: -5px;">历史</button>
+			<h1 class="mui-title">运输管理</h1>
+			
+			<a href="#offCanvasSide" class="mui-icon mui-action-menu mui-icon-bars mui-pull-right"></a>
+			<button type="button" class=" mui-action-menu mui-btn mui-btn-outlined mui-pull-right nav-btn mui-btn-danger" id="btn-select">切换</button>
+			
+		</header>
+
+		<div id="offCanvasContentScroll" class="mui-content mui-content-padded mui-scroll-wrapper">
+			<div id="allmap"></div>
+			<div >
+					
+					<div id="p1" class="mui-content-padded mui-hidden">
+						<div class="mui-card">
+							<div class="mui-card-header">任务概况</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+						 	   		<p>全程<span id="customcount"></span>个配送点，请在发车前点击准备出发，并填写出发里程等信息。</p>
+								</div>
+							</div>
+						</div>
+						<button id="btn-go" type="button" class="btn mui-btn-block mui-btn-primary">准备出发</button>
+					</div>
+					
+					<div id="p2_1" class="mui-content-padded mui-hidden">
+						<div class="mui-card">
+							<div class="mui-card-header" id="target_customer">
+								目的地：
+							</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+						 	   		<p>地址：<span id="inceptaddr">柏叶西路</span></p>
+								</div>
+							</div>
+						</div>
+						<button id="btn-reach" type="button" class="btn mui-btn-block mui-btn-danger">我已到达目的地</button>
+					</div>
+					
+					<div id="p2_2" class="mui-content-padded mui-hidden" >
+						<div class="mui-card">
+							
+							<div class="mui-card-header" id="local_customer">
+								<!--当前位置：-->
+							</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+						 	   		<p>地址：<span id="local_inceptaddr">柏叶西路</span></p>
+						 	   		<p id="reachtemparea" class="mui-badge mui-badge-primary">到达温度:<span id="reachtemp" ></span></p>
+								</div>
+							</div>
+						</div>
+						<div class="mui-row">
+							<div class="mui-col-sm-6 mui-col-xs-6" style="padding: 1px;">
+								<div class="mui-row">
+									<div class="mui-col-sm-6 mui-col-xs-6" style="padding: 1px;">
+										<button id="btn-downloadgoods" type="button" class="mui-btn mui-btn-block mui-btn-blue" >卸车</button>
+									</div>
+									<div class="mui-col-sm-6 mui-col-xs-6" style="padding: 1px;">
+										<button id="btn-uploadjjd" type="button" class="mui-btn mui-btn-block mui-btn-blue" >交接</button>
+									</div>
+								</div>
+							</div>
+							
+							<div class="mui-col-sm-6 mui-col-xs-6" style="padding: 1px;">
+								<button id="btn-finish" type="button" class="mui-btn mui-btn-block mui-btn-success" >完成交接并离开</button>
+							</div>
+						</div>
+					</div>
+					
+					<div id="p3" class="mui-content-padded mui-hidden" >
+						<div class="mui-card">
+							<div class="mui-card-header">信息</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+						 	   		<p>配送完成，返回途中</p>
+								</div>
+							</div>
+						</div>
+						<div class="mui-row">
+							<button id="btn-sureback" type="button" class="btn mui-btn-block mui-btn-danger">确定回到公司</button>
+						</div>
+					</div>
+					
+					<div id="p4" class="mui-content-padded mui-hidden" >
+						<div class="mui-card">
+							<div class="mui-card-header">信息</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+						 	   		<p>行程125公里，耗时5小时，送货258件 配送点12个[非常棒]</p>
+								</div>
+							</div>
+						</div>
+						<div class="mui-row">
+							<button id="btn-close" type="button" class="btn mui-btn-block mui-btn-grey">任务已闭环，关闭</button>
+						</div>
+					</div>
+					
+			</div>
+			
+		</div>
+		<div class="mui-off-canvas-backdrop"></div>
+		
+		
+		<!--下拉菜单-->
+		<div id="menu-wrapper" class="menu-wrapper hidden">
+			<div id="menu" class="menu">
+				<ul class="mui-table-view mui-table-view-inverted" id="menulist">
+					
+				</ul>
+			</div>
+		</div>
+		
+		<div id="menu-backdrop" class="menu-backdrop"></div>
+		</div>
+		
+		
+	</div>
+	
+		<div id="schedual-div">
+			<div class="mui-row">
+				<!--<div class="mui-col-sm-1 mui-col-xs-1">-</div>-->
+				<div class="mui-col-sm-12 mui-col-xs-12" style="background-color: #fff;">
+					<div class="mui-row">
+						<div >
+							
+						</div>
+						<p class="mui-progressbar mui-progressbar-danger" data-progress="50"><span></span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+
+</html>
+
+<script src="../../js/jquery-3.2.1.min.js"></script>
+<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/mymap.js"></script>
+<script src="../../js/myglobal.js"></script>
+<script src="../../js/myinput.js"></script>
+<script type="text/javascript">
+
+	var map = new BMap.Map("allmap"); 
+	var point=new BMap.Point(getOriginLNG(), getOriginLAT());
+	map.centerAndZoom(point, 11); 
+	setOrigin(map,point);
+	
+/*	map.addControl(new BMap.MapTypeControl({
+		mapTypes: [
+			BMAP_NORMAL_MAP,
+			BMAP_HYBRID_MAP
+		]
+	}));*/
+	//map.setCurrentCity("临海"); // 设置地图显示的城市 此项是必须设置的
+	map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+	
+/*	定位案例
+ * var geolocation = new BMap.Geolocation();
+	geolocation.enableSDKLocation();
+	geolocation.getCurrentPosition(function(r){
+	if(this.getStatus() == BMAP_STATUS_SUCCESS){
+		var mk = new BMap.Marker(r.point);
+		map.addOverlay(mk);
+		map.panTo(r.point);
+		//alert('您的位置：'+r.point.lng+','+r.point.lat);
+	}
+	else {
+		alert('failed'+this.getStatus());
+	}        
+});*/
+	
+	
+	
+	
+	mui.init({
+		swipeBack:false //启用右滑关闭功能
+			});
+    
+    var trrecordid="";//车次
+    var flagcold="";//出车单是否含有冷藏
+    var forwardmsg="";//简短的前往信息 如三门、温岭等
+    var ordid="";//车次中的送货节点id
+    var transid="";//运输地点ID
+    var gcompanyid="";
+    var companyname="";
+    var inceptaddr="";
+    var step="";//运输节点状态 
+    var drivername="";
+    var vehicleno="";
+    
+    var customqty="";
+    var addressqty="";
+    var totalpieces="";
+    var current_order={};
+    var order_all=[];
+
+    
+	mui.plusReady(function(){
+		
+		ajaxxing();
+		//加载车次任务
+		loadtrrecords();
+		
+		initoffcanvas();
+		
+		//测试进度条
+		//initschedual();
+		
+		//初始化按钮事件
+		initaction();
+		
+	})
+	
+	
+	function initaction(){
+		
+		//准备出发按钮
+		goEvent();
+		
+		//我已到达按钮
+		reachEvent();
+		
+		//站点交接按钮事件
+		uploadjjdEvent();
+		
+		
+		//站点完成按钮事件
+		finishEvent();
+		
+		//到达公司按钮事件
+		surebackEvent();
+		
+		
+		//监听准备出发子页面登记返回事件
+		window.addEventListener('returnEvent0', function(event) {
+				var value = event.detail.value;
+				var ordjson = JSON.parse(value);//tms_trrecord_order行数据
+
+				//展现地图
+				dispalytrrecords(trrecordid);
+			});
+		
+		document.getElementById('reachtemparea').addEventListener('tap',function(e){
+			var ordid=current_order.ORDID;
+			var reachtemp=current_order.REACHTEMP;
+			reachColdTempSign();
+		});
+			
+	}
+	
+
+	
+	//准备出发
+	var goEvent=function(){
+		
+		document.getElementById("btn-go").addEventListener('tap',function(){
+			
+			mui.openWindow({
+			    url:"../pub/tmstrmap_sub0.html",
+			    id:"tmstrmap_sub0.html",
+			    styles:{
+			      //top:10,//新页面顶部位置
+			      //bottom:10,//新页面底部位置
+			      width:"100%",//新页面宽度，默认为100%
+			      height:"100%"//新页面高度，默认为100%
+			      //left:20,
+				  //right:20
+			    },
+			    
+			    extras:{
+			      trrecordid:trrecordid,
+			      forwardmsg:forwardmsg,
+			      vehicleno:vehicleno,
+			      drivername:drivername,
+			      totalpieces:totalpieces,
+			      flagcold:flagcold,
+			      order_all:order_all
+			      
+			    },
+			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+			    show:{
+			      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+			      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+			      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    }
+			    
+			});
+			
+			/*var mask = mui.createMask(function(){
+				plus.webview.close( "tmstrmap_sub.html" );
+				this.close();//关闭遮罩
+			});//callback为用户点击蒙版时自动执行的回调；
+			mask.show();//显示遮罩*/
+			
+		});
+		
+	}
+	
+	//我已到达事件
+	var reachEvent=function(){
+		
+		document.getElementById("btn-reach").addEventListener('tap',function(){
+			
+			//调用百度计算路程给出提示信息  是否要到达
+			var geolocation = new BMap.Geolocation();
+			geolocation.enableSDKLocation();
+			geolocation.getCurrentPosition(function(r){
+				var lat="";
+				var lng="";
+				if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    //1、标记自己当前的位置
+					//imhere(map,r.point)
+					//map.panTo(r.point);
+					//2、测算距离
+					lng=r.point.lng;
+					lat=r.point.lat;
+					
+					//距离
+					var distence=3000;
+					if(distence>5000){
+						
+						//提示有点远  是否确定到达
+						var customname=current_order.CUSTOMNAME;
+						var msg='您当前的位置距离"'+customname+'"稍远，确定到了吗？';
+						mui.confirm(msg,'请确认',['确定','取消'],function(e){
+							if (e.index == 0) {
+									//保存到达操作
+			   						reach(current_order,lng,lat);
+								} 
+						});
+						
+					}else{
+					    //保存到达操作
+				   		reach(current_order,lng,lat);
+					}
+
+
+				}else {
+					//mui.toast("获取地理位置失败");
+					//直接保存了
+			   		reach(current_order,lng,lat);
+				}      
+			});
+		});
+		
+	}
+	//我已到达
+	var reach=function(orderjson,lng,lat){
+		
+		//根据经纬度判断是否接近目标地址
+		var ordid=orderjson.ORDID;
+		
+		var url = getServerPath(localStorage.netmod)
+		console.log(url);
+		var dataType = 'json';
+		//发送数据
+		var data = {
+			controller: 'TmsTrRecord',
+			method:'reachTarget',
+			ordid: ordid,
+			lat:lat,
+			lng:lng,
+			token: TOKEN
+		};
+		//console.log(data);
+		mui.ajax(url, {
+			data: data,
+			dataType: dataType, //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			success: success3,
+			error: err
+		});
+	}
+	
+	var success3 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						//console.log(JSON.stringify(response));
+						
+					    var reachjsons=response.sysdata.TmsTrRecord_reachTarget;
+					    var code=reachjsons.code;
+					    var msg=reachjsons.msg;
+					    var memo=reachjsons.memo;
+					    if(code=="OK"){
+					    	dispalytrrecords(trrecordid);
+					    }else{
+					    	mui.toast(msg+" "+memo)
+					    }
+						
+					}
+				}
+			};
+			
+	
+
+	
+	var finishEvent=function(){
+		
+		document.getElementById("btn-finish").addEventListener('tap',function(){
+			
+			mui.openWindow({
+			    url:"../pub/tmstrmap_sub1.html",
+			    id:"tmstrmap_sub1.html",
+			    styles:{
+			      //top:10,//新页面顶部位置
+			      //bottom:10,//新页面底部位置
+			      width:"100%",//新页面宽度，默认为100%
+			      height:"100%"//新页面高度，默认为100%
+			    },
+			    
+			    extras:{
+			      trrecordid:trrecordid,
+			      current_order:current_order,
+			      order_all:order_all
+			    },
+			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+			    show:{
+			      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+			      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+			      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    }
+			    
+			});
+			
+		});
+		
+	
+		
+	}
+	
+	//到达公司事件
+	var surebackEvent=function(){
+		document.getElementById('btn-sureback').addEventListener('tap',function(){
+			//修改状态，并且进入到填写过路费等界面  确定和忽略
+			sureback();
+		});
+	}
+	
+	var sureback=function(){
+		var url = getServerPath(localStorage.netmod)
+		console.log(url);
+		var dataType = 'json';
+		//发送数据
+		var data = {
+			controller: 'TmsTrRecord',
+			method:'sureback',
+			trrecordid: trrecordid,
+			token: TOKEN
+		};
+
+		mui.ajax(url, {
+			data: data,
+			dataType: dataType, //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			success: success5,
+			error: err
+		});
+	}
+	
+	var success5 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+					    var reachjsons=response.sysdata.TmsTrRecord_sureback;
+					    var code=reachjsons.code;
+					    var msg=reachjsons.msg;
+					    var memo=reachjsons.memo;
+					    //alert(JSON.stringify(memo));
+					    var customqty=memo.customqty;
+					    var addressqty=memo.addressqty;
+					    if(code=="OK"){
+					    	//打开登记页面
+					    	openNotes(trrecordid,memo);//这里的memo为json格式的数据{"customqty":8,"addressqty":8}
+					    }else{
+					    	mui.toast(msg+" "+memo)
+					    }
+						
+					}
+				}
+			};
+			
+	var openNotes=function(trrecordid,trsummary){
+		mui.openWindow({
+			    url:"../pub/tmstrmap_sub2.html",
+			    id:"tmstrmap_sub2.html",
+			    styles:{
+			      //top:10,//新页面顶部位置
+			      //bottom:10,//新页面底部位置
+			      width:"100%",//新页面宽度，默认为100%
+			      height:"100%"//新页面高度，默认为100%
+			      //left:20,
+				  //right:20
+			    },
+			    
+			    extras:{
+			      trrecordid:trrecordid,
+			      trsummary:trsummary
+			    },
+			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+			    show:{
+			      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+			      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+			      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    }
+			    
+			});
+	}
+	
+	var uploadjjdEvent=function(){
+		
+		document.getElementById("btn-uploadjjd").addEventListener('tap',function(){
+			
+			
+			
+			mui.openWindow({
+			    url:"../pub/tmstrmap_sub_uploadjjd.html",
+			    id:"tmstrmap_sub_uploadjjd.html",
+			    styles:{
+			      //top:10,//新页面顶部位置
+			      //bottom:10,//新页面底部位置
+			      width:"100%",//新页面宽度，默认为100%
+			      height:"100%"//新页面高度，默认为100%
+			      //left:20,
+				  //right:20
+			    },
+			    
+			    extras:{
+			      trrecordid:trrecordid,
+			      current_order:current_order,
+			      order_all:order_all
+			      
+			    },
+			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+			    show:{
+			      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+			      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+			      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+			    }
+			    
+			});
+			
+		});
+		
+	}
+	
+			
+	
+	
+	var display_p2_1=function(ordjson){
+		if(!$.isEmptyObject(ordjson)){
+			var customname=ordjson.CUSTOMNAME;
+			var inceptaddr=ordjson.INCEPTADDR;
+			//alert(customname);
+			$("#target_customer").html("目的地："+customname);
+			
+			$("#inceptaddr").html(inceptaddr);
+		}else{
+			//
+			mui.toast("异常所选的ordid行信息不存在.");
+		}
+	}
+	
+	var display_p2_2=function(ordjson){
+		if(!$.isEmptyObject(ordjson)){
+			var customname=ordjson.CUSTOMNAME;
+			var inceptaddr=ordjson.INCEPTADDR;
+			var reachtemp=ordjson.REACHTEMP;
+			var flagcold=ordjson.FLAGCOLD;
+			var reachtempHtml="";
+			if(flagcold=="Y"){
+				$("#reachtemparea").removeClass('mui-hidden');
+				if(isNumber(reachtemp)){
+					$("#reachtemp").html(reachtemp+"℃");
+					//reachtempHtml="<span id='reachtemp' click='alert(123)'>到达温度:"+reachtemp+"</span>";
+				}else{
+					$("#reachtemp").html("?");
+					//reachtempHtml="<span id='reachtemp' click='alert(123)'>到达温度:"+"?"+"</span>";
+				}
+			}else{
+				$("#reachtemparea").addClass('mui-hidden');
+			}
+			$("#local_customer").html("当前客户："+customname);
+			$("#local_inceptaddr").html(inceptaddr);
+		}else{
+			//
+			mui.toast("异常所选的ordid行信息不存在.");
+		}
+	}
+	
+	
+	
+	
+	function initschedual(){
+		//设置位置
+		//1、获取屏幕高度
+		var height= document.body.clientHeight;
+		$("#schedual-div").css('top',height-100);
+		mui("#schedual-div .mui-progressbar").each(function () {
+				mui(this).progressbar({progress:this.getAttribute("data-progress")}).show();
+			});
+	}
+	
+	//加载车次任务
+	function loadtrrecords(){
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'getTrRecordBydriver',
+					driverid1: getWMSEmployeeID(),
+					stateids: "1,2,3",
+					datatype: 1,
+					token: TOKEN
+				};
+				//console.log(data);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success1,
+					error: err
+				});
+	}
+
+			var success1 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var trrecordjsons=response.sysdata.TmsTrRecord_getTrRecordBydriver;
+						//展现 出车任务的下拉选择项
+						dispalytrrecordsmenu(trrecordjsons);
+						inittrrecord();
+					}
+				}
+			};
+			
+			//出车任务的下拉选择项
+			var  dispalytrrecordsmenu=function(trrecordjsons){
+				var _trrecordid="";
+				var menulist=$("#menulist");
+				menulist.find("li").remove();
+				if(trrecordjsons.length==0){
+					var li='<li class="mui-table-view-cell">'+
+								+'<a href="javascript:;">'+
+									+'<span>暂时没有出车任务</span>'+
+									+'<div>xxxxxxxxxxxxx</div>'+
+								+'</a>'+
+							+'</li>';
+					menulist.append(li);
+				}else{
+					$.each(trrecordjsons, function(i,c) {
+						var TRRECORDID=c.TRRECORDID;
+						_trrecordid=TRRECORDID;
+						var CREDATE=c.CREDATE;
+						var DRIVERNAME=c.DRIVERNAME;
+						var VEHICLENO=c.VEHICLENO;
+						var CUSTOMQTY=c.CUSTOMQTY;
+						var ADDRESSQTY=c.ADDRESSQTY;
+						var TOTALPIECES=c.TOTALPIECES;
+						var ROUTENAME=c.ROUTENAME;
+						forwardmsg=ROUTENAME;//不管什么情况先赋值 只有一行就正确了，多行反正是选择的时候重新赋值
+						drivername=DRIVERNAME;
+						vehicleno=VEHICLENO;
+						customqty=CUSTOMQTY;
+						addressqty=ADDRESSQTY;
+						totalpieces=TOTALPIECES;
+						
+						var li='<li class="mui-table-view-cell">'
+									+'<a href="javascript:;">'
+										+'<span><span>'+CREDATE+'</span>  #<span id="trrecordid">'+TRRECORDID+'</span>班次</span>'
+										+'<div id="forwardmsg">'+ROUTENAME+'</div>'
+										+'<div id="drivername" class="mui-hidden">'+DRIVERNAME+'</div>'
+										+'<div id="vehicleno" class="mui-hidden">'+VEHICLENO+'</div>'
+										+'<div id="customqty" class="mui-hidden">'+CUSTOMQTY+'</div>'
+										+'<div id="addressqty" class="mui-hidden">'+ADDRESSQTY+'</div>'
+										+'<div id="totalpieces" class="mui-hidden">'+TOTALPIECES+'</div>'
+									+'</a>'
+								+'</li>';
+					menulist.append(li);	
+					});
+					//如果选择项有多个显示下拉菜单，如果一个直接加载
+					if(trrecordjsons.length>1){
+						    //显示下拉菜单时，地图100%
+						    setAllMapHeight("100%")
+						    //延迟加载下拉菜单
+							setTimeout(function() {
+								_toggleMenu();
+							}, 500);
+				
+					}else{
+						dispalytrrecords(_trrecordid);
+					}
+					
+					
+				}
+				
+			}
+			
+	//设置地图高度		
+	var setAllMapHeight=function(value){
+		
+		$("#allmap").css('height',value)
+		
+	}
+			
+	var _toggleMenu=null;		
+	var inittrrecord=function(){
+    	var menuWrapper = document.getElementById("menu-wrapper");
+			var menu = document.getElementById("menu");
+			var menuWrapperClassList = menuWrapper.classList;
+			var backdrop = document.getElementById("menu-backdrop");
+			var info = document.getElementById("info");
+			
+			backdrop.addEventListener('tap', toggleMenu);
+			document.getElementById("btn-select").addEventListener('tap',toggleMenu)
+			//下沉菜单中的点击事件
+			mui('#menu').on('tap', 'a', function() {
+				toggleMenu();
+				//info.innerHTML = '你已选择：'+this.innerHTML;
+				trrecordid=$(this).find("#trrecordid").html();
+				forwardmsg=$(this).find("#forwardmsg").html();
+				drivername=$(this).find("#drivername").html();
+				vehicleno=$(this).find("#vehicleno").html();
+				customqty=$(this).find("#customqty").html();
+				addressqty=$(this).find("#addressqty").html();
+				totalpieces=$(this).find("#totalpieces").html();
+				dispalytrrecords(trrecordid);
+				
+			});
+			var busying = false;
+
+			function toggleMenu() {
+				if (busying) {
+					return;
+				}
+				busying = true;
+				if (menuWrapperClassList.contains('mui-active')) {
+					document.body.classList.remove('menu-open');
+					menuWrapper.className = 'menu-wrapper fade-out-up animated';
+					menu.className = 'menu bounce-out-up animated';
+					setTimeout(function() {
+						backdrop.style.opacity = 0;
+						menuWrapper.classList.add('hidden');
+					}, 500);
+				} else {
+					document.body.classList.add('menu-open');
+					menuWrapper.className = 'menu-wrapper fade-in-down animated mui-active';
+					menu.className = 'menu bounce-in-down animated';
+					backdrop.style.opacity = 1;
+				}
+				setTimeout(function() {
+					busying = false;
+				}, 500);
+			}
+			
+			_toggleMenu=toggleMenu;
+			
+    }
+	
+	
+	function initoffcanvas(){
+		
+		 //侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			 //主界面容器
+			var offCanvasInner = offCanvasWrapper[0].querySelector('.mui-inner-wrap');
+			 //菜单容器
+			var offCanvasSide = document.getElementById("offCanvasSide");
+					
+
+		
+			 //主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
+			//mui('#offCanvasContentScroll').scroll();
+			 //实现ios平台原生侧滑关闭页面；
+			if (mui.os.plus && mui.os.ios) {
+				mui.plusReady(function() { //5+ iOS暂时无法屏蔽popGesture时传递touch事件，故该demo直接屏蔽popGesture功能
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'none'
+					});
+				});
+			}
+		
+		
+	}
+    
+    
+    
+    /**
+     * 选择下拉菜单时显示出地图数据
+     * @param {Object} trrecordid  车次ID
+     * 
+     * step:
+     *    1、加载路径信息
+     *    2、投影到百度地图
+     *    3、显示运输任务路径
+     */
+    var dispalytrrecords=function(_trrecordid){
+    	        
+    	        trrecordid=_trrecordid;
+    	
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					//method: 'getTrRecordOrder',
+					method:'getTrRecordPointinfos',
+					trrecordid: _trrecordid,
+					token: TOKEN
+				};
+				//console.log(data);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success2,
+					error: err
+				});
+    }
+    
+    
+    
+    var success2 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+					    var orderjsons=response.sysdata.TmsTrRecord_getTrRecordPointinfos.recordorder;
+					    var stateid=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['STATEID'];//主单状态
+					    flagcold=response.sysdata.TmsTrRecord_getTrRecordPointinfos.flagcold;
+						//展现运输点的位置
+						order_all=orderjsons;
+						dispalytrrecordsorder(orderjsons);
+						//alert(JSON.stringify(current_order));
+						//展现侧边栏
+						displayaside(stateid,current_order,orderjsons);
+						
+						//设置地图高度
+						setAllMapHeight("60%")
+						
+						//展现输入框
+						controllinput(stateid,orderjsons);
+						
+						
+						
+					}
+				}
+			};
+	
+	//根据单据状态展现输入框信息
+	var controllinput=function(stateid,orderjsons){
+		var parr=[];
+		parr.push($('#p1'));
+		parr.push($('#p2_1'));
+		parr.push($('#p2_2'));
+		parr.push($('#p3'));
+		parr.push($('#p4'));
+		
+        //界面显示情况  一次只能显示一个输入面板
+		switch (stateid){
+			case "1":
+			    //主单已确认状态
+			    parr[0].removeClass('mui-hidden');
+			    $.each(parr, function(i,c) {
+			    	if(i!=0){
+			    		c.addClass('mui-hidden');
+			    	}
+			    });
+				break;
+				
+			case "2":
+			    //运输中
+			    getStep(orderjsons);
+			    
+			    if(step=="1"){
+			    	display_p2_1(current_order);//指定下一站后的面板信息
+			    	parr[1].removeClass('mui-hidden');
+			    	$.each(parr, function(i,c) {
+			    	if(i!=1){
+			    		c.addClass('mui-hidden');
+			    	}
+			    });
+			    }
+			    
+			    if(step=="2"){
+			    	//alert(JSON.stringify(current_order));
+			    	//如果有包含冷藏药品  直接弹出提示框  让驾驶员输入冷藏温度
+			    	if(current_order.FLAGCOLD=="Y" && !isNumber(current_order.REACHTEMP)){
+			    		setTimeout(reachColdTempSign,1200)
+			    		//reachColdTempSign();
+			    	}
+			    	display_p2_2(current_order);//显示到达状态后输入面板的信息
+			    	parr[2].removeClass('mui-hidden');
+			    	$.each(parr, function(i,c) {
+			    	if(i!=2){
+			    		c.addClass('mui-hidden');
+			    	}
+			    });
+			    }
+			    
+			    
+			    break;
+			    
+			case "3":
+			    //回厂
+			    parr[3].removeClass('mui-hidden');
+			    $.each(parr, function(i,c) {
+			    	if(i!=3){
+			    		c.addClass('mui-hidden');
+			    	}
+			    });
+			    
+			    break;
+			    
+			case "4":
+			   //结束
+			   parr[4].removeClass('mui-hidden');
+			    $.each(parr, function(i,c) {
+			    	if(i!=4){
+			    		c.addClass('mui-hidden');
+			    	}
+			    });
+			    break;
+			    
+			default:
+				break;
+		}
+		
+		//设置面板内容
+		   //设置客户点数
+		   var customcount=orderjsons.length;
+		   $("#customcount").html(customcount);
+	
+	}
+	
+    var reachColdTempSign=function(){
+    	var _reachtemp=isNumber(current_order.REACHTEMP)?current_order.REACHTEMP:"";
+		var btnArray = ['取消', '确定'];
+		mui.prompt('请输入冷藏设备当前的温度：', _reachtemp, '当前客户含有冷藏药品', btnArray, function(e) {
+			
+			if (e.index == 1) {
+				
+				var reachtemp=e.value.trim();
+				if(!isNumber(reachtemp)){
+					mui.toast(e.value+" 温度格式不对")
+		            return false;
+		        }else{
+		        	saveReachTemp(reachtemp,current_order.ORDID);
+		        }
+			} 				
+			
+		})
+    	
+    }
+    
+    var saveReachTemp=function(reachtemp,ordid){
+    	
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method:'saveReachTemp',
+					reachtemp: reachtemp,
+					ordid:ordid,
+					token: TOKEN
+				};
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success4,
+					error: err
+				});
+    	
+    }
+    
+    var success4 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						
+					    var reachjsons=response.sysdata.TmsTrRecord_saveReachTemp;
+					    var code=reachjsons.code;
+					    var msg=reachjsons.msg;
+					    var memo=reachjsons.memo;
+					    if(code=="OK"){
+					    	dispalytrrecords(trrecordid);
+					    }else{
+					    	mui.toast(msg+" "+memo)
+					    }
+						
+					}
+				}
+			};
+			
+			
+    
+    //获取运输中的节点状态为1、或者2的  同一个车次 只存在一行这样的数据
+    var getStep=function(orderjsons){
+    	 
+    	$.each(orderjsons,function(i,c){
+    		var _step=c.STEP;
+    		if(_step=="1" || _step=="2" ){
+    			step=_step;
+    			transid=c.TRANSID;
+    			gcompanyid=c.GCOMPANYID;
+    			companyname=c.COMPANYNAME;
+    			inceptaddr=c.INCEPTADDR;
+    			current_order=c;
+    			return false;
+    		}
+    	})
+    	
+    }
+    
+    //展现侧边栏
+    var displayaside=function(stateid,current_order,orderjsons){
+    	//标题
+    	if($.isEmptyObject(current_order)){
+    		if(stateid==4){
+    			$("#aside_custom").html("已结束");
+    		}else{
+    			$("#aside_custom").html("尚未出发");
+    		}
+    		
+    	}else{
+    		var _CUSTOMNAME=current_order.CUSTOMNAME;
+    		var _INCEPTADDR=current_order.INCEPTADDR;
+    		$("#aside_custom").html(_CUSTOMNAME);
+    		$("#aside_addr").html(_INCEPTADDR);
+    	}
+    	//列表
+    	$("#asidelist").find('li').remove();
+    	$.each(orderjsons, function(i,c) {
+    		var CUSTOMNAME=c.CUSTOMNAME;
+    		var INCEPTADDR=c.INCEPTADDR;
+    		var TRRECORDID=c.TRRECORDID;
+    		var ORDID=c.ORDID;
+    		var TRANSID=c.TRANSID;
+    		var index=i+1;
+    		var STEP=c.STEP;
+    		var ORDID=c.ORDID;
+    		
+/*    		var li_style='';
+
+    		switch (STEP){
+    			case "0":
+    			    li_style='<li class="mui-table-view-cell">';
+    				break;
+    			case "3":
+    			    li_style='<li class="mui-table-view-cell style="color: #FF5053;"">';
+    				break;
+    			default:
+    			    li_style='<li class="mui-table-view-cell style="color: #00FF00;"">';
+    				break;
+    		}*/
+    		
+    		var li='<li class="mui-table-view-cell">'
+    		+'<a class="mui-navigate-right">'
+                +'  <div class="mui-row">'
+                +'    <div class="mui-col-sm-2 mui-col-xs-2">'
+                 +'     <span class="mui-badge mui-badge-warning" style="margin: 0 auto; margin-top: 12px;">'+index+'</span>'
+                 +'   </div>'
+                 +'   <div class="mui-col-sm-10 mui-col-xs-10">'
+                 +'     <div  class="mui-row">'
+                 +'       <div class="mui-col-sm-6 mui-col-xs-12">'
+                 +'         <span id="customname">'+CUSTOMNAME+'</span>'
+                 +'       </div>'
+                 +'     </div>'
+                 +'     <div  class="mui-row">'
+                 +'       <div class="mui-col-sm-6 mui-col-xs-12">'
+                 +'         <span>'+INCEPTADDR+'</span>'
+                 +'       </div>'
+                 +'     </div>'
+          		+'			</div>'
+          		
+          		+'		<div class="mui-hidden">'
+          		+' 			<span  id="ordid">'+ORDID+'</span> '
+          		+' 			<span  id="trrecordid">'+TRRECORDID+'</span> '
+          		+' 			<span  id="transid">'+TRANSID+'</span> '
+          		+'		</div>'
+				+'					</div>'
+				+'				</a>'
+				+'			</li>';
+    		
+    		$("#asidelist").append(li);
+	    		
+    	});
+    	
+    	//事件
+    	var lilist=document.getElementsByTagName("li");
+    	for(var i=0;i<lilist.length;i++){
+    		lilist[i].addEventListener('tap',function(){
+    			var x=$(this).find("#ordid").html();
+    			console.log("......X.......:"+x);
+    		});
+    	}
+
+    	
+
+    }
+
+
+
+    //展现点以及列表
+    var dispalytrrecordsorder=function(orderjsons){
+    	map.clearOverlays();
+    	var pointArr=[];
+    	//var currentPoint="";
+    	$.each(orderjsons,function(i,c){
+    		
+    		var step=c.STEP;
+    		if(step=="1"||step=="2"){
+    			current_order=c;//保存当前的节点信息
+    		}
+    		var lat=c.LAT;
+    		var lng=c.LNG;
+    		var point =new BMap.Point(lng, lat);
+    		
+    		var iconstr=getIconPath(step);
+    		var icon=new BMap.Icon(iconstr, new BMap.Size(32,32)); 
+    		pointArr.push(point);
+    		var marker = new BMap.Marker(point,{icon:icon});
+    		
+    		//创建label
+			var label = new BMap.Label(i + 1, {
+				offset : new BMap.Size(i >= 9 ? 7 : 12, 5)
+			//偏移量  位数不同偏移量不同
+			});
+			label.setStyle({
+				background : 'none',
+				color : '#fff',
+				border : 'none'//只要对label样式进行设置就可达到在标注图标上显示数字的效果
+			});
+			//添加label
+			marker.setLabel(label);
+    		
+    		var opts = {
+			  width : 200,     // 信息窗口宽度
+			  height: 100,     // 信息窗口高度
+			  title : c.CUSTOMNAME  // 信息窗口标题
+			};
+			var infoWindow = new BMap.InfoWindow(c.INCEPTADDR, opts);  // 创建信息窗口对象 
+			marker.addEventListener("click", function(){          
+				map.openInfoWindow(infoWindow,point); //开启信息窗口
+			});
+			
+			
+    		map.addOverlay(marker);
+    		//map.setMapStyle({style:'googlelite'});//简单模式
+    	});
+    	
+    	pointArr.push(point);
+    	setOrigin(map,point);
+    	
+    	if(orderjsons.length>0){
+    		map.setViewport(pointArr);
+    	}
+    	if(!$.isEmptyObject(current_order)){
+    		setTimeout(function(){
+    			setCenter(map,current_order.LNG,current_order.LAT);
+    		},2000);
+    	}
+    	
+    }
+    
+
+    
+    
+    var setCenter=function(_map,_lng,_lat){
+    	var point = new BMap.Point(_lng, _lat);
+    	_map.panTo(point)
+    }
+    
+    /**
+     * 获取位置图片
+     * @param {Object} step
+     */
+    var getIconPath=function(step){
+    	var icon="";
+    	switch (step){
+    		case "0"://红色
+    		    icon="../../images/here/bigred.png";
+    			break;
+    		case "1"://绿色
+    			icon="../../images/here/green.png";
+    			break;
+    		case "2"://浅绿色
+    		 	icon="../../images/here/lightgreen.png";
+    			break;
+    		case "3"://灰色
+    			icon="../../images/here/lightblue.png";
+    			break;
+    		default:
+    			icon="../../images/here/bigred.png";
+    			break;
+    	}
+    	return icon;
+    }
+	
+</script>

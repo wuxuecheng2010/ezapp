@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">订单列表</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right" onclick="openWidget()"></a>
+		</header>
+		<div class="mui-content">
+
+			<ul id="list" class="mui-table-view mui-table-view-chevron" style="margin-top: 1px;">
+			</ul>
+
+		</div>
+
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_rate">
+					<a href="#" style="color: #FF3B30;">进度</a>
+				</li>
+				<li class="mui-table-view-cell" id="pop_btn_dtl">
+					<a href="#" style="color: #FF3B30;">订单明细</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#pop_memu"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+
+			var ibillid = "";
+			var vcbillcode = "";
+			mui.ready(function() {
+
+				init();
+			});
+
+			function init() {
+				if(localStorage.salesnoticelist != undefined) {
+					var jsonlist = JSON.parse(localStorage.salesnoticelist).docids;
+					var jsonlistdtls = JSON.parse(localStorage.salesnoticelist).dtlids;
+					displayui(jsonlist, jsonlistdtls);
+					loogtap_valueget();//设置长按时 赋值
+				}
+
+			}
+
+			function createRequireFields() {
+				var json = [];
+				var field1 = {
+					"requirefield": 'vcuniversalname',
+					"msg": "商品信息不能为空"
+				};
+				var field2 = {
+					"requirefield": 'vccustomername',
+					"msg": "客户信息不能为空"
+				}
+				//json.push(field1);
+				//json.push(field2);
+				return json;
+
+			}
+
+			function openWidget() {
+				mui.openWindow({
+					url: '../pub/widget_search_6b.html',
+					id: 'widget_search_6b.html',
+					extras: {
+						"requirefields": createRequireFields()
+					}
+				});
+
+			}
+
+			var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			//监听点击事件
+
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+				var json = JSON.parse(jsonvalue)
+				//console.log(value);
+
+				console.log(value.substr(1, value.length - 2));
+				//document.getElementById("ui").innerHTML=jsonvalue;
+				ajax(jsonvalue);
+			});
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(params) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'SalesNotice',
+					method: 'salesNotice',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.salesnoticelist = JSON.stringify(response.sysdata.SalesNotice_salesNotice);
+						//console.log("888*response.sysdata.SalesNotice_salesNotice******"+JSON.stringify(response.sysdata.SalesNotice_salesNotice));
+						displayui(response.sysdata.SalesNotice_salesNotice.docids);
+						searchnotice(response.sysdata.SalesNotice_salesNotice.docids);
+						loogtap_valueget();//设置长按时 赋值
+						
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell">' +
+						'<a class = "mui-navigate-right">' +
+						//'<div class="mui-slider-left mui-disabled">' +
+						//'<a class="mui-btn mui-btn-red" id="btn_rate">进度</a>' +
+						//'</div>' +
+						'<div class="mui-slider-handle">' +
+						'<span>' + content.DTCREATIONDATE + '</span>' +
+						'<h6 id="vcbillcode">单据：' + content.VCBILLCODE + '</h6>' +
+						'<h6>客户：' + content.VCCUSTOMERNAME + '</h6>' +
+						'<h6>地址：' + content.VCADDRESS + '</h6>' +
+						'<h6 id="ibillid" style="display: none;">' + content.IBILLID + '</h6>' +
+						'</div>' +
+						//	'</a>' +
+						'</li>'
+					);
+				});
+
+				jQuery('#list a').click(function() {
+					//显示商品信息
+					ibillid = jQuery(this).find('#ibillid').html();
+					vcbillcode = jQuery(this).find('#vcbillcode').html();
+					open_dtl(ibillid, vcbillcode);
+					/*mui.openWindow({
+						url: 'salesNotices.html',
+						id: 'salesNotices.html',
+						extras: {
+							ibillid: ibillid,
+							vcbillcode: vcbillcode
+
+						},
+						waiting: {
+							autoShow: false
+						}
+					});*/
+				});
+
+				
+
+				//右滑直接看进度
+
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+
+				cus_popmenu_init(); //自定义附带的pop选项事件
+
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_rate").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					open_rate(ibillid, vcbillcode);
+				});
+
+				jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+					
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode);
+				});
+
+			}
+
+			var open_dtl = function(ibillid, vcbillcode) {
+				mui.openWindow({
+					url: 'salesNotices.html',
+					id: 'salesNotices.html',
+					extras: {
+						ibillid: ibillid,
+						vcbillcode: vcbillcode
+
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+			var open_rate=function(ibillid, vcbillcode){
+				
+				mui.openWindow({
+						url: 'salesNoticeRate.html',
+						id: 'salesNoticeRate.html',
+						extras: {
+							ibillid: ibillid,
+							vcbillcode: vcbillcode
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+				
+			}
+			
+			var loogtap_valueget=function(){
+				jQuery.each(jQuery(".mui-card-content-inner,.mui-table-view-cell"), function(i, elem) {
+					elem.addEventListener('longtap', function() {
+						
+						//显示商品信息
+					ibillid = jQuery(this).find('#ibillid').html();
+					vcbillcode = jQuery(this).find('#vcbillcode').html();
+					//alert(vcbillcode);
+						//getCopyInfo(elem);
+						//alert(COPY_INFO);
+						//mobj.popover('toggle');
+					});
+				});
+				
+				
+			}
+			
+		</script>
+	</body>
+
+</html>

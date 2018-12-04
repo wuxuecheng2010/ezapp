@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<link rel="stylesheet" href="../../css/icons-extra.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #FFFFCC;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+
+			.parent {
+			          width:100%;
+			          height:60px;
+			          position:relative;
+			}
+			
+			 .child {
+			            width:100%;
+			            height:20px;
+			            margin: auto;  
+			            position: absolute;  
+			            top: 0; left: 0; bottom: 0; right: 0; 
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title"></h1>
+		</header>
+		
+		<div class="mui-content ">
+			
+			<div style="background-color: #FFFFFF;font-size: 14px;">
+				<div id="title" class="parent" style="height: 60px;text-align: left;font-size: 15px;;">
+						<div class="child">
+							<h3 id="credate">2017-02-15&nbsp;&nbsp;<span class="mui-icon-extra mui-icon-extra-lamp"></span></h3>
+					   </div>
+			    </div>
+			    
+<!--			    <div id="ftitle" style="font-size: 14px;">
+						<div >
+							&nbsp;&nbsp;<span class="mui-icon-extra mui-icon-extra-lamp"></span>
+						</div>
+
+				</div>
+				-->
+			    <div id="content" style="margin: 0 auto;font-size: 16px;width: 88%;margin-top: 10px;">
+			    	<div>
+			    	<!--<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
+			    	<span id="info">
+			    		<!--发现到当前客户有19件拣货的包裹没有发运出去
+			    		并且有以下几个单据没有拣货完成；完毕；-->
+			    		
+			    	</span>
+			    	</div>
+			    	<div style="height: 40px;"></div>
+			    </div>
+			    
+			</div>
+			
+			<div style="margin-top: 10px;">
+				
+				<button type="button" class="mui-action-back mui-btn mui-btn-blue mui-btn-block" style="width: 98%;height: 40px;">返回</button>
+				
+			</div>
+			
+		</div>
+
+		
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			
+			 
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+			
+			var ititleid ='';
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+			    companyid = self.companyid;
+			    companyname=self.companyname;
+			    dtcredate=self.dtcredate;
+			    jQuery("#title").html(companyname);
+				ajax(companyid,dtcredate);
+			})
+			
+
+
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(companyid,dtcredate) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var json=[];
+				var r={'companyid':companyid,'dtcredate':dtcredate};
+				json.push(r);
+				var params=JSON.stringify(json[0]);
+				//发送数据
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'getDispatchNoWhat',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayui(response.sysdata.TmsDispatch_getDispatchNoWhat);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				var pd= jsonobj.pd;//一行的队列
+				var npd=jsonobj.npd;
+				var str_a="";
+				var str_b="";
+				if(pd[0].TOTALPACKS>0){
+					str_a="发现当前客户有"+pd[0].TOTALPACKS+"件货物没有派车发运，其中整件有"+pd[0].WHOLEPACKS+"件，散件有"+pd[0].SCATTERPACKS+"件";
+				}
+				
+				//jQuery('#list').find('li').remove();
+				jQuery.each(npd, function(index, content) {
+					str_b+=content.ERPID+(content.EXPORTMEMO!=null? '('+content.EXPORTMEMO+'),':',');
+				});
+
+				if(str_b.length>0){
+					str_b=str_b.substring(0,str_b.length-1);
+					str_b="客户有以下单子尚未拣货"+str_b+";";
+				}else{
+					str_b="客户下的单子已全部拣货打包;<br/>"
+				}
+
+				jQuery("#info").html(str_b+"<br>"+str_a);
+
+				//右滑直接看进度
+
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				//longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+
+				//cus_popmenu_init(); //自定义附带的pop选项事件
+
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_rate").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					open_rate(ibillid, vcbillcode);
+				});
+
+				jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+					
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode);
+				});
+
+			}
+
+			var open_dtl = function(dispatchid, drivername) {
+				mui.openWindow({
+					url: 'tmsDispatchdtl.html',
+					id: 'tmsDispatchdtl.html',
+					extras: {
+						dispatchid: dispatchid,
+						drivername: drivername
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

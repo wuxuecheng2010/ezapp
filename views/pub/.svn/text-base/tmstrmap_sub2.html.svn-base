@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/mui.picker.css">
+		<link rel="stylesheet" href="../../css/mui.poppicker.css">
+		<style>
+			html,
+			body,
+			.mui-content {
+				width: 100%;
+				height: 100%
+			}
+			.mui-content {
+				font-family: "华文细黑";
+				background: url("../../images/background/bg.jpg") no-repeat;
+				background-size: 100% 100%;
+			}
+			
+			.mui-row {
+				background-color: #FFF;
+				text-align: right;
+				filter:alpha(opacity:70); 
+				opacity:0.6;  
+				-moz-opacity:0.6;
+				-khtml-opacity: 0.6
+			}
+			
+			.inputcell {
+				height: 60px;
+				//border: 0px solid #73AD21;
+				font-size: 18px;
+			}
+			
+			.alignleft{
+				text-align: left;
+			}
+			
+			.un-editable{
+				line-height: 60px;
+				margin-left: 12px;
+			}
+			
+			.inputtxt{
+				border:none #FFFFFF;
+				border-bottom:#777777 solid 1px;
+				font-size: 30px;
+
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-icon mui-icon-closeempty mui-pull-right mui-action-back" style="font-size: 32px;"></span>
+		</header>
+
+		<div class="mui-content">
+
+			<div class="" style="margin-top: 10px;padding: 5px;">
+				<div style="text-align: center;height: 60px;">
+					<h3 style="line-height: 60px;">回程登记</h3>
+				</div>
+				
+				
+				
+				
+				
+				<div class="mui-row" style="padding-top: 15px;">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;"><span style="color: red;">*</span>结束里程：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-backmileage" type="number" pattern="\d*" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;" >
+					</div>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">加油金额：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-oilcost" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;">
+					</div>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">客户地点数：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<div class="mui-row">
+							<div class="mui-col-sm-5 mui-col-xs-5">
+								<input id="txt-customqty" type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;text-align: center;"  >
+							</div>
+							<div class="mui-col-sm-2 mui-col-xs-2">
+								<input  type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;text-align: center;" value="|" disabled="disabled" >
+							</div>
+							<div class="mui-col-sm-5 mui-col-xs-5">
+								<input id="txt-addressqty" type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 30px;text-align: center;"  >
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="mui-row" style="height: 30px;"></div>
+
+			</div>
+
+			<div class="mui-content-padded" style="margin-top: 20px;">
+				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存</button>
+			</div>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/myinput.js"></script>
+		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
+		<script type="text/javascript" src="../../plugs/layer/layer.js" ></script>
+		<script>
+			mui.init({
+				swipeBack: false //启用右滑关闭功能
+			});
+			var trrecordid="";
+			//var customqty="";
+			//var addressqty="";
+			
+			mui.plusReady(function(){
+				
+				ajaxxing();
+				
+				//初始化信息显示
+				initView();
+				
+				//初始化按钮选项
+			    initAction();
+				
+			});
+			
+		var initView=function(){
+			var self=plus.webview.currentWebview();
+			trrecordid=self.trrecordid;
+			var trsummary=self.trsummary;
+			
+			var customqty=trsummary.customqty;
+			var addressqty=trsummary.addressqty;
+			$("#txt-customqty").val(customqty);
+			$("#txt-addressqty").val(addressqty);
+			
+		}
+		
+	
+		
+		var initAction=function(){
+			//结束里程
+			 $("#txt-backmileage").keydown(function(e) {  
+			        digitInput($(this), e);  
+			    });
+			
+			//加油金额
+			 $("#txt-oilcost").keydown(function(e) {  
+			        digitInput($(this), e);  
+			    });
+			    
+			    
+			    
+			//保存
+			var btnsave=document.getElementById("btn-save");
+			btnsave.addEventListener('tap',function(){
+				saveTrRecord();
+			});
+			
+		}
+		
+		var saveTrRecord= function(){
+			var flag=validate();
+			if(flag){
+				//保存 并返回到主界面
+				doSave($("#txt-backmileage").val(),$("#txt-oilcost").val(),$("#txt-customqty").val(),$("#txt-addressqty").val(),trrecordid);
+				
+			}
+		}
+		
+		//返回主页面
+		var  turnToParent=function(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "returnEvent0", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+		
+		var doSave=function( backmileage,oilcost,customqty,addressqty,trrecordid){
+				var url = getServerPath(localStorage.netmod);
+				//var _ordid=orderobj.ORDID;
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'saveTrRecordSummary',
+					trrecordid: trrecordid,
+					backmileage:backmileage,
+					oilcost:oilcost,
+					customqty:customqty,
+					addressqty:addressqty,
+					token: TOKEN
+				};
+				//console.log(JSON.stringify(data));
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async:false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success2,
+					error: err
+				});
+		}
+		
+				var success2= function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var resjson=response.sysdata.TmsTrRecord_saveTrRecordSummary;
+						var code=resjson.code;
+						var msg=resjson.msg;
+						var memo=resjson.memo;
+						if(code=="OK"){
+							turnToParent(JSON.stringify({'trrecordid':trrecordid}));
+						}else{
+							toast(msg+memo);
+						}
+
+					}
+				}
+			};
+		
+		
+		
+		//保存前校验数字是否合理
+		var validate=function(){
+			//校验表单数字
+			var backmileage=$("#txt-backmileage").val();//填写的里程
+			if(backmileage==""){
+				layer.tips('结束里程不能为空', '#txt-backmileage', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}
+
+			/*if(Number(mileages)>Number(leavemileage)){
+				layer.tips('结束里程不能小于当前车辆的出发里程', '#txt-leavemileage', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}*/
+			
+			/*if(flagcold=='Y'){
+				if($("#txt-leavetemp").val()==""){
+					layer.tips('本车次含有冷链药品，请输入起运温度', '#txt-leavetemp', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+					return false;
+					
+				}
+			}*/
+			
+			
+			/*if($.isEmptyObject(trrecord_order)){
+				layer.tips('请选择首站目的地', '#txt-targetadd', {
+						  tips: [1, '#3595CC'],
+						  time: 1500
+						});
+				return false;
+			}*/
+			return true;
+		}
+			
+		</script>
+	</body>
+
+</html>

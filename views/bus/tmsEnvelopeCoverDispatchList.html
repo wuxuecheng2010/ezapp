@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">
+				<div class="mui-row">
+					<div class="mui-col-sm-6 mui-col-xs-6">
+						<div class="mui-input-group">
+							<div class="mui-input-row">
+									<input type="text"  id="ecid" placeholder="请输入信封ID" class="mui-h5  mui-input" style=" font-size: 18px;">
+							</div>
+						</div>
+						
+					</div>
+					
+					
+					<div class="mui-col-sm-6 mui-col-xs-6">
+						<div class="mui-input-group">
+							<div class="mui-input-row" >
+									<input type="text"  id="dispatchid" value=""  class="mui-h5  mui-input" disabled="true" style="background: #fff; font-size: 18px;text-align: right;color: #000000;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</h1>
+			<a class="mui-icon mui-icon-trash mui-pull-right" id="trash"></a>
+		</header>
+		
+
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar1">
+				<span class="mui-tab-label">未核对</span>
+				<span style="font-size: 14px;">(<span id="num1">0</span>)</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar2">
+				<span class="mui-tab-label">已核对</span>
+				<span style="font-size: 14px;">(<span id="num2">0</span>)</span>
+			</a>
+		</nav>
+
+		<div class="mui-content ">
+
+			<div id="tabbar1" class="mui-control-content mui-active">
+				<ul id="list1" class="mui-table-view" style="margin-top: 1px;">
+				</ul>
+				<div style="height: 50px;">
+		        </div>
+			</div>
+			
+			<div id="tabbar2" class="mui-control-content">
+				<ul id="list2" class="mui-table-view" style="margin-top: 1px;">
+				</ul>
+				<div style="height: 50px;">
+		        </div>
+			</div>
+
+		</div>
+		
+		
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_trash">
+					<a href="#" style="color: #FF3B30;">手动核销</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#pop_memu"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		
+		
+		
+			<audio id="disp_en_trashed">
+				<source src="../../voices/cover/disp_en_trashed.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="en_disp_not_match">
+				<source src="../../voices/cover/en_disp_not_match.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="en_not_exist">
+				<source src="../../voices/cover/en_not_exist.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="save_exception">
+				<source src="../../voices/cover/save_exception.mp3" type="audio/mpeg">
+			</audio>
+
+			<audio id="trash_success">
+				<source src="../../voices/cover/trash_success.mp3" type="audio/mpeg">
+			</audio>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+            var dispatchid="";
+            var isie = false;
+            var employeeid="";
+			mui.plusReady(function() {
+				if(document.all) {
+					isie = true;
+				}
+				employeeid=getWMSEmployeeID();
+				
+				var self = plus.webview.currentWebview();
+			    dispatchid = self.dispatchid;
+				//console.log(dispatchid);
+				jQuery("#dispatchid").val(dispatchid);
+				ajax(dispatchid);
+
+				jQuery("#ecid").focus();
+				
+				init_trash();
+
+			})
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(dispatchid) {
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'getDispatchList',
+					dispatchid: dispatchid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+				
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						displayui(response.sysdata.TmsDispatch_getDispatchList);
+					}
+				}
+			};
+
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list1').find('li').remove();
+				jQuery('#list2').find('li').remove();
+				var num1 = 0; //未核对
+				var num2 = 0; //已核对
+				jQuery.each(jsonobj, function(index, content) {
+					var flagcover = content.FLAGCOVER;
+					if(flagcover == "0") {
+						num1 = num1 + 1;
+						appendLi(jQuery('#list1'), content);
+					} else {
+						num2 = num2 + 1
+						appendLi(jQuery('#list2'), content);
+					}
+				});
+
+				jQuery("#num1").html(num1);
+				jQuery("#num2").html(num2);
+
+				jQuery("#ecid").focus();
+				
+				
+				//长按复制
+				longtap(jQuery("#list1 .mui-table-view-cell"), mui('#pop_memu'));
+
+
+			}
+			
+			var tmp_transid="";
+			var tmp_dispatchid="";
+			var tmp_prtclass="";
+			var tmp_companyname="";
+			var longtap = function(objs, mobj) {
+				jQuery.each(objs, function(i, elem) {
+					elem.addEventListener('longtap', function() {
+						tmp_transid=jQuery(this).find("#transid").html();
+						tmp_dispatchid=jQuery(this).find("#dispatchid").html();
+						tmp_prtclass=jQuery(this).find("#prtclass").html();
+						tmp_companyname=jQuery(this).find("#companyname").html();
+						mobj.popover('toggle');
+					});
+				});
+			
+			    jQuery("#pop_btn_trash").unbind();
+				jQuery("#pop_btn_trash").click(function() {
+					ajaxGetCover(tmp_transid,tmp_prtclass);
+					//alert(tmp_transid+tmp_prtclass);
+					mobj.popover('toggle');
+				});
+			
+			}
+			
+			
+			
+			
+
+
+			var appendLi = function(jqobj, content) {
+				jqobj.append(
+					'<li class="mui-table-view-cell">' +
+					'<a class="mui-navigate-right">' +
+					'<div class="mui-row" >' +
+					'<div class="mui-col-sm-12  mui-col-xs-12" >' +
+						'<div class="mui-col-sm-12  mui-col-xs-12" ><span id="companyname">' + content.COMPANYNAME + '</span></div>' +
+						'<div class="mui-row" >' +
+							'<div class="mui-col-sm-9  mui-col-xs-9" ><h5 id="prtclass" style="color: red;">' + content.PRTCLASS + '</h5></div>' +
+						    '<div class="mui-col-sm-3  mui-col-xs-3" ><h5 style="color: #000000;font-size: 16px;text-align: center;">' + content.TOTAL + '</h5></div>' +
+						'</div>' +
+					'</div>' +
+/*					'<div class="mui-col-sm-3  mui-col-xs-3" >' +
+						'<div class="mui-col-sm-12  mui-col-xs-12" ></div>' +
+						'<div class="mui-col-sm-12  mui-col-xs-12" ><span>' + content.TOTAL + '件</span></div>' +
+					'</div>' +*/
+					'</div>' +
+					'<span style="display: none;" id="dispatchid">' + content.DISPATCHID + '</span>' +
+					'<span style="display: none;" id="transid">' + content.TRANSID + '</span>' +
+					'</a>' +
+					'</li>'
+				);
+			}
+
+			var init_trash = function() {
+				jQuery("#trash").click(function() {
+					doSubmit();
+				});
+				jQuery("#ecid").bind('keydown', function(e) {
+					var key = e.which;
+					if(key == 13) {
+						doSubmit();
+					}
+				});
+			}
+			
+			
+			function doSubmit(){
+				//1、验证是否数字
+					var dispatchid = jQuery("#dispatchid").val();
+					var ecid = jQuery("#ecid").val();
+
+					if(dispatchid == "" || isNaN(dispatchid) || ecid == "" || isNaN(ecid)) { //判断是否为数字
+						warning("信封编码"+ecid+"不存在","en_not_exist",isie);
+						return;
+					}
+					
+				//2、验证是否存在这个派车单  存在则打开明细页面  不存在  提示一下
+					ajaxsubmit(dispatchid,ecid,employeeid);
+					
+					
+					
+			}
+			
+			var warning=function(mes,voice,isie){
+				mui.toast(mes);
+				playvoice(voice,isie);
+				jQuery("#ecid").focus();
+				jQuery("#ecid").val("");
+			}
+			
+			
+			function ajaxsubmit(dispatchid,ecid,employeeid){
+				
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'submitCover',
+					dispatchid: dispatchid,
+					ecid:ecid,
+					employeeid:employeeid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: submit_success,
+					error: err
+				});
+
+			}
+			
+			function submit_success(response){
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						var data=response.sysdata.TmsDispatch_submitCover;
+						submit_success_OK(data)
+					}
+				}
+			}
+			
+			var submit_success_OK=function(data){
+				        var code=data.code;
+						var mes=data.mes;
+						var notevoice=data.notevoice;
+						var memo=data.memo;
+						warning(mes,notevoice,isie);
+						if(memo!=null && memo!=""){
+							mui.toast(tmp_companyname+"<br>"+tmp_prtclass+"<br>"+memo+"件",{ duration:7000, type:'div' }); 
+							//mui.alert("当前任务件数："+memo+"件");
+						}
+						
+						if(code=="OK"){
+							ajax(dispatchid);
+						}
+						
+			}
+			
+			
+			
+			
+		    //手动核销
+			var ajaxGetCover=function(tmp_transid,tmp_prtclass){
+				
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'getCoverByDispatchInfo',
+					transid:tmp_transid,
+					prtclass:tmp_prtclass,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: getcover_success,
+					error: err
+				});
+			}
+			
+			
+			function getcover_success(response){
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						var data=response.sysdata.TmsDispatch_getCoverByDispatchInfo;
+						if(jQuery.isEmptyObject(data)){
+							ajaxsubmit2(tmp_dispatchid,tmp_transid,tmp_prtclass,employeeid);
+						}else{
+							var ecid=data[0].ECID;
+							ajaxsubmit(tmp_dispatchid,ecid,employeeid);
+							/*mui.confirm("确认手工核销吗？","请确认",["取消","确认"],function(e){
+								if(e.index==0){
+									//do nothing
+								}else{
+									ajaxsubmit(tmp_dispatchid,ecid,employeeid);
+								}
+							},"div")*/
+						}
+					}
+				}
+			}
+			
+			
+			
+			
+			function ajaxsubmit2(dispatchid,transid,prtclass,employeeid){
+				
+				var url = getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'submitCover2',
+					dispatchid: dispatchid,
+					transid:transid,
+					prtclass:prtclass,
+					employeeid:employeeid,
+					token: TOKEN
+				};
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: submit_success2,
+					error: err
+				});
+
+			}
+			
+		
+			function submit_success2(response){
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						var data=response.sysdata.TmsDispatch_submitCover2;
+						submit_success_OK(data)
+					}
+				}
+			}
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

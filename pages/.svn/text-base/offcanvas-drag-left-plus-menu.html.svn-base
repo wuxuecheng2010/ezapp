@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<script src="../js/mui.min.js"></script>
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<script src="../js/app.js"></script>
+		<style>
+			body,
+			.mui-content {
+				background-color: #333;
+				color: #fff;
+			}
+			
+			header.mui-bar {
+				display: none;
+			}
+			
+			.mui-bar-nav~.mui-content {
+				padding: 0;
+			}
+			
+			.title {
+				margin: 35px 15px 10px;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			.mui-table-view {
+				margin-bottom: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="title">快捷菜单</div>
+			<div class="content">
+				当前登入用户为：<span id="txt_vcusername">name</span>|<span id="txt_vcaccount">account</span>.
+				<div style="margin: 80px;"></div>
+				<!--					<span class="android-only">
+						4.Android手机按back键；5.Android手机按menu键
+					</span>。-->
+				<p style="margin: 10px 15px;">
+					<button id="logout-btn" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">注销当前账号</button>
+				</p>
+
+				<p style="margin: 10px 15px;">
+					<button id="quit-btn" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">直接关闭应用</button>
+				</p>
+
+				<p style="margin: 10px 15px;">
+					<button id="close-btn" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">取消</button>
+				</p>
+
+			</div>
+			<!--<div class="title" style="margin-bottom: 25px;">侧滑列表示例</div>
+				<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 1</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 2</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 3</a>
+					</li>
+						<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 4</a>
+					</li>
+						<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 5</a>
+					</li>
+						<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">Item 6</a>
+					</li>
+				</ul>-->
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
+			mui.init({
+				keyEventBind: {
+					backbutton: true,
+					menubutton: false
+				}
+			});
+			var main = null;
+			mui.plusReady(function() {
+				main = plus.webview.currentWebview().opener();
+			})
+
+			function closeMenu() {
+				mui.fire(main, "menu:swiperight");
+			}
+
+			//左滑显示出来的菜单，只需监听右滑，然后将菜单关闭即可；在该菜单上左滑，不做任何操作；
+			window.addEventListener("swiperight", closeMenu);
+
+
+			document.getElementById("close-btn").addEventListener('tap', closeMenu);
+
+			//修改设置页信息
+			var displaySetting = function() {
+			//	alert("ccc");
+				txt_vcusername.innerText = JSON.parse(localStorage.userdata).VCUSERNAME;
+				txt_vcaccount.innerText = JSON.parse(localStorage.userdata).VCACCOUNT;
+			}
+
+			displaySetting();
+
+			document.getElementById("logout-btn").addEventListener('tap', function() {
+				//注销账号
+				app.setState({});
+				/*
+				 * 注意：
+				 * 1、因本示例应用启动页就是登录页面，因此注册成功后，直接显示登录页即可；
+				 * 2、如果真实案例中，启动页不是登录页，则需修改，使用mui.openWindow打开真实的登录页面
+				 */
+				plus.webview.getLaunchWebview().show("pop-in");
+				closeMenu();
+			});
+
+			document.getElementById("quit-btn").addEventListener('tap', function() {
+				plus.runtime.quit();
+			});
+		</script>
+	</body>
+
+</html>

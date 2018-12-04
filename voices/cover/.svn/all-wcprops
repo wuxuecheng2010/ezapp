@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/app/!svn/ver/28/ezmui/voices/cover
+END
+trash_success.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/app/!svn/ver/28/ezmui/voices/cover/trash_success.mp3
+END
+disp_en_trashed.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/app/!svn/ver/28/ezmui/voices/cover/disp_en_trashed.mp3
+END
+disp_not_exist.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/28/ezmui/voices/cover/disp_not_exist.mp3
+END
+save_exception.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/28/ezmui/voices/cover/save_exception.mp3
+END
+en_disp_not_match.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/app/!svn/ver/28/ezmui/voices/cover/en_disp_not_match.mp3
+END
+en_not_exist.mp3
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/28/ezmui/voices/cover/en_not_exist.mp3
+END

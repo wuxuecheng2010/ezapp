@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #FFFFCC;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+			
+			.parent {
+				width: 100%;
+				height: 60px;
+				position: relative;
+			}
+			
+			.child {
+				width: 100%;
+				height: 20px;
+				margin: auto;
+				position: absolute;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				right: 0;
+			}
+			.mui-progressbar{
+				margin: 15px 10px;
+			}
+			
+			.mui-progressbar-success span {
+				background-color: #4cd964;
+			}
+			.mui-progressbar-warning span {
+				background-color: #f0ad4e;
+			}
+			.mui-progressbar-danger span {
+				background-color: #dd524d;
+			}
+			.mui-progressbar-royal span {
+				background-color: #8a6de9;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">任务</h1>
+		</header>
+
+		<div class="mui-content ">
+
+			<div style="background-color: #FFFFFF;">
+				<div id="title" class="parent" style="height: 60px;text-align: center;font-size: 16px;">
+					<div class="child">
+						<span id="vctitle" style="font-weight: 300;">注射用阿莫西林钠克拉维酸钾召回 00FF66 FF0166</span>
+					</div>
+				</div>
+
+				<div id="ftitle" style="font-size: 14px;">
+					<div>
+						<span>发起人:</span><span id="creater">小M</span>
+					</div>
+					<div>
+						<span id="dtcreationdate">发表于:2016-06-30 15:30</span>
+					</div>
+				</div>
+
+				<div id="content" style="margin: 0 auto;font-size: 14px;width: 88%;margin-top: 10px;">
+					<div>
+						<!--<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
+						<span id="vccontent">
+			    		注射用阿莫西林钠克拉维酸钾召回(11 / 0011005036 / 1.2g*10瓶石药集团中诺药业(石家庄)有限公司)
+			    		171522批号召回
+			    	</span>
+					</div>
+				</div>
+
+				<div style="font-size: 14px;width: 96%;margin-top: 10px;">
+
+					<div>
+						<span></span><span id="dtlimitedtime">2017-10-13</span>
+					</div>
+					<div>
+						<span id="follower">跟进:小李</span>
+					</div>
+
+				</div>
+			</div>
+
+			<div style="margin-top: 10px;">
+
+				<button id="fb" type="button" class="mui-btn mui-btn-blue mui-btn-block" style="width: 98%;height: 60px;">我要反馈</button>
+
+			</div>
+
+			<div style="margin: 0 auto;font-size: 16px;margin-top: 10px;">
+				<ul class="mui-table-view" id="list">
+					<!--<li class="mui-table-view-cell" >
+						<a class="mui-navigate-right">
+							<h4>陈里是</h4>
+							<h5>sdsa</h5>
+							<p class="mui-progressbar mui-progressbar-in" data-progress="60"><span></span></p>
+						</a>
+					</li>
+		-->			
+<!--		            <div class="mui-row">
+			            <div class="mui-col-sm-10 mui-col-xs-10">
+			            	
+			            </div>
+			            <div class="mui-col-sm-2  mui-col-xs-2">
+			            	
+			            </div>
+					</div>-->
+				</ul>
+			</div>
+
+			
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var ititleid = '';
+			var account="";
+			
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				ititleid = self.ititleid;
+				account=getLoginAccount();
+				setStaticInfo();
+				ajax(ititleid,account);
+			})
+			var setStaticInfo=function(){
+				var self = plus.webview.currentWebview();
+				
+				var vctitle=self.vctitle;
+				var vccontent=self.vccontent;
+				var creater=self.creater;
+				var dtcreationdate=self.dtcreationdate;
+				var dtlimitedtime=self.dtlimitedtime;
+				var follower=self.follower;
+				
+				jQuery("#vctitle").html(vctitle);
+				jQuery("#vccontent").html(vccontent);
+				jQuery("#creater").html(creater);
+				jQuery("#dtcreationdate").html(dtcreationdate);
+				jQuery("#dtlimitedtime").html(dtlimitedtime);
+				jQuery("#follower").html(follower);
+			}
+
+
+			//ajax 请求中。
+			//ajaxxing();
+			var ajax = function(ititleid,account) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var json = [];
+				var r = {
+					'ititleid': ititleid,
+					'account':account
+				};
+				json.push(r);
+				var params = JSON.stringify(json[0]);
+				//发送数据
+				var data = {
+					controller: 'Noticeboard',
+					method: 'getNoticesList',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						displayui(response.sysdata.Noticeboard_getNoticesList);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				var flagcanfb=false;
+				var useraccount=getLoginAccount();
+				jQuery.each(jsonobj, function(index, content) {
+					console.log("content.VCEMPLOYEECODE:"+content.VCEMPLOYEECODE+"...useraccount:"+useraccount)
+					if(!flagcanfb){
+						flagcanfb=content.VCEMPLOYEECODE==useraccount?true:false;
+					}
+					
+					var num = index + 1;
+					var progressHtml="";
+					if(content.IRATE<60){
+						progressHtml='<p class="mui-progressbar mui-progressbar-in mui-progressbar-danger" data-progress="'+content.IRATE+'"><span></span></p>';
+					}else if(content.IRATE>=60 && content.IRATE<100){
+						progressHtml='<p class="mui-progressbar mui-progressbar-in " data-progress="'+content.IRATE+'"><span></span></p>';
+					}else{
+						progressHtml='<p class="mui-progressbar mui-progressbar-in mui-progressbar-success" data-progress="'+content.IRATE+'"><span></span></p>';
+						
+					}
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell" >'+
+							'<a class="mui-navigate-right">'+
+								'<div class="mui-row">'+
+						            '<div class="mui-col-sm-10 mui-col-xs-10">'+
+						            	'<span style="font-weight: 500;font-size: 18px;">'+content.VCEMPLOYEENAME+'</span>'+
+						            '</div>'+
+						            '<div class="mui-col-sm-2  mui-col-xs-2">'+
+						            	'<input name="checkbox1" disabled="disabled"  type="checkbox" '+(content.FLAGREAD=="Y"?'checked':'')+'>已读'+
+						            '</div>'+
+								'</div>'+
+								'<h5><span>'+(content.DTCREATIONDATE==null?' ':content.DTCREATIONDATE)+'</span></h5>'+
+								'<span style="font-weight: 200;font-size: 14px;">'+content.VCMESSAGE+'</span>'+
+								'<h5>进度:<span>'+content.IRATE+'</span>%</h5>'+
+								progressHtml+
+								'<span id="isid" style="display:none">'+content.ISID+'</span>'+
+							'</a>'+
+						'</li>'
+					);
+					
+				});
+
+				
+				//长按复制
+				//longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+			setProgress();
+            setNBClick();
+            //设置反馈按钮状态
+            console.log("flagcanfb:"+flagcanfb);
+            setFbBtnStatus(flagcanfb);
+            
+			}
+			
+			var setFbBtnStatus=function(flagcanfb){
+				var flag=!flagcanfb;
+				jQuery("#fb").attr("disabled",flag);
+				
+			}
+			var setNBClick=function(){
+				
+				jQuery(".mui-table-view-cell").click(function(){
+					
+					var isid=jQuery(this).find("#isid").html();
+
+					open_list(isid)
+				})
+				
+			}
+			
+			
+			var open_list = function(isid) {
+				mui.openWindow({
+					url: 'noticeBoardFBList.html',
+					id: 'noticeBoardFBList.html',
+					extras: {
+						isid: isid
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_rate").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					open_rate(ibillid, vcbillcode);
+				});
+
+				jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode);
+				});
+
+			}
+
+			var open_fb = function() {
+				mui.openWindow({
+					url: 'noticeBoardFB.html',
+					id: 'noticeBoardFB.html',
+					styles: {
+						top:100,
+				      bottom:100,
+				      width:280,
+				      height:320,
+				      left:40,
+				      right:40
+					},
+					extras: {
+                      ititleid:ititleid
+					},
+					waiting: {
+						autoShow: false
+					},
+					show:{
+				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+				      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+				      duration:200//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+				    }
+				});
+			} 
+
+			document.getElementById("fb").addEventListener('tap', function() {
+				open_fb();
+			});
+			
+			
+			var setProgress=function(){
+			 mui(".mui-progressbar").each(function () {
+				mui(this).progressbar({progress:this.getAttribute("data-progress")}).show();
+				
+/*				var container = mui(".mui-progressbar");
+				if (container.progressbar({
+						progress: 0
+					}).show()) {
+					simulateLoading(container, 0,100);
+				}*/
+			
+			
+			});
+			}
+			
+			
+/*			mui(".mui-progressbar").each(function () {
+				mui(this).progressbar({progress:this.getAttribute("data-progress")}).show();
+				
+				var container = mui(".mui-progressbar");
+				if (container.progressbar({
+						progress: 0
+					}).show()) {
+					simulateLoading(container, 0,100);
+				}
+			
+			
+			});*/
+			
+			function simulateLoading(container, progress,max) {
+				if (typeof container === 'number') {
+					progress = container;
+					container = 'body';
+				}
+				setTimeout(function() {
+					//progress += Math.random() * 20;
+					progress += 10;
+					mui(container).progressbar().setProgress(progress);
+					if (progress < max) {
+						simulateLoading(container, progress);
+					} else {
+						mui(container).progressbar().setProgress(max);
+						//mui(container).progressbar().hide();
+					}
+				}, Math.random() * 200 + 200);
+			}
+			
+			
+			
+			//监听点击事件
+
+			window.addEventListener('fbUpdateEvent', function(event) {
+				ajax(ititleid,account);
+			});
+		
+		</script>
+	</body>
+
+</html>

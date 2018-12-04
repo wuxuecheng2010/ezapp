@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body
+			{
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			.my-label{
+				
+				         padding-top: 12px;
+				        padding-left: 5px;  
+			            position: absolute;  
+			            top: 0; left: 0; bottom: 0; right: 0; 
+			            color: #222222;
+			}
+			.my_small_btn{
+				background-color: white;
+			}
+			
+			.mui-row{
+				margin-top: 8px;
+			}
+			
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">选择查询条件</h1>
+
+		</header>
+		<div class="mui-content mui-content-padded" >
+           <div class="mui-row">
+           	    <div class="mui-col-sm-3  mui-col-xs-3 " ><span class="my-label ">开始日期:</span></div>
+           	    <div class="mui-col-sm-7  mui-col-xs-7" ><button id='btn_startdate' data-options='' class="btn mui-btn mui-btn-block my-date-button">选择日期 ...</button></div>
+           <div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+           	    	<button id="btn_yestoday" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="setYestoday()">昨天</button>
+           	    </div>
+           </div>
+           <div class="mui-row">
+           	    <div class="mui-col-sm-3  mui-col-xs-3" ><span class="my-label">结束日期:</span></div>
+           	    <div class="mui-col-sm-7  mui-col-xs-7" ><button id='btn_enddate' data-options='' class="btn mui-btn mui-btn-block my-date-button">选择日期 ...</button></div>
+          <div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+           	    	<button id="btn_today" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="setToday()">今天</button>
+           	    </div>
+           </div>
+          <div class="mui-row" style="margin-top: 0px;margin-bottom: -6px;">
+           	    <div class="mui-col-sm-3  mui-col-xs-3" style="margin-top: 10px;"><span class="my-label">商品信息:</span></div>
+           	    <div class="mui-col-sm-7  mui-col-xs-7"  style="margin-top: 10px; padding-left: 3px;">
+					<input id="txt_vcuniversalname" type="text" >
+           	    </div>
+           	    <div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 8px;">
+           	    	<button id="btn_c_vcu" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" style="margin-right: 2px;" onclick="cleanVcproduct()">清除</button>
+           	    </div>
+           </div>
+           
+           <div class="mui-row" style="margin-top: 0px;margin-bottom: -6px;">
+           	    <div class="mui-col-sm-3  mui-col-xs-3" style="margin-top: 0px;"><span class="my-label">客户信息:</span></div>
+           	    <div class="mui-col-sm-7  mui-col-xs-7" style="margin-top: 0px; padding-left: 3px;">
+      
+							<input id="txt_vccustomername" type="text" class="mui-input-clear"  >
+			
+           	    </div>
+           	    <div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: -3px;">
+           	    	<button id="btn_c_vcc" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanVccustomer()">清除</button>
+           	    </div>
+           </div>
+           
+           <div class="mui-row">
+   	    		<div class="mui-col-sm-3  mui-col-xs-3" ><span class="my-label">销售员:</span></div>
+   	    		<div class="mui-col-sm-7  mui-col-xs-7" ><button id='btn_saler' class="btn mui-btn mui-btn-block my-select-button">选择销售员 ...</button></div>
+   	    	<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+           	    	<button id="btn_c_vcs" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanSaler()">清除</button>
+           	    </div>
+           </div>
+   	    	
+   	    	<div class="mui-row">
+   	    		<div class="mui-col-sm-3  mui-col-xs-3" ><span class="my-label">采购员:</span></div>
+   	    		<div class="mui-col-sm-7  mui-col-xs-7" ><button id='btn_buyer' class="btn mui-btn mui-btn-block my-select-button">选择采购员 ...</button></div>
+   	    	<div class="mui-col-sm-2  mui-col-xs-2" style="margin-top: 0px;">
+           	    	<button id="btn_c_vcb" class="mui-btn mui-btn-outlined mui-btn-mini my_small_btn" onclick="cleanBuier()">清除</button>
+           	    </div>
+   	    	</div>
+   	    	
+   	    	<div class="mui-row" style="padding-top: 30px;">
+           	<button class="mui-btn-block mui-btn-blue" onclick="doQuery()" style="padding: 10px;">查询</button>
+           </div>
+           <div class="mui-row" >
+           	<button class="mui-action-back mui-btn-block mui-btn-red" style="padding: 10px;">取消</button>
+           </div>
+
+           
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script>
+			mui.init();
+			jQuery('.my-date-button').attr('data-options', DATERANGER);
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+			var iproductid = "";
+			var vcuniversalname = "";
+			var icustomerid = "";
+			var vccustomername = "";
+
+			mui.ready(function() {
+			 dtstartdate = "";
+			 dtenddate = "";
+			 ibuyerid = "";
+			 isalerid = "";
+			 iproductid = "";
+			 vcuniversalname = "";
+			 icustomerid = "";
+			 vccustomername = "";
+				
+
+				var btn_startdate = document.getElementById("btn_startdate");
+				var tmpstartdate = localStorage.laststartdate;
+				if(tmpstartdate == undefined) {
+					btn_startdate.innerText = toshortdata(adddate(new Date(), -7));
+				} else {
+					btn_startdate.innerText = tmpstartdate;
+				}
+
+				var btn_enddate = document.getElementById("btn_enddate");
+				var tmpenddate = localStorage.lastenddate;
+				if(tmpstartdate == undefined) {
+					btn_enddate.innerText = toshortdata(new Date());
+				} else {
+					btn_enddate.innerText = tmpenddate;
+				}
+
+				if(localStorage.lastvcuniversalname) {
+					txt_vcuniversalname.value = localStorage.lastvcuniversalname;
+				}
+				if(localStorage.lastvccustomername) {
+					txt_vccustomername.value = localStorage.lastvccustomername;
+				}
+
+				var buyerPicker = new mui.PopPicker();
+				var salerPicker = new mui.PopPicker();
+				var buyerjson = toPickerDataJson(JSON.parse(localStorage.buyerlist), "IEMPLOYEEID", "VCEMPLOYEENAME");
+				var salerjson = toPickerDataJson(JSON.parse(localStorage.salerlist), "IEMPLOYEEID", "VCEMPLOYEENAME");
+
+				buyerPicker.setData(buyerjson);
+				salerPicker.setData(salerjson);
+
+				var btn_buyer = document.getElementById('btn_buyer');
+				var btn_saler = document.getElementById('btn_saler');
+
+               console.log("*****typeof(localStorage.buyerid)****:"+localStorage.buyerid);
+				if(localStorage.lastbuyername!= undefined) {
+					btn_buyer.innerHTML = localStorage.lastbuyername;
+					ibuyerid = localStorage.buyerid;
+				}else{
+					localStorage.buyerid=""
+					//ibuyerid = "";
+				}
+				
+				if(localStorage.lastsalername != undefined) {
+					btn_saler.innerHTML = localStorage.lastsalername;
+					isalerid = localStorage.salerid;
+				}else{
+					localStorage.salerid="";
+					//isalerid="";
+				}
+
+				btn_buyer.addEventListener('tap', function(event) {
+					buyerPicker.show(function(items) {
+						document.getElementById("btn_buyer").innerHTML = items[0].text;
+						ibuyerid = items[0].value;
+
+						localStorage.lastbuyername = items[0].text;
+						localStorage.buyerid = items[0].value;
+						//alert(ibuyerid);
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, true);
+
+				btn_saler.addEventListener('tap', function(event) {
+					salerPicker.show(function(items) {
+						document.getElementById("btn_saler").innerHTML = items[0].text;
+						isalerid = items[0].value;
+						localStorage.lastsalername = items[0].text;
+						localStorage.salerid = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, true);
+
+			});
+
+			var btns = mui('.my-date-button');
+			btns.each(function(i, btn) {
+				btn.addEventListener('tap', function() {
+					var vbtn = this;
+					var optionsJson = this.getAttribute('data-options') || '{}';
+					var options = JSON.parse(optionsJson);
+					var id = this.getAttribute('id');
+					/*
+					 * 首次显示时实例化组件
+					 * 示例为了简洁，将 options 放在了按钮的 dom 上
+					 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+					 */
+					var picker = new mui.DtPicker(options);
+					picker.show(function(rs) {
+						/*
+						 * rs.value 拼合后的 value
+						 * rs.text 拼合后的 text
+						 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+						 * rs.m 月，用法同年
+						 * rs.d 日，用法同年
+						 * rs.h 时，用法同年
+						 * rs.i 分（minutes 的第二个字母），用法同年
+						 */
+						//result.innerText = '选择结果: ' + rs.text;
+						vbtn.innerText = rs.text;
+						//console.log(vbtn.getAttribute("id"));
+						var tmpid = vbtn.getAttribute("id");
+						if(tmpid == "btn_startdate") {
+							dtstartdate = rs.text;
+						} else {
+							dtenddate = rs.text;
+						}
+						/* 
+						 * 返回 false 可以阻止选择框的关闭
+						 * return false;
+						 */
+						/*
+						 * 释放组件资源，释放后将将不能再操作组件
+						 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+						 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+						 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+						 */
+						picker.dispose();
+					});
+				}, false);
+			});
+
+			//返回主页面
+			function turnToParent(jsonstr) {
+				var mainPage = null;
+				if(!mainPage) {
+					mainPage = plus.webview.currentWebview().opener();
+				}
+				mui.fire(mainPage, "widgetSelectEvent", {
+					"value": jsonstr
+				});
+				mui.back();
+			}
+
+			var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			var txt_vccustomername = document.getElementById("txt_vccustomername");
+
+			function doQuery() {
+				dtstartdate = btn_startdate.innerText;
+				dtenddate = btn_enddate.innerText;
+				localStorage.laststartdate = dtstartdate;
+				localStorage.lastenddate = dtenddate;
+
+				var json = [];
+				var row = {};
+				row.dtstartdate = dtstartdate;
+				row.dtenddate = dtenddate;
+				
+								
+				row.iproductid = iproductid;
+				row.vcuniversalname = txt_vcuniversalname.value;
+				row.icustomerid = icustomerid;
+				row.vccustomername = txt_vccustomername.value;
+				
+				localStorage.lastvcuniversalname = txt_vcuniversalname.value;
+				localStorage.lastvccustomername = txt_vccustomername.value;
+				
+				localStorage.buyerid=(ibuyerid==undefined||ibuyerid=="undefined"?"":ibuyerid);
+				localStorage.salerid=(isalerid==undefined||isalerid=="undefined"?"":isalerid);
+				row.ibuyerid = (ibuyerid==undefined||ibuyerid=="undefined"?"":ibuyerid);//ibuyerid;
+				row.isalerid = (isalerid==undefined||isalerid=="undefined"?"":isalerid);//isalerid;
+				console.log("xxx:"+ibuyerid);
+				
+				localStorage.lastbuyername=btn_buyer.innerHTML;
+				localStorage.lastsalername=btn_saler.innerHTML;
+				json.push(row);
+				var jsonstr = JSON.stringify(json);
+				console.log("jsonstr[][][][]:"+jsonstr);
+		        var self = plus.webview.currentWebview();
+				var requirefields=self.requirefields;//获取主页设置的必须要填的字段 json格式
+				console.log("requirefields:"+JSON.stringify(requirefields));
+				
+				if(requirefields!==undefined)
+				for(var key in json[0]){
+					//alert(key+':'+json[0][key]);
+					for(var i=0; i<requirefields.length; i++){
+						if((json[0][key]==null||json[0][key]=="")&&requirefields[i]["requirefield"]==key){
+							mui.toast(requirefields[i]["msg"]);
+							return;
+						}
+					}
+				}
+				
+				
+				turnToParent(jsonstr);
+			}
+
+			function doClear() {
+				ibuyerid = "";
+				isalerid = "";
+				iproductid = "";
+				icustomerid = "";
+				txt_vcuniversalname.value = "";
+				txt_vccustomername.value = "";
+				document.getElementById("btn_buyer").innerHTML = "选择采购员 ...";
+				document.getElementById("btn_saler").innerHTML = "选择销售员 ...";
+				localStorage.lastbuyername = "选择采购员 ...";
+				localStorage.lastsalername = "选择销售员 ...";
+				localStorage.buyerid = "";
+				localStorage.salerid = "";
+			}
+
+			var setYestoday=function(){
+				btn_startdate.innerText = toshortdata(adddate(new Date(), -1));
+			}
+			var setToday=function(){
+				btn_enddate.innerText = toshortdata(new Date());
+			}
+			var cleanVcproduct=function(){
+				iproductid = "";
+				txt_vcuniversalname.value = "";
+			}
+			var cleanVccustomer=function(){
+				icustomerid = "";
+				txt_vccustomername.value = "";
+				
+			}
+			
+			var cleanBuier=function(){
+				ibuyerid = "";
+				document.getElementById("btn_buyer").innerHTML = "选择采购员 ...";
+				localStorage.lastbuyername = "选择采购员 ...";
+				localStorage.buyerid = "";
+			}
+			
+			var cleanSaler=function(){
+				isalerid = "";
+				document.getElementById("btn_saler").innerHTML = "选择销售员 ...";
+				localStorage.lastsalername = "选择销售员 ...";
+				localStorage.salerid = "";
+			}
+			
+			
+			
+			
+		</script>
+	</body>
+
+</html>

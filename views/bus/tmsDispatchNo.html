@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">未发运客户列表</h1>
+		</header>
+		
+		<div class="mui-content ">
+            <div class="mui-row" id="mybar" style="position:fixed; top:0;width: 100%; height: 46px;  margin-top: 40px;z-index:9999;background-color:#FFFFCC;">
+           		<div class="mui-col-sm-2  mui-col-xs-2" ><button id="btn_previous" class="mui-btn mui-btn-mini ">上一天</button></div>
+            	<div class="mui-col-sm-8  mui-col-xs-8"><button id='btn_credate' type="button" class="mui-btn mui-btn-block ">选择日期</button></div>
+				<div class="mui-col-sm-2  mui-col-xs-2"><button id="btn_next" class="mui-btn mui-btn-mini">下一天</button></div>
+            </div>
+            
+            
+  			
+			<ul id="list" class="mui-table-view " style="margin-top: 40px;">
+				<!--<li class="mui-table-view-cell">
+				    <div class="mui-row" >
+		            	<div class="mui-col-sm-2  mui-col-xs-2" ><span>No</span></div> 
+		            	<div class="mui-col-sm-4  mui-col-xs-4" ><span>驾驶员</span></div>
+		            	<div class="mui-col-sm-4  mui-col-xs-4" ><span>线路</span></div>
+		            	<div class="mui-col-sm-2  mui-col-xs-2" ><span>件数</span></div>
+	                </div>
+				</li>-->
+			</ul>
+			
+		</div>
+
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#pop_memu"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			 var dtcredate="";
+			 var mobile="";
+			 var drivername="";
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			
+			mui.plusReady(function(){
+				init();
+				onopen();//界面打开时 触发
+				previous_tap();
+				next_tap();
+				
+			})
+			
+		function init() {
+				jQuery('#btn_credate').attr('data-options', DATERANGER);	
+				var btn_credate = document.getElementById("btn_credate");
+				btn_credate.innerText = toshortdata(new Date());
+				dtcredate=btn_credate.innerText;
+				
+				var btns = mui('#btn_credate');
+				btns.each(function(i, btn) {
+					btn.addEventListener('tap', function() {
+						var vbtn = this;
+						var optionsJson = this.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						var id = this.getAttribute('id');
+						/*
+						 * 首次显示时实例化组件
+						 * 示例为了简洁，将 options 放在了按钮的 dom 上
+						 * 也可以直接通过代码声明 optinos 用于实例化 DtPicker
+						 */
+						var picker = new mui.DtPicker(options);
+						picker.show(function(rs) {
+							/*
+							 * rs.value 拼合后的 value
+							 * rs.text 拼合后的 text
+							 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+							 * rs.m 月，用法同年
+							 * rs.d 日，用法同年
+							 * rs.h 时，用法同年
+							 * rs.i 分（minutes 的第二个字母），用法同年
+							 */
+							//result.innerText = '选择结果: ' + rs.text;
+							vbtn.innerText = rs.text;
+							//console.log(vbtn.getAttribute("id"));
+							var tmpid = vbtn.getAttribute("id");
+							if(tmpid == "btn_credate") {
+								dtcredate = rs.text;
+								ajax(dtcredate);
+							} else {
+								dtcredate = rs.text;
+							}
+							/* 
+							 * 返回 false 可以阻止选择框的关闭
+							 * return false;
+							 */
+							/*
+							 * 释放组件资源，释放后将将不能再操作组件
+							 * 通常情况下，不需要示放组件，new DtPicker(options) 后，可以一直使用。
+							 * 当前示例，因为内容较多，如不进行资原释放，在某些设备上会较慢。
+							 * 所以每次用完便立即调用 dispose 进行释放，下次用时再创建新实例。
+							 */
+							picker.dispose();
+						});
+					}, false);
+				});
+					
+					
+				}
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(credate) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				var json=[];
+				var r={'credate':credate}
+				json.push(r);
+				var params=JSON.stringify(json[0]);
+				//发送数据
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'getNoDispatchCompany',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsDispatch);
+						//console.log("888*response.sysdata.SalesNotice_salesNotice******"+JSON.stringify(response.sysdata.SalesNotice_salesNotice));
+						displayui(response.sysdata.TmsDispatch_getNoDispatchCompany);
+						//searchnotice(response.sysdata.SalesNotice_salesNotice.docids);
+						//loogtap_valueget();//设置长按时 赋值
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell">'+
+							'<a class="mui-navigate-right">'+
+				                '<div class="mui-row" >'+
+					            	'<div class="mui-col-sm-1  mui-col-xs-1" ><span>'+num+'</span></div> '+
+					            	'<div class="mui-col-sm-11  mui-col-xs-11" ><span id="companyname">'+content.COMPANYNAME+'</span></div>'+
+					            	
+			                    '</div>'+
+			                     '<span style="display: none;" id="companyid">'+content.COMPANYID+'</span>'+
+			                     '<span style="display: none;" id="gcompanyid">'+content.GCOMPANYID+'</span>'+
+			                '</a>'+
+			            '</li>'
+					);
+				});
+
+				jQuery('#list a').click(function() {
+					//显示商品信息
+					var companyid = jQuery(this).find('#companyid').html();
+					var gcompanyid = jQuery(this).find('#gcompanyid').html();
+					var companyname = jQuery(this).find('#companyname').html();
+					open_dtl(companyname,companyid, dtcredate);
+					//alert("dtcredate:"+dtcredate);
+				});
+
+				
+
+				//右滑直接看进度
+
+				//swiperightcopy(jQuery(".mui-table-view-cell"), 'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"), mui('#pop_memu'));
+
+				cus_popmenu_init(); //自定义附带的pop选项事件
+
+			}
+
+			var cus_popmenu_init = function() {
+				jQuery("#pop_btn_call").click(function() {
+					//copyToClip(COPY_INFO);
+					mui("#pop_memu").popover('toggle');
+					
+					call(mobile);
+					
+				});
+
+				/*jQuery("#pop_btn_dtl").click(function() {
+					//copyToClip(COPY_INFO);
+					
+					mui("#pop_memu").popover('toggle');
+					open_dtl(ibillid, vcbillcode);
+				});*/
+
+			}
+
+
+
+			var open_dtl = function(companyname,companyid, dtcredate) {
+				mui.openWindow({
+					url: 'tmsDispatchNodtl.html',
+					id: 'tmsDispatchNodtl.html',
+					extras: {
+						companyid: companyid,
+						dtcredate: dtcredate,
+						companyname: companyname
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			}
+			
+			
+			
+			var loogtap_valueget=function(){
+				jQuery.each(jQuery(".mui-card-content-inner,.mui-table-view-cell"), function(i, elem) {
+					elem.addEventListener('longtap', function() {
+						
+						//显示商品信息
+					mobile = jQuery(this).find('#mobile').html();
+					drivername = jQuery(this).find('#drivername').html();
+					
+					jQuery("#pop_btn_call_text").html('呼叫 '+drivername+' '+mobile);
+					//alert(vcbillcode);
+						//getCopyInfo(elem);
+						//alert(COPY_INFO);
+						//mobj.popover('toggle');
+					});
+				});
+				
+				
+			}
+			
+			var changeDate=function(obj,currentDate,n){
+				var tmpdate=adddate(currentDate, n);
+				obj.innerText= toshortdata(tmpdate);
+				return obj.innerText;
+			}
+			var previous_tap=function(){
+				document.getElementById("btn_previous").addEventListener("tap",function(){
+					//alert("dtcredate"+dtcredate);
+					//var tmpdate=adddate(new Date(dtcredate), -1);
+					var btn_credate = document.getElementById("btn_credate");
+				        //btn_credate.innerText = toshortdata(tmpdate);
+				        //dtcredate=btn_credate.innerText;
+				    dtcredate=changeDate(btn_credate,new Date(dtcredate),-1)
+					ajax(dtcredate);
+				})
+			}
+			var next_tap=function(){
+				document.getElementById("btn_next").addEventListener("tap",function(){
+					//alert("dtcredate"+dtcredate);
+					var btn_credate = document.getElementById("btn_credate");
+					dtcredate=changeDate(btn_credate,new Date(dtcredate),1)
+					ajax(dtcredate);
+				})
+			}
+			var onopen=function(){
+				var btn_credate = document.getElementById("btn_credate");
+				ajax(dtcredate);
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+			.center{
+				text-align: center;
+			}
+			.scaned{
+				color: green;
+			}
+			.unscaned{
+				color: red;
+			}
+			.right{
+				text-align: right;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">装车-包装箱明细</h1>
+		</header>
+		<div class="mui-content ">
+
+			<ul id="listheader" class="mui-table-view "  style="position:fixed; top:0;width: 100%; height: 46px;  margin-top: 40px;z-index:9999;">
+				<li class="mui-table-view-cell">
+					<div class="mui-row">
+						<div class="mui-col-sm-4  mui-col-xs-4"><span>箱号</span></div>
+						<div class="mui-col-sm-2  mui-col-xs-2 center"><span>件数</span></div>
+						<div class="mui-col-sm-2  mui-col-xs-2 "><span>复核人</span></div>
+						<div class="mui-col-sm-4  mui-col-xs-4 center"><span>时间</span></div>
+					</div>
+				</li>
+			</ul>
+			
+			<ul id="list" class="mui-table-view " style="margin-top: 42px;">
+				
+			</ul>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+		<script>
+			var dispatchid = "";
+			var transid = "";
+			var customname="";
+			var companyname="";
+			var printclass="";
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			mui.plusReady(function() {
+				init();
+				ajax(dispatchid, transid,printclass);
+
+			})
+
+			/*			function getEmployeeid() {
+							var self = plus.webview.currentWebview();
+							return self.employeeid;
+
+						}*/
+
+			function init() {
+				var self = plus.webview.currentWebview();
+				dispatchid = self.dispatchid;
+				transid = self.transid;
+				printclass=self.printclass;
+				customname=self.customname;
+			
+			}
+
+			//ajax 请求中。
+			ajaxxing();
+			var ajax = function(dispatchid, transid,printclass) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var loaderid = getEmployeeid();
+				//alert("loaderid"+loaderid)
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'TmsDispatch',
+					method: 'tmsDispatchBoxDtl',
+					dispatchid: dispatchid,
+					transid: transid,
+					printclass:printclass,
+					token: TOKEN
+				};
+
+				//console.log("loaderid###:" + loaderid + "credate:" + credate);
+				//mui.post(url, data, success, dataType);
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 30000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsEmployeeDispatch);
+						displayui(response.sysdata.TmsDispatch_tmsDispatchBoxDtl);
+
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var num = index + 1;
+                    var styleset=content.USESTATUS=="2"? '<div class="mui-col-sm-4  mui-col-xs-4 scaned" >':'<div class="mui-col-sm-4  mui-col-xs-4 unscaned" >';
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell">' +
+						'<a>' +
+						'<div class="mui-row ">'+
+								styleset+'<span id="boxcode">' + content.BOXCODE + '</span></div> ' +
+								'<div class="mui-col-sm-2  mui-col-xs-2 center" ><span id="packageqty">' + content.PACKAGEQTY + '</span></div> ' +
+								'<div class="mui-col-sm-2  mui-col-xs-2 " ><span id="employeename">' + content.EMPLOYEENAME + '</span></div>' +
+								'<div class="mui-col-sm-4  mui-col-xs-4 center" ><span id="carrydate">' + content.CARRYDATE + '</span></div>' +
+						'</div>' +
+						'<span style="display: none;" id="packagetype">' + content.PACKAGETYPE + '</span>' +
+						'<span style="display: none;" id="keyid">' + content.KEYID + '</span>' +
+						'<span style="display: none;" id="boxcode">' + content.BOXCODE + '</span>' +
+						'</a>' +
+						'</li>'
+					);
+				});
+
+				jQuery('#list a').click(function() {
+									//显示商品信息
+									var keyid = jQuery(this).find('#keyid').html();
+									var boxcode = jQuery(this).find('#boxcode').html();
+									var packagetype = jQuery(this).find('#packagetype').html();
+									var employeename =jQuery(this).find('#employeename').html();
+									var flag="read";
+									var carrydate=jQuery(this).find('#carrydate').html();
+									showBoxDtl(keyid,boxcode,packagetype,employeename,flag,customname,carrydate);
+								});
+
+			}
+
+				/**
+				 * 显示包装箱详细内容
+				 * @param {Object} keyid
+				 * @param {Object} boxcode
+				 * @param {Object} packagetype
+				 * @param {Object} flag
+				 */
+				var showBoxDtl=function(keyid,boxcode,packagetype,employeename,flag,customname,carrydate){
+
+					mui.openWindow({
+								url: 'wmsBoxDtl.html',
+								id: 'wmsBoxDtl.html',
+								extras: {
+									keyid: keyid,
+									boxcode: boxcode,
+									packagetype: packagetype,
+									employeename:employeename,
+									flag:flag,
+									customname:customname,
+									carrydate:carrydate
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+				}
+
+
+
+			/*			//返回主页面
+						function turnToParent(jsonstr) {
+							var mainPage = null;
+							if(!mainPage) {
+								mainPage = plus.webview.currentWebview().opener();
+							}
+							mui.fire(mainPage, "widgetSelectEvent", {
+								"value": jsonstr
+							});
+							mui.back();
+						}
+
+						var open_dtl = function(dispatchid, drivername, routename) {
+							mui.openWindow({
+								url: 'tmsDispatchdtl.html',
+								id: 'tmsDispatchdtl.html',
+								extras: {
+									dispatchid: dispatchid,
+									drivername: drivername,
+									routename: routename
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						}
+			*/
+		</script>
+	</body>
+
+</html>

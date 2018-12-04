@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/mystyle.css" />
+		<style>
+			html,
+			body,
+			.mui-content {
+				height: 0px;
+				margin: 0px;
+				background-color: #efeff4;
+			}
+			
+			h5.mui-content-padded {
+				margin-left: 3px;
+				margin-top: 20px !important;
+			}
+			h5.mui-content-padded:first-child {
+				margin-top: 12px !important;
+			}
+			
+			.mui-btn {
+				font-size: 16px;
+				padding: 8px;
+				margin: 3px;
+			}
+			
+			.ui-alert {
+				text-align: center;
+				padding: 20px 10px;
+				font-size: 16px;
+			}
+			
+			* {
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">采购修改查询</h1>
+			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right" onclick="openWidget()"></a>
+		</header>
+		<div class="mui-content">
+			<!--<p id="ui"></p>-->
+			<ul id="list" class="mui-table-view" style="margin-top: 1px;">
+
+			        <!--<li class="mui-table-view-cell">
+			        	<h5>注射用阿莫西林钠克拉维酸钾</h5>
+			        	<h6>规格：1.2g(1.0g/0.2g)</h6>
+			        	<h6>采购：汤启明</h6>
+			        	<h6>厂家：中孚药业股份有限公司(原山东潍坊制药厂有限公司)</h6>
+			        	<h6>客户：仙居县妇幼保健院</h6>
+			        	<h6>销售：张优</h6>
+			        	<h6>备注：挂网价不一致</h6>
+			        	<h6>库存：9620</h6>
+			        	<h6>缺货：120</h6>
+			        </li>-->
+			        
+			    </ul>
+
+		</div>
+		
+		<div id="copy" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="pop_btn_copy">
+					<a href="#" style="color: #FF3B30;">复制</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#copy"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+	<!--	<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>-->
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/app.js"></script>
+		
+		<script>
+			mui.init({
+				gestureConfig: {
+					longtap: true //默认为false
+				}
+			});
+
+			var dtstartdate = "";
+			var dtenddate = "";
+			var ibuyerid = "";
+			var isalerid = "";
+
+			mui.ready(function() {
+				
+				init();
+			});
+
+	
+			function init(){
+				var jsonlist=JSON.parse(localStorage.salesmodifylist);
+				displayui(jsonlist);
+			}
+
+
+			function openWidget() {
+				mui.openWindow({
+					url: '../pub/widget_search_6b.html',
+					id: 'widget_search_6b.html'
+				});
+			}
+
+			var txt_vcuniversalname = document.getElementById("txt_vcuniversalname");
+			//监听点击事件
+
+			window.addEventListener('widgetSelectEvent', function(event) {
+				var value = event.detail.value;
+				var jsonvalue=value.substr(1,value.length-2);//去掉前后中括号
+				var json = JSON.parse(value)
+				console.log(value.substr(1,value.length-2));
+				//document.getElementById("ui").innerHTML=jsonvalue;
+				ajax(jsonvalue);
+			});
+			
+			
+			
+				//ajax 请求中。
+				ajaxxing();
+			var ajax = function(params) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'SalesModify',
+					method: 'salesModify',
+					params: params,
+					token: TOKEN
+				};
+				//mui.post(url, data, success, dataType);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success,
+					error: err
+				});
+
+			};
+			//成功响应的回调函数
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason=response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						localStorage.salesmodifylist = JSON.stringify(response.sysdata.SalesModify_salesModify);
+						displayui(response.sysdata.SalesModify_salesModify);
+						searchnotice(response.sysdata.SalesModify_salesModify);
+					}
+				}
+			};
+			//将查询结果显示到UI上，并且绑定事件
+			function displayui(jsonobj) {
+				jQuery('#list').find('li').remove();
+				jQuery.each(jsonobj, function(index, content) {
+					var num=index+1;
+					
+					jQuery('#list').append(
+						'<li class="mui-table-view-cell">'
+						+'<a>'
+						//+'<div class="mui-slider-left mui-disabled">'
+						//+'<a class="mui-btn mui-btn-red" id="btn_copy">复制</a>'
+						//+'</div>'
+						+'<div class="mui-slider-handle">'
+						
+			        	+'<span>'+content.VCUNIVERSALNAME+'</span>'
+			        	+'<h6>规格：'+content.VCSTANDARD+'</h6>'
+			        	+'<h6>编码：'+content.VCPRODUCTCODE+'</h6>'
+			        	+'<h6>品名：'+content.VCPRODUCTNAME+'</h6>'
+			        	+'<h6>采购：'+content.VCBUYER+'</h6>'
+			        	+'<h6>厂家：'+content.VCPRODUCERNAME+'</h6>'
+			        	+'<h6>客户：'+content.VCCUSTOMERNAME+'</h6>'
+			        	+'<h6>销售：'+content.VCSALER+'</h6>'
+			        	+'<h6>单据：'+content.VCBILLCODE+'</h6>'
+			        	+'<h6>开票：'+content.NUMORIGQUANTITY+'</h6>'
+			        	+'<h6>改后：'+content.NUMQUANTITY+'</h6>'
+			        	+'<h6>单位：'+content.VCUNITNAME+'</h6>'
+			        	+'<h6>审核：'+content.VCAPPUSERNAME+'</h6>'
+			        	
+			        	+'</div>'
+						+'</a>'
+						+'</li>'
+						);
+				});
+				
+				
+				
+				//右滑复制
+				swiperightcopy(jQuery(".mui-table-view-cell"),'btn_copy');
+				//长按复制
+				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"),mui('#copy'));
+			
+
+				
+			}
+			
+			
+			
+		</script>
+	</body>
+
+</html>
