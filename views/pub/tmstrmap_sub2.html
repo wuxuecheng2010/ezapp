@@ -96,6 +96,35 @@
 				
 				<div class="mui-row">
 					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">过路费：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-roadtoll" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
+					</div>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">停车费：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-parkingfee" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
+					</div>
+				</div>
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;">维修费：</span>
+					</div>
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
+						<input id="txt-repaircost" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
+					</div>
+				</div>
+				
+				
+				
+				<div class="mui-row">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
 						<span style="line-height: 60px;">客户地点数：</span>
 					</div>
 					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
@@ -191,7 +220,7 @@
 			var flag=validate();
 			if(flag){
 				//保存 并返回到主界面
-				doSave($("#txt-backmileage").val(),$("#txt-oilcost").val(),$("#txt-customqty").val(),$("#txt-addressqty").val(),trrecordid);
+				doSave($("#txt-backmileage").val(),$("#txt-oilcost").val(),$("#txt-customqty").val(),$("#txt-addressqty").val(),$("#txt-roadtoll").val(),$("#txt-parkingfee").val(),$("#txt-repaircost").val(),trrecordid);
 				
 			}
 		}
@@ -208,7 +237,7 @@
 				mui.back();
 			}
 		
-		var doSave=function( backmileage,oilcost,customqty,addressqty,trrecordid){
+		var doSave=function( backmileage,oilcost,customqty,addressqty,roadtoll,parkingfee,repaircost,trrecordid){
 				var url = getServerPath(localStorage.netmod);
 				//var _ordid=orderobj.ORDID;
 				console.log(url);
@@ -222,6 +251,9 @@
 					oilcost:oilcost,
 					customqty:customqty,
 					addressqty:addressqty,
+					roadtoll:roadtoll,
+					parkingfee:parkingfee,
+					repaircost:repaircost,
 					token: TOKEN
 				};
 				//console.log(JSON.stringify(data));

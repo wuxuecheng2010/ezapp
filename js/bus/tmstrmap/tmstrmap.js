@@ -42,3 +42,21 @@ var initAddSelect=function(){
 					}, false);
 			
 		}
+		
+		
+var initDownloadTypeSelect=function(){
+			var dltpPicker = new mui.PopPicker();
+			var data=[{'value':1,'text':'自卸'},{'value':2,'text':'他卸'}];
+			dltpPicker.setData(data);
+
+			var downloadtype = document.getElementById('txt-downloadtype');
+			downloadtype.addEventListener('tap', function(event) {
+						dltpPicker.show(function(items) {
+
+							 downloadtype.value=items[0].text//JSON.stringify(items[0]);
+							 downloadtypeid=items[0].value;
+							
+						});
+					}, false);
+			
+		}		

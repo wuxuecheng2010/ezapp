@@ -57,7 +57,7 @@
 			
 			
 		</style>
-		
+
 	</head>
 
 	<body>
@@ -68,35 +68,63 @@
 
 		<div class="mui-content">
 
-			<div id="selectpanel" style="margin-top: 10px;padding: 5px;">
+			<div  style="margin-top: 10px;padding: 5px;">
 				<div style="text-align: center;height: 60px;">
-					<h3 style="line-height: 60px;">完成并前往下一站</h3>
+					<h3 style="line-height: 60px;" id="h3title">完成并前往下一站</h3>
 				</div>
-				
-				
+
 				<div class="mui-row" style="padding-top: 15px;">
+					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
+						<span style="line-height: 60px;"><span style="color: red;"></span>卸货件数：</span>
+					</div>
+
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell">
+						<div class="mui-row">
+							<div class="mui-col-sm-5 mui-col-xs-5">
+								<input id="txt-downloadqty" type="number" pattern="\d*" placeholder="本站件数" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;">
+
+							</div>
+							<div class="mui-col-sm-2 mui-col-xs-2">
+								<input type="text" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size:20px;text-align: center;"
+								 value="|" disabled="disabled">
+							</div>
+							<div class="mui-col-sm-5 mui-col-xs-5">
+								<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
+								 readonly="true">
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div>
+					&nbsp;
+				</div>
+
+				<div id="selectpanel" class="mui-row" style="padding-top: 15px;">
 					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
 						<span style="line-height: 60px;"><span style="color: red;">*</span>下一站：</span>
 					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-targetadd" type="text"  placeholder="--下一站--" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;" readonly="true">
+					<div class="mui-col-sm-7 mui-col-xs-7 inputcell">
+						<input id="txt-targetadd" type="text" placeholder="--下一站--" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;"
+						 readonly="true">
 					</div>
 				</div>
-				
-				<div class="mui-row" style="height: 30px;"></div>
+
+				<!-- <div class="mui-row" style="height: 30px;"></div> -->
 
 			</div>
+			
+			
+			
 
 			<div id="savepanel" class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并出发</button>
 			</div>
-			
+
 			<div id="savereturnpanel" class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save-return" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并返回公司</button>
 			</div>
-			
-				
-			
 
 		</div>
 
@@ -104,126 +132,147 @@
 		<script src="../../js/mui.picker.js"></script>
 		<script src="../../js/mui.poppicker.js"></script>
 		<script src="../../js/jquery-3.2.1.min.js"></script>
-		
+
 		<script src="../../js/myglobal.js"></script>
 		<script src="../../js/myinput.js"></script>
 		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
-		<script type="text/javascript" src="../../plugs/layer/layer.js" ></script>
+		<script type="text/javascript" src="../../plugs/layer/layer.js"></script>
 		<script>
 			mui.init({
 				swipeBack: false //启用右滑关闭功能
 			});
-			var trrecordid="";
-			var flagcold="";
-			var vehicleno="";
-			var current_order={};//当前将要完成的站点
-			
-			var mileages="";//当前车辆数据库中记录的里程值;
-			var trrecord_order_json=[];//原始的查询结果
-			var trrecord_order_list=[];//适应下拉选择的结果集
-			var trrecord_order={};//被选中的结果
-			
-			mui.plusReady(function(){
-				
+			var trrecordid = "";
+			var flagcold = "";
+			var vehicleno = "";
+			var current_order = {}; //当前将要完成的站点
+
+			var mileages = ""; //当前车辆数据库中记录的里程值;
+			var downloadtypeid = "";
+			var trrecord_order_json = []; //原始的查询结果
+			var trrecord_order_list = []; //适应下拉选择的结果集
+			var trrecord_order = {}; //被选中的结果
+
+			mui.plusReady(function() {
+
 				ajaxxing();
-				
+
 				//初始化信息显示
 				initView();
 				//获取下拉列表的数据
 				//formatOrderListDate();
-				trrecord_order_list=getFormatOrderListDate(trrecord_order_json);
-				
-				var selectLength=trrecord_order_list.length;
+				trrecord_order_list = getFormatOrderListDate(trrecord_order_json);
+
+				var selectLength = trrecord_order_list.length;
 				//alert(selectLength);
-				switch (selectLength){
+				switch (selectLength) {
 					case 0:
-					    //没有选项了  就隐藏下拉选择项
-					    panelShowControll(false);
+						//没有选项了  就隐藏下拉选择项
+						panelShowControll(false);
 						break;
 					default:
-					    panelShowControll(true);
-					    //初始化下拉列表
+						panelShowControll(true);
+						//初始化下拉列表
 						initAddSelect();
 						break;
 				}
-				
+
+				//初始化他自卸方式下拉选择
+				initDownloadTypeSelect();
+
 				//初始化按钮选项
-			    initAction();
+				initAction();
+
+			});
+
+			//控制面板显示
+			var panelShowControll = function(isnextpoint) {
+
+				if (isnextpoint) {
+					$("#selectpanel").removeClass('mui-hidden'); //下拉面板
+					$("#savepanel").removeClass('mui-hidden'); //下一站按钮
+					$("#savereturnpanel").addClass('mui-hidden'); //返回按钮
+				} else {
+					$("#selectpanel").addClass('mui-hidden'); //下拉面板
+					$("#savepanel").addClass('mui-hidden'); //下一站按钮
+					$("#savereturnpanel").removeClass('mui-hidden'); //返回按钮
+				}
+
+			}
+
+			var initView = function() {
+				var self = plus.webview.currentWebview();
+				var forwardmsg = self.forwardmsg;
+				vehicleno = self.vehicleno;
+				var drivername = self.drivername;
+				var totalpieces = self.totalpieces;
+				trrecordid = self.trrecordid;
+				flagcold = self.flagcold;
+				trrecord_order_json = self.order_all;
+				current_order = self.current_order;
+				//alert(JSON.stringify(order_all));
+				$("#drivername").html(drivername);
+				$("#vehicleno").html(vehicleno);
+				$("#forwardmsg").html(forwardmsg);
+				$("#totalpieces").html("(" + totalpieces + "件)");
+				if (flagcold == "N") {
+					$("#leavetemppanel").addClass("mui-hidden");
+				}
 				
-			});
-		
-		//控制面板显示
-		var panelShowControll=function(isnextpoint){
-			
-			if(isnextpoint){
-				$("#selectpanel").removeClass('mui-hidden');//下拉面板
-				$("#savepanel").removeClass('mui-hidden');//下一站按钮
-			    $("#savereturnpanel").addClass('mui-hidden');//返回按钮
-			}else{
-				$("#selectpanel").addClass('mui-hidden');//下拉面板
-				$("#savepanel").addClass('mui-hidden');//下一站按钮
-			    $("#savereturnpanel").removeClass('mui-hidden');//返回按钮
+				if($.isEmptyObject(trrecord_order_json)){
+					$("#h3title").html("完成本站登记并前往下一站");
+				}else{
+					$("#h3title").html("完成本站登记并返回");
+				}
+
+			}
+
+
+			var initAction = function() {
+
+				//保存 并且下一站
+				var btnsave = document.getElementById("btn-save");
+				btnsave.addEventListener('tap', function() {
+					saveRecordOrder(1); //1代表送下一站
+				});
+
+				//结束返回
+				var btnsave2 = document.getElementById("btn-save-return");
+				btnsave2.addEventListener('tap', function() {
+					saveRecordOrder(2); //2代表送完回厂
+				});
+
+
+			}
+
+			var saveRecordOrder = function(type) {
+				var downloadqty=$("#txt-downloadqty").val();
+				current_order.DOWNLOADQTY=downloadqty;
+				current_order.DOWNLOADTYPEID=downloadtypeid;
+				
+				if(validate(type))
+				doFinish(current_order, trrecord_order);
+/* 				if (type == 1) {
+					var flag = validate(); //多一个验证
+
+					if (flag) {
+						//保存 并返回到主界面  事件内容包含
+						doFinish(current_order, trrecord_order);
+					}
+					
+				} else {
+					doFinish(current_order, trrecord_order); //此时  trrecord_order为{}
+				} */
 			}
 			
-		}
 			
-		var initView=function(){
-			var self=plus.webview.currentWebview();
-			var forwardmsg=self.forwardmsg;
-		     vehicleno=self.vehicleno;
-			var drivername=self.drivername;
-			var totalpieces=self.totalpieces;
-			trrecordid=self.trrecordid;
-			flagcold=self.flagcold;
-			trrecord_order_json=self.order_all;
-			current_order=self.current_order;
-			//alert(JSON.stringify(order_all));
-			$("#drivername").html(drivername);
-			$("#vehicleno").html(vehicleno);
-			$("#forwardmsg").html(forwardmsg);
-			$("#totalpieces").html("("+totalpieces+"件)");
-			if(flagcold=="N"){
-				$("#leavetemppanel").addClass("mui-hidden");
-			}
-			
-		}
 		
-		
-		var initAction=function(){
- 
-			//保存 并且下一站
-			var btnsave=document.getElementById("btn-save");
-			btnsave.addEventListener('tap',function(){
-				saveRecordOrder(1);//1代表送下一站
-			});
-			
-			//结束返回
-			var btnsave2=document.getElementById("btn-save-return");
-			btnsave2.addEventListener('tap',function(){
-				saveRecordOrder(2);//2代表送完回厂
-			});
-			
-			
-		}
-		
-		var saveRecordOrder= function(type){
-			//alert(type);
-			if(type==1){
-			var flag=validate();//多一个验证
-			
-			if(flag){
-				//保存 并返回到主界面  事件内容包含
-				doFinish(current_order,trrecord_order);
-			}
-			}else{
-				doFinish(current_order,trrecord_order);//此时  trrecord_order为{}
-			}
-		}
-		
-		//返回主页面
-		var  turnToParent=function(jsonstr) {
+					
+					
+
+			//返回主页面
+			var turnToParent = function(jsonstr) {
 				var mainPage = null;
-				if(!mainPage) {
+				if (!mainPage) {
 					mainPage = plus.webview.currentWebview().opener();
 				}
 				mui.fire(mainPage, "returnEvent0", {
@@ -231,140 +280,159 @@
 				});
 				mui.back();
 			}
-		
-		var doFinish=function(){
-			var wa = plus.nativeUI.showWaiting();
-			//mui.toast("开始定位...");
-			plus.geolocation.getCurrentPosition( geoInf, function ( e ) {
-				//outSet( "获取定位位置信息失败："+e.message );
-				//定位失败处理方式  位置就不传递了
-			//	alert("定位失败"+e.message);
-				
-				ajaxFinish(current_order,trrecord_order,"","","");
-				wa.close()
-			},{geocode:true},{
-                     porvider:'baidu'
-                 }
-								 );
-			
-			
-			
-		}
-		
-		function geoInf( position ) {
-			//mui.toast("geoInf...");
-			var wa = plus.nativeUI.showWaiting();
-			var str = "";
-			str += "地址："+position.addresses+"\n";//获取地址信息
-			str += "坐标类型："+position.coordsType+"\n";
-			var timeflag = position.timestamp;//获取到地理位置信息的时间戳；一个毫秒数；
-			str += "时间戳："+timeflag+"\n";
-			var codns = position.coords;//获取地理坐标信息；
-			var lat = codns.latitude;//获取到当前位置的纬度；
-			str += "纬度："+lat+"\n";
-			var longt = codns.longitude;//获取到当前位置的经度
-			str += "经度："+longt+"\n";
-			var alt = codns.altitude;//获取到当前位置的海拔信息；
-			str += "海拔："+alt+"\n";
-			var accu = codns.accuracy;//地理坐标信息精确度信息；
-			str += "精确度："+accu+"\n";
-			var altAcc = codns.altitudeAccuracy;//获取海拔信息的精确度；
-			str += "海拔精确度："+altAcc+"\n";
-			var head = codns.heading;//获取设备的移动方向；
-			str += "移动方向："+head+"\n";
-			var sped = codns.speed;//获取设备的移动速度；
-			str += "移动速度："+sped;
-			//console.log(JSON.stringify(position));
-			
-			var current_point=codns.latitude+','+codns.longitude;//当前位置
-			
-			var current_lat=lat;
-			var current_lng=longt;
-			var current_addresses=position.addresses;
-			//alert(current_lat);
-			//alert(current_lng);
-			//alert(current_addresses);
-			ajaxFinish(current_order,trrecord_order,current_lat,current_lng,current_addresses)
-			wa.close();
-		}
-		
-		
-		var ajaxFinish=function ( _current_order,_trrecord_order,current_lat,current_lng,current_addresses){
-						
-					var url = getServerPath(localStorage.netmod);
-					var c_ordid=_current_order.ORDID;
-					var n_ordid="";
-					if(!$.isEmptyObject(_trrecord_order))
-							n_ordid=_trrecord_order.ORDID;
-					var dataType = 'json';
-					//发送数据
-					var data = {
-						controller: 'TmsTrRecord',
-						method: 'tmstrmapsub1finishandnextgo',
-						trrecordid: trrecordid,
-						c_ordid:c_ordid,
-						n_ordid:n_ordid,
-						current_lat:current_lat,
-						current_lng:current_lng,
-						current_addresses:current_addresses,
-						token: TOKEN
-					};
-					//console.log(JSON.stringify(data));
-					mui.ajax(url, {
-						data: data,
-						dataType: dataType, //服务器返回json格式数据
-						async:false,
-						type: 'post', //HTTP请求类型
-						timeout: 10000, //超时时间设置为10秒；
-						success: success2,
-						error: err
-					});
-			
-			
-		}
-		
-		
-				var success2= function(response) {
-				if(response != null) {
+
+			var doFinish = function() {
+				var wa = plus.nativeUI.showWaiting();
+				//mui.toast("开始定位...");
+				plus.geolocation.getCurrentPosition(geoInf, function(e) {
+					//outSet( "获取定位位置信息失败："+e.message );
+					//定位失败处理方式  位置就不传递了
+					//	alert("定位失败"+e.message);
+
+					ajaxFinish(current_order, trrecord_order, "", "", "");
+					wa.close()
+				}, {
+					geocode: true
+				}, {
+					porvider: 'baidu'
+				});
+
+
+
+			}
+
+			function geoInf(position) {
+				//mui.toast("geoInf...");
+				var wa = plus.nativeUI.showWaiting();
+				var str = "";
+				str += "地址：" + position.addresses + "\n"; //获取地址信息
+				str += "坐标类型：" + position.coordsType + "\n";
+				var timeflag = position.timestamp; //获取到地理位置信息的时间戳；一个毫秒数；
+				str += "时间戳：" + timeflag + "\n";
+				var codns = position.coords; //获取地理坐标信息；
+				var lat = codns.latitude; //获取到当前位置的纬度；
+				str += "纬度：" + lat + "\n";
+				var longt = codns.longitude; //获取到当前位置的经度
+				str += "经度：" + longt + "\n";
+				var alt = codns.altitude; //获取到当前位置的海拔信息；
+				str += "海拔：" + alt + "\n";
+				var accu = codns.accuracy; //地理坐标信息精确度信息；
+				str += "精确度：" + accu + "\n";
+				var altAcc = codns.altitudeAccuracy; //获取海拔信息的精确度；
+				str += "海拔精确度：" + altAcc + "\n";
+				var head = codns.heading; //获取设备的移动方向；
+				str += "移动方向：" + head + "\n";
+				var sped = codns.speed; //获取设备的移动速度；
+				str += "移动速度：" + sped;
+				//console.log(JSON.stringify(position));
+
+				var current_point = codns.latitude + ',' + codns.longitude; //当前位置
+
+				var current_lat = lat;
+				var current_lng = longt;
+				var current_addresses = position.addresses;
+				//alert(current_lat);
+				//alert(current_lng);
+				//alert(current_addresses);
+				ajaxFinish(current_order, trrecord_order, current_lat, current_lng, current_addresses)
+				wa.close();
+			}
+
+
+			var ajaxFinish = function(_current_order, _trrecord_order, current_lat, current_lng, current_addresses) {
+
+				var url = getServerPath(localStorage.netmod);
+				var c_ordid = _current_order.ORDID;
+				var c_downloadqty=_current_order.DOWNLOADQTY;
+				var c_downloadtypeid=_current_order.DOWNLOADTYPEID;
+				var n_ordid = "";
+				if (!$.isEmptyObject(_trrecord_order))
+					n_ordid = _trrecord_order.ORDID;
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'tmstrmapsub1finishandnextgo',
+					trrecordid: trrecordid,
+					c_ordid: c_ordid,
+					c_downloadtypeid:c_downloadtypeid,
+					c_downloadqty:c_downloadqty,
+					n_ordid: n_ordid,
+					current_lat: current_lat,
+					current_lng: current_lng,
+					current_addresses: current_addresses,
+					token: TOKEN
+				};
+				//console.log(JSON.stringify(data));
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async: false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success2,
+					error: err
+				});
+
+
+			}
+
+
+			var success2 = function(response) {
+				if (response != null) {
 					var syscode = response.syscode;
 					var sysreason = response.sysreason;
-					if(syscode == SYSCODE_NO) {
+					if (syscode == SYSCODE_NO) {
 						tokenOutTime(sysreason);
 					} else {
 						console.log(JSON.stringify(response));
 						//alert(JSON.stringify(response));
-						var resjson=response.sysdata.TmsTrRecord_tmstrmapsub1finishandnextgo;
-						var code=resjson.code;
-						var msg=resjson.msg;
-						var memo=resjson.memo;
-						
-						if(code=="OK"){
+						var resjson = response.sysdata.TmsTrRecord_tmstrmapsub1finishandnextgo;
+						var code = resjson.code;
+						var msg = resjson.msg;
+						var memo = resjson.memo;
+
+						if (code == "OK") {
 							turnToParent(JSON.stringify(trrecord_order));
-						}else{
-							toast(msg+memo);
+						} else {
+							toast(msg + memo);
 						}
 
 					}
 				}
 			};
-			
 
-		
-		
-		
-		//保存前校验数字是否合理
-		var validate=function(){
-			
-			if($.isEmptyObject(trrecord_order)){
-				layer.tips('请选择首站目的地', '#txt-targetadd', {
-						  tips: [1, '#3595CC'],
-						  time: 1500
-						});
-				return false;
+
+
+
+
+			//保存前校验数字是否合理
+			var validate = function(type) {
+				
+				var downloadqty=$("#txt-downloadqty").val();
+				//downloadtypeid
+				if(downloadqty!="" && downloadqty!=null && isNumber(downloadqty) && downloadqty>0){
+					
+					if(downloadtypeid==""){
+							layer.tips('有卸货件数时，请选择卸货方式', '#txt-downloadtype', {
+										tips: [1, '#3595CC'],
+										time: 2000
+									});
+							return false;
+					}
+				}
+				
+
+        if(type==1)//下一站时 必须
+				if ($.isEmptyObject(trrecord_order)) {
+					layer.tips('请选择下一站目的地', '#txt-targetadd', {
+						tips: [1, '#3595CC'],
+						time: 2000
+					});
+					return false;
+				}
+				return true;
 			}
-			return true;
-		}
-			
 		</script>
 	</body>
 
