@@ -23,7 +23,6 @@
 		-o-transform:rotate(7deg); 	/* Opera */
 	}
 </style>
-
 	</head>
 
 	<body>
@@ -51,10 +50,18 @@
 			
 			
 			<div class="mui-card" id="pcklimited">
-				<div class="mui-card-header">限销客户(限制销售给下列客户)</div>
+				<div class="mui-card-header">
+					限销客户(限制销售给下列客户) 
+						
+				</div>
+				
 				<div class="mui-card-content">
+					
 					<div class="mui-card-content-inner">
 						
+						<div class="mui-input-row mui-search">
+							<input type="search" class="mui-input-clear" placeholder="快速检索" id="input_customer_vceasycode">
+						</div>
 						<ul class="mui-table-view" id="pcklimitedlist">
 							<!--<li class="mui-table-view-cell">
 								<div class="mui-col-sm-12  mui-col-xs-12">台州医院</div>
@@ -282,10 +289,11 @@
  							var pcklimited=response.sysdata.Product_product_stock_pricegroup_comesource_v2.pcklimited;
  								if(pcklimited.length>0){
  									jQuery.each(pcklimited, function(index, content) {
- 										jQuery("#pcklimitedlist").append("<li class='mui-table-view-cell'>"
-												+"<div class='mui-col-sm-12  mui-col-xs-12'>"+content.VCCUSTOMERNAME+"</div>"
-												+"</li>")
+										appendCustomerLimitedItem(content.VCCUSTOMERNAME);
+ 										
  									})
+									//检索限销客户名称
+									onCustomerEasycode_change(pcklimited);
  								}else{
  									jQuery("#pcklimitedlist").append("<li class='mui-table-view-cell'>"
 												+"<div class='mui-col-sm-12  mui-col-xs-12'>无</div>"
@@ -481,7 +489,47 @@
 			});
 			
 			
+			function onCustomerEasycode_change(pcklimited){
+				//清空原有的
+				
+				jQuery("#input_customer_vceasycode").on("change",function(){
+					jQuery("#pcklimitedlist").empty();
+					appendCustomerLimited(pcklimited,jQuery(this).val());
+				})
+				
+				
+			}
 			
+			
+			function appendCustomerLimited(pcklimited,matchStr){
+				
+				matchStr=matchStr.toUpperCase();
+				//var input_customer_vceasycode=$("#input_customer_vceasycode").val();
+				jQuery.each(pcklimited, function(index, content) {
+					
+					var VCCUSTOMERNAME=content.VCCUSTOMERNAME.toUpperCase();
+					var VCEASYCODE=content.VCEASYCODE.toUpperCase();
+					
+					if(matchStr!=""){
+						if(VCEASYCODE.search(matchStr)!=-1||VCCUSTOMERNAME.search(matchStr)!=-1){
+							appendCustomerLimitedItem(VCCUSTOMERNAME);
+						}
+					}else{
+						appendCustomerLimitedItem(VCCUSTOMERNAME);
+					}
+					
+					
+					
+					
+				})
+				
+			}
+			
+			function appendCustomerLimitedItem(VCCUSTOMERNAME){
+				jQuery("#pcklimitedlist").append("<li class='mui-table-view-cell'>"
+						+"<div class='mui-col-sm-12  mui-col-xs-12'>"+VCCUSTOMERNAME+"</div>"
+						+"</li>")
+			}
 			
 		</script>
 	</body>

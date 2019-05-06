@@ -157,19 +157,10 @@
 			});
 
 			function init() {
-				var jsonlist = JSON.parse(localStorage.oosrecordlist);
-				displayui(jsonlist);
-
-				/*jQuery(".mui-table-view-cell").click(function(){
-					COPY_INFO="";
-					var array =jQuery(this).children('span ,h6');
-					jQuery.each(array,function(i,obj){
-						COPY_INFO+=jQuery(obj).html()+"\n";
-					})
-					alert(COPY_INFO);
-					
-				});*/
-
+				if(localStorage.oosrecordlist!=undefined){
+					var jsonlist = JSON.parse(localStorage.oosrecordlist);
+					displayui(jsonlist);
+				}
 			}
 
 			function openWidget() {

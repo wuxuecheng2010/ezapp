@@ -207,6 +207,8 @@
 		 * @param {Object} content   json单个数据；
 		 */
 		function displayItem(listobj, content) {
+			
+			var html_vcrefusereson=content.STATECODE==-1?'<h6>原因：' + content.VCREFUSERESON + '</h6>':"";
 			listobj.append(
 				'<li class="mui-table-view-cell">' +
 				'<a>' +
@@ -228,6 +230,7 @@
 				'<h6>数量：' + content.NUMQUANTITY + '</h6>' +
 				'<h6>状态：' + content.VCSTATE + '</h6>' +
 				'<h6>日期：' + content.DTCREATIONDATE + '</h6>' +
+				html_vcrefusereson+
 				'</div>' +
 				'</a>' +
 				'</li>'
