@@ -81,12 +81,12 @@
 					<div class="mui-col-sm-7 mui-col-xs-7 inputcell">
 						<div class="mui-row">
 							<div class="mui-col-sm-5 mui-col-xs-5">
-								<input id="txt-downloadqty" type="number" pattern="\d*" placeholder="本站件数" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;">
+								<input id="txt-downloadqty" readOnly="true"  type="number" pattern="\d*" placeholder="本站件数" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 18px;">
 
 							</div>
 							<div class="mui-col-sm-2 mui-col-xs-2">
 								<input type="text" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size:20px;text-align: center;"
-								 value="|" disabled="disabled">
+								 value="|" readOnly="true">
 							</div>
 							<div class="mui-col-sm-5 mui-col-xs-5">
 								<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
@@ -145,6 +145,9 @@
 			var flagcold = "";
 			var vehicleno = "";
 			var current_order = {}; //当前将要完成的站点
+			
+			var current_refdisp=[];
+			var refdisp_all=[];
 
 			var mileages = ""; //当前车辆数据库中记录的里程值;
 			var downloadtypeid = "";
@@ -209,7 +212,12 @@
 				flagcold = self.flagcold;
 				trrecord_order_json = self.order_all;
 				current_order = self.current_order;
-				//alert(JSON.stringify(order_all));
+				current_refdisp=self.current_refdisp;
+				refdisp_all=self.refdisp_all;
+				//alert(current_refdisp);
+				//alert(JSON.stringify(current_refdisp));
+				var downloadqty=getCount(current_refdisp);
+				$("#txt-downloadqty").val(downloadqty);
 				$("#drivername").html(drivername);
 				$("#vehicleno").html(vehicleno);
 				$("#forwardmsg").html(forwardmsg);
@@ -226,6 +234,16 @@
 
 			}
 
+			function  getCount(current_refdisp){
+				//alert(JSON.stringify(current_refdisp));
+				var num=0;
+				$.each(current_refdisp,function(i,c){
+					var _loadqty=c.LOADQTY;
+					num+=Number(_loadqty);
+					
+				})
+				return num;
+			}
 
 			var initAction = function() {
 

@@ -606,8 +606,12 @@
     var customqty="";
     var addressqty="";
     var totalpieces="";
+	
     var current_order={};
     var order_all=[];
+	
+	var current_refdisp=[];
+	var refdisp_all=[];
 
     
 	mui.plusReady(function(){
@@ -837,7 +841,9 @@
 			    extras:{
 			      trrecordid:trrecordid,
 			      current_order:current_order,
-			      order_all:order_all
+			      order_all:order_all,
+				  current_refdisp:current_refdisp,
+				  refdisp_all:refdisp_all
 			    },
 			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 			    show:{
@@ -1281,10 +1287,13 @@
 					} else {
 						console.log(JSON.stringify(response));
 					    var orderjsons=response.sysdata.TmsTrRecord_getTrRecordPointinfos.recordorder;
+						var refdisps=response.sysdata.TmsTrRecord_getTrRecordPointinfos.refdisps;
+						//alert(JSON.stringify(refdisps));
 					    var stateid=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['STATEID'];//主单状态
 					    flagcold=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['FLAGCOLD'];
 						//展现运输点的位置
 						order_all=orderjsons;
+						refdisp_all=refdisps;
 						dispalytrrecordsorder(orderjsons);
 						//alert(JSON.stringify(current_order));
 						//展现侧边栏
@@ -1473,6 +1482,19 @@
     			return false;
     		}
     	})
+		
+		current_refdisp=[];//清空一下,防止重复加入
+		$.each(refdisp_all,function(i,c){
+			var _transid=c.TRANSID;
+			var _gcompanyid=c.GCOMPANYID;
+			if(_gcompanyid==gcompanyid && _transid==transid){
+				//alert(JSON.stringify(c));
+				current_refdisp.push(c);
+			}
+			    
+			
+			
+		})
     	
     }
     
