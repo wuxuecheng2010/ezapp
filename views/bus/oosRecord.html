@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
@@ -54,6 +53,7 @@
 			<h1 class="mui-title">缺货反馈查询</h1>
 			<a id="btn_search" class="mui-icon mui-icon-search mui-pull-right" onclick="openWidget()"></a>
 		</header>
+
 		<nav class="mui-bar mui-bar-tab">
 			<a class="mui-tab-item mui-active" href="#tabbar1">
 				<span class="mui-tab-label">全部</span>
@@ -67,8 +67,6 @@
 				<span class="mui-tab-label">已反馈</span>
 				<span style="font-size: 14px;">(<span id="num3">0</span>)</span>
 			</a>
-			
-			
 		</nav>
 		<div class="mui-content">
 			
@@ -150,6 +148,7 @@
 			var dtenddate = "";
 			var ibuyerid = "";
 			var isalerid = "";
+			var account=getLoginAccount();
 
 			mui.ready(function() {
 
@@ -179,6 +178,7 @@
 				var json = JSON.parse(value)
 				console.log(value.substr(1, value.length - 2));
 				//document.getElementById("ui").innerHTML=jsonvalue;
+				
 				ajax(jsonvalue);
 			});
 
@@ -240,6 +240,50 @@
 			
 			
 			
+	function getBtn(flagnotify,icustomerid,vcsaleraccount){
+					var html="";
+					if(DEBUG==true){
+						
+						if(flagnotify=='N'){
+							html=getBtnN(icustomerid);
+						}else{
+							html=getBtnY(icustomerid);
+						}
+						return html;
+					}
+					if(vcsaleraccount==account){
+						
+						if(flagnotify=='N'){
+							html=getBtnN(icustomerid);
+						}else{
+							html=getBtnY(icustomerid);
+						}
+						
+					}else{
+						//禁用按钮
+						html='<div class="mui-col-sm-12 mui-col-xs-12 " style="text-align:center;">'+
+						         '<button id="btn-notify" disabled="disabled"  type="button" class="mui-btn mui-btn-outlined btn-notify" data-icustomerid="'+icustomerid+'">不是我的客户</button>'+
+						     '</div>';
+						
+					}
+						
+					return html;
+				}
+				
+				function getBtnN(icustomerid){
+					var html='<div class="mui-col-sm-12 mui-col-xs-12 " style="text-align:center;">'+
+						         '<button id="btn-notify"  type="button" class="mui-btn mui-btn-primary mui-btn-outlined btn-notify" data-icustomerid="'+icustomerid+'">通知客户</button>'+
+						     '</div>';
+					return html;
+				}
+				
+				function getBtnY(icustomerid){
+					var html='<div class="mui-col-sm-12 mui-col-xs-12 " style="text-align:center;">'+
+						         '<button id="btn-notify"  type="button" class="mui-btn mui-btn-outlined btn-notify" data-icustomerid="'+icustomerid+'">已通知</button>'+
+						     '</div>';
+					return html;
+				} 
+			
 		
 			/**
 				 * 将json item  显示到某个列表下面
@@ -270,9 +314,13 @@
 						'<h6>开票：' + content.VCEXPLAIN2 + '</h6>' +
 			        	'</div>'+
 						'</a>'+
+						'<div class="mui-row">'+
+							 getBtn(content.FLAGNOTIFY,content.ICUSTOMERID,content.VCSALERACCOUNT)+
+						'</div>'+
 						'</li>'
 						);
 				}
+			
 			
 			
 			
@@ -284,6 +332,7 @@
 				var num1=0;
 				var num2=0;
 				var num3=0;
+				
 				jQuery.each(jsonobj, function(index, content) {
 					//var num=index+1;
 					displayItem(jQuery('#list1'),content);//显示到全部下面
@@ -313,11 +362,118 @@
 				//长按复制
 				longtapcopy(jQuery(".mui-card-content-inner,.mui-table-view-cell"),mui('#copy'));
 				
-				/*jQuery(".mui-tab-label").click(function(){
-					init();
-				});*/
+				
+				jQuery(".btn-notify").click(function(){
+					//获取客户ID
+					//alert($(this).attr("data-icustomerid"));
+					var icustomerid=$(this).attr("data-icustomerid");
+					var params={'icustomerid':icustomerid};
+					//ajaxNotify(JSON.stringify(params));
+					mui.confirm('是否发送消息，通知当前客户查看缺货信息', '提示', ['确认','取消'], function(e) {
+						switch(e.index) {
+											case 0:
+											ajaxNotify(JSON.stringify(params));
+												break;
+											default:
+												break;
+										}
+					}, 'div')
+					
+				});
 				
 			}
+			
+			
+			var ajaxNotify = function(params) {
+				//利用RunJS的Echo Ajax功能测试
+				var url =getServerPath(localStorage.netmod)
+				var dataType = 'json';
+				//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+				//发送数据
+				var data = {
+					controller: 'OosRecord',
+					method: 'notify',
+					params: params,
+					token: TOKEN
+				};
+
+			
+				//ajax 请求中。
+				ajaxxing();
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: notifySuccess,
+					error: err
+				});
+			
+			
+			};
+			
+			var notifySuccess = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						//alert(JSON.stringify(response));
+						var sysdata=response.sysdata;
+						var code=sysdata.OosRecord_notify.code;
+						var msg=sysdata.OosRecord_notify.msg;
+						var icustomerid=sysdata.OosRecord_notify.icustomerid;
+						if(code=="ok"){
+							//更新界面
+							flash(icustomerid);
+						}
+						mui.toast(msg);
+												
+					}
+				}
+			};
+			
+			
+			function flash(icustomerid){
+			        //alert(icustomerid);
+			         $.each($(".btn-notify"),function(i,c){
+			          
+			          var _icustomerid=$(this).attr('data-icustomerid');
+			          if(icustomerid==_icustomerid){
+			            $(this).html("已通知");
+						$(this).removeClass("mui-btn-primary");
+						//更新localStorage数据
+						flashLocal(icustomerid);
+			          }
+			          
+			          
+			        }); 
+			        
+			      }
+			
+			
+		function flashLocal(icustomerid){
+			
+			var oosrecordlist=localStorage.oosrecordlist;
+			oosrecordlist=JSON.parse(oosrecordlist);
+			
+			 for(var i=0;i<oosrecordlist.length;i++){
+				var _icustomerid=oosrecordlist[i].ICUSTOMERID;
+				if(icustomerid==_icustomerid){
+				oosrecordlist[i].FLAGNOTIFY="Y";
+				}
+			} 
+
+			
+			localStorage.oosrecordlist = JSON.stringify(oosrecordlist); 
+			
+		}	
+			
+			
+			
 		</script>
 	</body>
 
