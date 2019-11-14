@@ -52,7 +52,6 @@
 				border:none #FFFFFF;
 				border-bottom:#777777 solid 1px;
 				font-size: 30px;
-
 			}
 			
 			
@@ -67,7 +66,46 @@
 
 		<div class="mui-content">
 
-			<div class="" style="margin-top: 10px;padding: 5px;">
+            <div style="font-size: 24px;text-align: center;height: 48px;background-color: white;" >
+           		<h3  id="h3title" style="padding-top: 10px;">出车登记</h3>
+           	</div>
+           <form class="mui-input-group" >
+           	
+           	<div class="mui-input-row">
+           		<label>车辆</label>
+           		<input type="text" class="mui-input-clear" placeholder="" disabled="disabled" id="vehicleno">
+           	</div>
+			<div class="mui-input-row">
+				<label>驾驶员</label>
+				<input type="text" class="mui-input-clear" placeholder="" disabled="disabled" id="drivername">
+			</div>
+			<div class="mui-input-row">
+				<label>开往</label>
+				<input type="text" class="mui-input-clear" placeholder="" disabled="disabled" id="forwardmsg">
+			</div>
+			<div class="mui-input-row">
+				<label>运输件数</label>
+				<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="totalpieces">
+			</div>
+			<div class="mui-input-row">
+				<label>出发里程<span style="color: red;">*</span></label>
+				<input type="number" class="mui-input-clear"  pattern="\d*"  placeholder="" style="background-color:#FFFFCC;" id="txt-leavemileage">
+			</div>
+           <div class="mui-input-row" id="leavetemppanel">
+				<label>起运温度<span style="color: red;">*</span></label>
+				<input type="number" class="mui-input-clear" placeholder="" style="background-color:#FFFFCC;"  id="txt-leavetemp">
+           </div>
+           	
+           	
+           	 
+           	<div class="mui-input-row">
+           		<label>首站目的地<span style="color: red;">*</span></label>
+           		<input id="txt-targetadd" class="mui-input-clear" type="text" placeholder="----首站----" style="background-color:#FFFFCC;" readonly="true">
+           	</div>
+           	
+           	
+           </form>
+			<!-- <div class="" style="margin-top: 10px;padding: 5px;">
 				<div style="text-align: center;height: 60px;">
 					<h3 style="line-height: 60px;">信息登记</h3>
 				</div>
@@ -121,7 +159,7 @@
 				
 				<div class="mui-row" style="height: 30px;"></div>
 
-			</div>
+			</div> -->
 
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并出发</button>
@@ -180,11 +218,11 @@
 			trrecordid=self.trrecordid;
 			flagcold=self.flagcold;
 			trrecord_order_json=self.order_all;
-			//alert(JSON.stringify(order_all));
-			$("#drivername").html(drivername);
-			$("#vehicleno").html(vehicleno);
-			$("#forwardmsg").html(forwardmsg);
-			$("#totalpieces").html("("+totalpieces+"件)");
+			$("#drivername").val(drivername);
+			$("#vehicleno").val(vehicleno);
+			$("#forwardmsg").val(forwardmsg);
+			$("#totalpieces").val(totalpieces);
+			
 			if(flagcold=="N"){
 				$("#leavetemppanel").addClass("mui-hidden");
 			}
@@ -192,21 +230,7 @@
 		}
 		
 		
-		/*//转化下拉列表数据格式
-		var formatOrderListDate=function(){
-			$.each(trrecord_order_json, function(i,c) {
-				var step=c.STEP;
-				if(step=="0"){
-					//状态为0的才有机会设置为下一点.
-					var ordid=c.ORDID;
-					var customname=c.CUSTOMNAME;
-					var o={};
-					o.value=ordid;
-					o.text=customname;
-					trrecord_order_list.push(o);
-				}
-			});
-		};*/
+
 
 		
 		var gettmstrmapsub0=function(trrecordid,vehicleno){
@@ -219,6 +243,7 @@
 					controller: 'TmsTrRecord',
 					method: 'gettmstrmapsub0',
 					vehicleno:vehicleno,
+					trrecordid:trrecordid,
 					token: TOKEN
 				};
 				//console.log(data);
@@ -241,7 +266,10 @@
 						tokenOutTime(sysreason);
 					} else {
 						console.log(JSON.stringify(response));
-					    mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].MILEAGES;
+						
+					    mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].mileages;
+						$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
+						//alert(mileages);
 					}
 				}
 			};
@@ -352,6 +380,8 @@
 					current_lat:current_lat,
 					current_lng:current_lng,
 					current_addresses:current_addresses,
+					vehicleno:vehicleno,
+					username:getLoginName(),
 					token: TOKEN
 				};
 				//console.log(JSON.stringify(data));
@@ -405,10 +435,11 @@
 				return false;
 			}
 
+            //alert("mileages:"+mileages+" leavemileage:"+leavemileage);
 			if(Number(mileages)>Number(leavemileage)){
-				layer.tips('出发里程不能小于当前车辆的里程', '#txt-leavemileage', {
+				layer.tips('出发里程不能小于当前车辆的里程,当前登记的里程为'+mileages+'公里,请确认', '#txt-leavemileage', {
 						  tips: [1, '#3595CC'],
-						  time: 1500
+						  time: 3500
 						});
 				return false;
 			}

@@ -89,7 +89,7 @@
 			
 			<div id="tabbar1" class="mui-control-content mui-active">
 				<ul id="list1" class="mui-table-view" style="margin-top: 1px;">
-								       <!-- <li class="mui-table-view-cell">
+				<!-- <li class="mui-table-view-cell">
 			        	<h5>注射用阿莫西林钠克拉维酸钾</h5>
 			        	<h6>规格：1.2g(1.0g/0.2g)</h6>
 			        	<h6>采购：汤启明</h6>
@@ -369,7 +369,8 @@
 					var icustomerid=$(this).attr("data-icustomerid");
 					var params={'icustomerid':icustomerid};
 					//ajaxNotify(JSON.stringify(params));
-					mui.confirm('是否发送消息，通知当前客户查看缺货信息', '提示', ['确认','取消'], function(e) {
+					//弹窗 提示是否需要发送 因为需要选择客户人员 所以暂停使用;
+					/* mui.confirm('是否发送消息，通知当前客户查看缺货信息', '提示', ['确认','取消'], function(e) {
 						switch(e.index) {
 											case 0:
 											ajaxNotify(JSON.stringify(params));
@@ -377,14 +378,37 @@
 											default:
 												break;
 										}
-					}, 'div')
+					}, 'div') */
+					
+					//打开新窗体 ,选择客户人员后再发送;
+					
+					openSelectContacts(icustomerid);
+					
 					
 				});
 				
 			}
 			
+			var openSelectContacts=function(icustomerid){
+				//alert("openSelectContacts icustomerid:"+icustomerid);
+					mui.openWindow({
+						url: '../pub/contacts_select.html',
+						id: 'contacts_select.html',
+						extras: {
+							icustomerid: icustomerid,
+							itypeid:1
+						}
+					});
+			};
+			
 			
 			var ajaxNotify = function(params) {
+				if(params.length==0){
+					mui.toast("联系人信息不能为空");
+					return ;
+				}
+				params=JSON.stringify(params);
+				
 				//利用RunJS的Echo Ajax功能测试
 				var url =getServerPath(localStorage.netmod)
 				var dataType = 'json';
@@ -411,6 +435,15 @@
 			
 			
 			};
+			
+			window.addEventListener('contactSelectEvent', function(event) {
+							var value = event.detail.value;
+							//console.log(JSON.stringify(value));
+							//var params=JSON.stringify(value);
+							ajaxNotify(value);
+						});
+
+
 			
 			var notifySuccess = function(response) {
 				if(response != null) {

@@ -348,6 +348,22 @@
 				background-color: #8a6de9;
 			}
 			
+			.blue{
+				color:  #007AFF;
+			}
+			.green{
+				color: #2AC845;
+			}
+			.red{
+				color: #EB7350;
+			}
+			.thingreen{
+				color: #00F7DE;
+			}
+			.addr{
+				
+				font-size: 14px;
+			}
 			
 		</style>
 		<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=rsQL4CUkAClgjVOhwTyWEqEhFkUc9Thz"></script>
@@ -367,7 +383,7 @@
 							<p id="aside_addr"></p>
 							
 						</div>
-						<div class="title" style="margin-bottom: 25px;">客户清单:</div>
+						<div class="title" style="margin-bottom: 25px;">客户清单及状态:</div>
 						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted" id="asidelist">
 							<li class="mui-table-view-cell" style="color: #FF5053;">
 								<a class="mui-navigate-right">
@@ -497,10 +513,11 @@
 					
 					<div id="p4" class="mui-content-padded mui-hidden" >
 						<div class="mui-card">
-							<div class="mui-card-header">信息</div>
+							<div class="mui-card-header">行程总结</div>
 							<div class="mui-card-content">
 								<div class="mui-card-content-inner">
-						 	   		<p>行程125公里，耗时5小时，送货258件 配送点12个[非常棒]</p>
+						 	   		<p>配送<span id="addrcounts"></span>个点，<span id="totalpieces"></span>件包裹，实际行程<span id="mileagetotal"></span>公里，耗时<span id="timetotal"></span>，
+									参考百度GIS：总里程<span id="mileagetotalgsp"></span>公里，耗时<span id="timetotalgsp"></span>.<br>行程评价:<span id="summary"></span></p>
 								</div>
 							</div>
 						</div>
@@ -552,9 +569,10 @@
 <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="../../js/mymap.js"></script>
 <script src="../../js/myglobal.js"></script>
+<!-- <script src="../../js/bus/tmstrmap/tmslocation.js"></script> -->
 <script src="../../js/myinput.js"></script>
 <script type="text/javascript">
-
+    var watchId;
 	var map = new BMap.Map("allmap"); 
 	var point=new BMap.Point(getOriginLNG(), getOriginLAT());
 	map.centerAndZoom(point, 11); 
@@ -569,24 +587,7 @@
 	//map.setCurrentCity("临海"); // 设置地图显示的城市 此项是必须设置的
 	map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 	
-/*	定位案例
- * var geolocation = new BMap.Geolocation();
-	geolocation.enableSDKLocation();
-	geolocation.getCurrentPosition(function(r){
-	if(this.getStatus() == BMAP_STATUS_SUCCESS){
-		var mk = new BMap.Marker(r.point);
-		map.addOverlay(mk);
-		map.panTo(r.point);
-		//alert('您的位置：'+r.point.lng+','+r.point.lat);
-	}
-	else {
-		alert('failed'+this.getStatus());
-	}        
-});*/
-	
-	
-	
-	
+
 	mui.init({
 		swipeBack:false //启用右滑关闭功能
 			});
@@ -602,7 +603,8 @@
     var step="";//运输节点状态 
     var drivername="";
     var vehicleno="";
-    
+    var vehicleid="";
+	
     var customqty="";
     var addressqty="";
     var totalpieces="";
@@ -613,6 +615,8 @@
 	var current_refdisp=[];
 	var refdisp_all=[];
 
+
+    
     
 	mui.plusReady(function(){
 		
@@ -628,6 +632,7 @@
 		//初始化按钮事件
 		initaction();
 		
+        //watchPos(map,watchId)
 	})
 	
 	
@@ -722,53 +727,114 @@
 			
 			    var lat="";
 				var lng="";
-				reach(current_order,lng,lat);
-				
-				
-			/*//调用百度计算路程给出提示信息  是否要到达
-			var geolocation = new BMap.Geolocation();
-			geolocation.enableSDKLocation();
-			geolocation.getCurrentPosition(function(r){
-				var lat="";
-				var lng="";
-				
-				if(this.getStatus() == BMAP_STATUS_SUCCESS){
-                    //1、标记自己当前的位置
-					//imhere(map,r.point)
-					//map.panTo(r.point);
-					//2、测算距离
-					lng=r.point.lng;
-					lat=r.point.lat;
+				//reach(current_order,lng,lat);
+			if(MUSTDISTANCE){
+				//调用百度计算路程给出提示信息  是否要到达
+				var geolocation = new BMap.Geolocation();
+				geolocation.enableSDKLocation();
+				geolocation.getCurrentPosition(function(r){
 					
-					//距离
-					var distence=3000;
-					if(distence>5000){
-						
-						//提示有点远  是否确定到达
-						var customname=current_order.CUSTOMNAME;
-						var msg='您当前的位置距离"'+customname+'"稍远，确定到了吗？';
-						mui.confirm(msg,'请确认',['确定','取消'],function(e){
-							if (e.index == 0) {
-									//保存到达操作
-			   						reach(current_order,lng,lat);
-								} 
-						});
-						
-					}else{
-					    //保存到达操作
-				   		reach(current_order,lng,lat);
-					}
+					if(this.getStatus() == BMAP_STATUS_SUCCESS){
+				        //1、标记自己当前的位置
+						//imhere(map,r.point)
+						//map.panTo(r.point);
+						//2、测算距离
+						lng=r.point.lng;
+						lat=r.point.lat;
+						var my_point=r.point;
+						var current_order_lng=current_order.LNG;
+						var current_order_lat=current_order.LAT;
+						var current_order_point= new BMap.Point(Number(current_order_lng), Number(current_order_lat))
+						//距离
+						var distence=map.getDistance(my_point ,current_order_point);
+						//alert("distence:"+distence);
+						if(distence>MAXDISTANCE){
+							
+							//提示有点远  是否确定到达
+							var customname=current_order.CUSTOMNAME;
+							var msg='对不起,您当前的位置距离"'+customname+'"非常远，直线距离超过'+MAXDISTANCE+'米，不能确认到达。请达到目的地后再操作。';
+							
+							/* mui.alert(msg,'警告',['关闭'],function (e) {
+							   
+							},'div') */
+							
+							
+							 mui.confirm(msg,'确认',['报告位置不准','取消'],function(e){
+								if (e.index == 0) {
+										//提交位置不正确信息,供调度后台纠正错误信息
+										var transid=current_order.TRANSID;
+				   						saveLocaltionErr(transid,lng,lat);
+									} 
+							}); 
+							
+						}else{
+						    //保存到达操作
+					   		reach(current_order,lng,lat);
+						}
+				
+				
+					}else {
+						mui.toast("获取地理位置失败，请设置允许设备获取地理位置信息，之后再操作.");
+						//直接保存了
+				   		//reach(current_order,lng,lat);
+					}      
+				});
+				
+				
+			}else{
 
-
-				}else {
-					//mui.toast("获取地理位置失败");
-					//直接保存了
-			   		reach(current_order,lng,lat);
-				}      
-			});*/
+				reach(current_order,lng,lat);
+			}	
+				
+			
 		});
 		
 	}
+	
+	//报告错误位置
+	
+	var saveLocaltionErr=function(transid,lng,lat){
+		
+			var url = getServerPath(localStorage.netmod)
+			console.log(url);
+			var dataType = 'json';
+			//发送数据
+			var data = {
+				controller: 'TmsTrRecord',
+				method:'saveLocaltionErr',
+				transid: transid,
+				lat:lat,
+				lng:lng,
+				employeeid:getWMSEmployeeID(),
+				token: TOKEN
+			};
+			//console.log(data);
+			mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: success6,
+				error: err
+			});
+		
+	}
+	
+	
+	var success6 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						mui.toast("报告成功,等待调度核实并纠正错误信息.");
+					}
+				}
+			};
+	
+	
 	//我已到达
 	var reach=function(orderjson,lng,lat){
 		
@@ -931,7 +997,8 @@
 			    
 			    extras:{
 			      trrecordid:trrecordid,
-			      trsummary:trsummary
+			      trsummary:trsummary,
+				  vehicleno:vehicleno
 			    },
 			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 			    show:{
@@ -1047,7 +1114,7 @@
 					controller: 'TmsTrRecord',
 					method: 'getTrRecordBydriver',
 					driverid1: getWMSEmployeeID(),
-					stateids: "1,2,3",
+					stateids: "1,2,3,4",
 					datatype: 1,
 					token: TOKEN
 				};
@@ -1105,17 +1172,37 @@
 						var ADDRESSQTY=c.ADDRESSQTY;
 						var TOTALPIECES=c.TOTALPIECES;
 						var ROUTENAME=c.ROUTENAME;
+						var STATEID=c.STATEID;
 						forwardmsg=ROUTENAME;//不管什么情况先赋值 只有一行就正确了，多行反正是选择的时候重新赋值
 						drivername=DRIVERNAME;
 						vehicleno=VEHICLENO;
+						
 						customqty=CUSTOMQTY;
 						addressqty=ADDRESSQTY;
 						totalpieces=TOTALPIECES;
+						var spanstateid="";
+						var str='<span id="routeid">'+ROUTENAME+'</span>'+TOTALPIECES+'件 ';
+						switch (STATEID){
+							case "1":
+							    spanstateid='<span class="mui-badge mui-badge-danger">'+str+'[待出发]'+'</span>';
+								break;
+							case "2":
+							    spanstateid='<span class="mui-badge mui-badge-success">'+str+'[运输中]'+'</span>';
+								break;
+							case "3":
+							    spanstateid='<span class="mui-badge mui-badge-success">'+str+'[运输中]'+'</span>';
+								break;
+							case "4":
+							    spanstateid='<span class="mui-badge mui-badge-primary">'+str+'[已完成]'+'</span>';
+								break;
+							default:
+								break;
+						}
 						
 						var li='<li class="mui-table-view-cell">'
 									+'<a href="javascript:;">'
 										+'<span><span>'+CREDATE+'</span>  #<span id="trrecordid">'+TRRECORDID+'</span>班次</span>'
-										+'<div id="forwardmsg">'+ROUTENAME+'</div>'
+										+'<div id="forwardmsg">'+spanstateid+'</div>'
 										+'<div id="drivername" class="mui-hidden">'+DRIVERNAME+'</div>'
 										+'<div id="vehicleno" class="mui-hidden">'+VEHICLENO+'</div>'
 										+'<div id="customqty" class="mui-hidden">'+CUSTOMQTY+'</div>'
@@ -1165,7 +1252,7 @@
 				toggleMenu();
 				//info.innerHTML = '你已选择：'+this.innerHTML;
 				trrecordid=$(this).find("#trrecordid").html();
-				forwardmsg=$(this).find("#forwardmsg").html();
+				forwardmsg=$(this).find("#routeid").html();
 				drivername=$(this).find("#drivername").html();
 				vehicleno=$(this).find("#vehicleno").html();
 				customqty=$(this).find("#customqty").html();
@@ -1174,7 +1261,7 @@
 				if(trrecordid!=null){//正常任务菜单事件
 					dispalytrrecords(trrecordid);
 					//$("#routename").html(forwardmsg+"#"+trrecordid+"班次");
-					$(".mui-title").html(forwardmsg+"#"+trrecordid+"班次");
+					$(".mui-title").html(trrecordid+"班次");
 				}else{//非任务菜单 比如显示刷新任务
 					loadtrrecords();
 				}
@@ -1289,7 +1376,12 @@
 					    var orderjsons=response.sysdata.TmsTrRecord_getTrRecordPointinfos.recordorder;
 						var refdisps=response.sysdata.TmsTrRecord_getTrRecordPointinfos.refdisps;
 						//alert(JSON.stringify(refdisps));
-					    var stateid=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['STATEID'];//主单状态
+						
+						var record=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0];
+					    var stateid=record['STATEID'];//主单状态
+						vehicleno=record['VEHICLENO'];
+						vehicleid=record['VEHICLEID']
+						
 					    flagcold=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['FLAGCOLD'];
 						//展现运输点的位置
 						order_all=orderjsons;
@@ -1313,6 +1405,7 @@
 	
 	//根据单据状态展现输入框信息
 	var controllinput=function(stateid,orderjsons){
+		//console.log("**orderjsons**:"+JSON.stringify(orderjsons));
 		var parr=[];
 		parr.push($('#p1'));
 		parr.push($('#p2_1'));
@@ -1384,6 +1477,7 @@
 			    		c.addClass('mui-hidden');
 			    	}
 			    });
+				trsummary(trrecordid);
 			    break;
 			    
 			default:
@@ -1394,8 +1488,15 @@
 		   //设置客户点数
 		   var customcount=orderjsons.length;
 		   $("#customcount").html(customcount);
+		   $("#addrcounts").html(customcount);
+		   $("#totalpieces").html(totalpieces);
+		   
+		   
 	
 	}
+	
+	
+	
 	
     var reachColdTempSign=function(){
     	var _reachtemp=isNumber(current_order.REACHTEMP)?current_order.REACHTEMP:"";
@@ -1526,21 +1627,31 @@
     		var STEP=c.STEP;
     		var ORDID=c.ORDID;
     		
-/*    		var li_style='';
 
-    		switch (STEP){
-    			case "0":
-    			    li_style='<li class="mui-table-view-cell">';
-    				break;
-    			case "3":
-    			    li_style='<li class="mui-table-view-cell style="color: #FF5053;"">';
-    				break;
-    			default:
-    			    li_style='<li class="mui-table-view-cell style="color: #00FF00;"">';
-    				break;
-    		}*/
+			var lilistcolor="";
+			var stepinfo="";
+			switch (STEP){
+				case "0":
+				lilistcolor="red";
+				stepinfo="[初始]";
+					break;
+				case "1":
+				lilistcolor="thingreen";
+				stepinfo="[下一站]";
+					break;
+				case "2":
+				lilistcolor="green"
+				stepinfo="[到达]";
+					break;
+				case "3":
+				lilistcolor="blue"
+				stepinfo="[结束]";
+					break;
+				default:
+					break;
+			}
     		
-    		var li='<li class="mui-table-view-cell">'
+    		var li='<li class="mui-table-view-cell '+lilistcolor+'">'
     		+'<a class="mui-navigate-right">'
                 +'  <div class="mui-row">'
                 +'    <div class="mui-col-sm-2 mui-col-xs-2">'
@@ -1554,9 +1665,14 @@
                  +'     </div>'
                  +'     <div  class="mui-row">'
                  +'       <div class="mui-col-sm-6 mui-col-xs-12">'
-                 +'         <span>'+INCEPTADDR+'</span>'
+                 +'         <span class="addr">'+INCEPTADDR+'</span>'
                  +'       </div>'
                  +'     </div>'
+				 +'     <div  class="mui-row">'
+				 +'       <div class="mui-col-sm-6 mui-col-xs-12">'
+				 +'         <span class="addr">'+stepinfo+'</span>'
+				 +'       </div>'
+				 +'     </div>'
           		+'			</div>'
           		
           		+'		<div class="mui-hidden">'
@@ -1572,18 +1688,35 @@
 	    		
     	});
     	
-    	//事件
-    	var lilist=document.getElementsByTagName("li");
+    	//事件#####
+/*    	var lilist=document.getElementsByTagName("li");
     	for(var i=0;i<lilist.length;i++){
     		lilist[i].addEventListener('tap',function(){
-    			var x=$(this).find("#ordid").html();
-    			console.log("......X.......:"+x);
+    			var ordid=$(this).find("#ordid").html();
+				var trrecordid=$(this).find("#trrecordid").html();
+    			console.log("......ordid.......:"+ordid+"  trrecordid:  "+trrecordid);
+				ajaxJump(ordid);//跳转到指定的节点
     		});
-    	}
+    	} */
+		
+		
+		$("#asidelist .mui-table-view-cell").each(function(i,c){
+			c.addEventListener('tap',function(){
+				var ordid=$(this).find("#ordid").html();
+				var trrecordid=$(this).find("#trrecordid").html();
+				console.log("#####ordid#####:"+ordid+"  trrecordid:  "+trrecordid);
+				ajaxJump(ordid);//跳转到指定的节点
+			});
+			
+		})
 
     	
 
     }
+
+
+
+
 
 
 
@@ -1682,5 +1815,196 @@
     	}
     	return icon;
     }
+	
+	var ajaxJump=function(ordid){
+		if(ordid!=undefined){
+			var url = getServerPath(localStorage.netmod)
+			console.log(url);
+			var dataType = 'json';
+			//发送数据
+			var data = {
+				controller: 'TmsTrRecord',
+				method:'jump',
+				ordid: ordid,
+				token: TOKEN
+			};
+					
+			 mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: jumpsuccess,
+				error: err
+			}); 
+		}	
+	}
+	
+	
+	var jumpsuccess=function(response){
+					if(response != null) {
+						console.log(JSON.stringify(response));
+					    var syscode = response.syscode;
+						var sysreason = response.sysreason;
+						if(syscode == SYSCODE_NO) {
+							tokenOutTime(sysreason);
+						} else {
+							console.log(JSON.stringify(response));
+							
+						    var reachjsons=response.sysdata.TmsTrRecord_jump;
+							var ordid=reachjsons.ordid; 
+						    var code=reachjsons.code;  // T:转到新节点  R:刷新  E:转到指定节点编辑或者查看  
+						    var msg=reachjsons.msg;
+						    
+						    forJump(code,ordid);
+							
+						} 
+					}
+	}
+	
+	var forJump=function(code,ordid){
+		if(code!="E")
+			mui('.mui-off-canvas-wrap').offCanvas().close();
+		switch (code){
+			case "T":
+			    dispalytrrecords(trrecordid);
+				break;
+				
+			case "E":
+			    //dispalytrrecords(trrecordid);
+				openOrdidPanel(ordid);
+				break;
+				
+			case "R":
+			    dispalytrrecords(trrecordid);
+				break;
+				
+			default:
+				break;
+		}
+		
+		
+	}
+	
+	//打开已完成节点的编辑界面
+	var openOrdidPanel=function(ordid){
+		
+		mui.openWindow({
+		    url:"../pub/tmstrmap_sub3.html",
+		    id:"tmstrmap_sub3.html",
+		    styles:{
+		      //top:10,//新页面顶部位置
+		      //bottom:10,//新页面底部位置
+		      width:"100%",//新页面宽度，默认为100%
+		      height:"100%"//新页面高度，默认为100%
+		    },
+		    
+		    extras:{
+		      /* trrecordid:trrecordid,
+		      current_order:current_order,
+		      order_all:order_all,
+			  current_refdisp:current_refdisp,
+			  refdisp_all:refdisp_all */
+			  
+			  trrecordid:trrecordid,
+			  ordid:ordid
+		    },
+		    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+		    show:{
+		      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+		      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+		      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+		    }
+		    
+		});
+		
+	}
+	
+	
+	var trsummary=function(trrecordid){
+		
+						var url = getServerPath(localStorage.netmod)
+						console.log(url);
+						var dataType = 'json';
+						//发送数据
+						var data = {
+							controller: 'TmsTrRecord',
+							method:'getTrsummary',
+							trrecordid: trrecordid,
+							token: TOKEN
+						};
+			
+						 mui.ajax(url, {
+							data: data,
+							dataType: dataType, //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: trsummarysuccess,
+							error: err
+						}); 
+	}
+	
+	var trsummarysuccess=function(response){
+					if(response != null) {
+						console.log(JSON.stringify(response));
+					    var syscode = response.syscode;
+						var sysreason = response.sysreason;
+						if(syscode == SYSCODE_NO) {
+							tokenOutTime(sysreason);
+						} else {
+							console.log(JSON.stringify(response));
+							var sumdata=response.sysdata.TmsTrRecord_getTrsummary;
+							var code=sumdata.code;
+							var msg=sumdata.msg;
+							if(code='ok'){
+								var timetotal=sumdata.data.timetotal;
+								var mileagetotal=sumdata.data.mileagetotal;
+								var timetotalgsp=sumdata.data.timetotalgsp;
+								var mileagetotalgsp=sumdata.data.mileagetotalgsp;
+								$("#mileagetotal").html(mileagetotal);
+								$("#timetotal").html(timetotal);
+								$("#timetotalgsp").html(timetotalgsp);
+								$("#mileagetotalgsp").html(mileagetotalgsp);
+								
+								var summary="";
+								var dvalue=mileagetotal-mileagetotalgsp;
+								if(dvalue<=0){
+									summary='<span class="mui-badge mui-badge-success">牛掰 活地图</span>';
+								}else{
+									var ps=dvalue/mileagetotalgsp;
+									if(ps<=0.1){
+										summary='<span class="mui-badge mui-badge-primary">优秀 可以超越计算机了</span>';
+									}else if(ps>0.1 && ps<=0.3){
+										summary='<span class="mui-badge mui-badge-purple">良好 还有进步空间</span>';
+									}else if(ps>0.3 && ps<0.5){
+										summary='<span class="mui-badge mui-badge-warning">不佳 下次请带导航再出发</span>';
+									}else{
+										summary='<span class="mui-badge mui-badge-danger">路盲或者智商不在线</span>';
+									}
+								}
+								
+								$("#summary").html(summary);
+								
+							}else{
+								
+								mui.toast(msg);
+								
+							}
+						   
+							
+						} 
+					}
+	}
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
 	
 </script>

@@ -52,7 +52,6 @@
 				border:none #FFFFFF;
 				border-bottom:#777777 solid 1px;
 				font-size: 30px;
-
 			}
 			
 			
@@ -67,7 +66,42 @@
 		</header>
 
 		<div class="mui-content">
+            <div style="font-size: 24px;text-align: center;height: 48px;background-color: white;" >
+           		<h3  id="h3title" style="padding-top: 10px;">完成并前往下一站</h3>
+           	</div>
+<form class="mui-input-group" >
 
+	<div class="mui-input-row">
+		<label>件数(扫码)</label>
+		<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="txt-downloadqty">
+		
+	</div>
+	<div class="mui-input-row " style="display: none;">
+		<label>卸货方式</label>
+		<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
+		 readonly="true">
+	</div>
+	
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>自卸<span style="color: red;">*</span></label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="自卸件数" id="minesqty">
+	</div>
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>他卸<span style="color: red;">*</span></label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
+	</div>
+	
+	
+	<div class="mui-input-row" id="selectpanel">
+		<label>下一站<span style="color: red;">*</span></label>
+		<input id="txt-targetadd" class="mui-input-clear" type="text" placeholder="--下一站--" style="background-color:#FFFFCC;" readonly="true">
+	</div>
+	
+	
+</form>
+
+
+<!-- 
 			<div  style="margin-top: 10px;padding: 5px;">
 				<div style="text-align: center;height: 60px;">
 					<h3 style="line-height: 60px;" id="h3title">完成并前往下一站</h3>
@@ -111,11 +145,10 @@
 					</div>
 				</div>
 
-				<!-- <div class="mui-row" style="height: 30px;"></div> -->
 
 			</div>
 			
-			
+			 -->
 			
 
 			<div id="savepanel" class="mui-content-padded" style="margin-top: 20px;">
@@ -136,6 +169,7 @@
 		<script src="../../js/myglobal.js"></script>
 		<script src="../../js/myinput.js"></script>
 		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
+		<script src="../../js/bus/tmstrmap/loadqty.js"></script>
 		<script type="text/javascript" src="../../plugs/layer/layer.js"></script>
 		<script>
 			mui.init({
@@ -234,21 +268,13 @@
 
 			}
 
-			function  getCount(current_refdisp){
-				//alert(JSON.stringify(current_refdisp));
-				var num=0;
-				$.each(current_refdisp,function(i,c){
-					var _loadqty=c.LOADQTY;
-					num+=Number(_loadqty);
-					
-				})
-				return num;
-			}
+			
 
 			var initAction = function() {
 
 				//保存 并且下一站
 				var btnsave = document.getElementById("btn-save");
+				
 				btnsave.addEventListener('tap', function() {
 					saveRecordOrder(1); //1代表送下一站
 				});
@@ -259,27 +285,52 @@
 					saveRecordOrder(2); //2代表送完回厂
 				});
 
+				//卸货件数qty
+                InitLoadQtyAction(getCount(current_refdisp));
 
 			}
+			
+			function  getCount(current_refdisp){
+							//alert(JSON.stringify(current_refdisp));
+							var num=0;
+							$.each(current_refdisp,function(i,c){
+								var _loadqty=c.LOADQTY;
+								num+=Number(_loadqty);
+								
+							})
+							return num;
+						}
 
 			var saveRecordOrder = function(type) {
 				var downloadqty=$("#txt-downloadqty").val();
 				current_order.DOWNLOADQTY=downloadqty;
 				current_order.DOWNLOADTYPEID=downloadtypeid;
 				
+				var minesqty=$("#minesqty").val();
+				var othersqty=$("#othersqty").val();
+				downloadqty=Number(downloadqty);
+				minesqty=Number(minesqty);
+				othersqty=Number(othersqty);
+				//alert(downloadqty);
+				//alert(minesqty);
+				if(downloadqty<minesqty ){
+					
+					layer.tips('自卸件数不能超过总卸货件数', '#minesqty', {
+							  tips: [1, '#3595CC'],
+							  time: 2500
+							});
+					return ;
+				}else if(downloadqty<othersqty){
+					layer.tips('他卸件数不能超过总卸货件数', '#othersqty', {
+							  tips: [1, '#3595CC'],
+							  time: 2500
+							});
+					return ;
+				}
+				
 				if(validate(type))
 				doFinish(current_order, trrecord_order);
-/* 				if (type == 1) {
-					var flag = validate(); //多一个验证
 
-					if (flag) {
-						//保存 并返回到主界面  事件内容包含
-						doFinish(current_order, trrecord_order);
-					}
-					
-				} else {
-					doFinish(current_order, trrecord_order); //此时  trrecord_order为{}
-				} */
 			}
 			
 			
@@ -363,6 +414,8 @@
 				var c_ordid = _current_order.ORDID;
 				var c_downloadqty=_current_order.DOWNLOADQTY;
 				var c_downloadtypeid=_current_order.DOWNLOADTYPEID;
+				var minesqty=$("#minesqty").val();
+				var othersqty=$("#othersqty").val();
 				var n_ordid = "";
 				if (!$.isEmptyObject(_trrecord_order))
 					n_ordid = _trrecord_order.ORDID;
@@ -376,6 +429,8 @@
 					c_downloadtypeid:c_downloadtypeid,
 					c_downloadqty:c_downloadqty,
 					n_ordid: n_ordid,
+					minesqty:minesqty,
+					othersqty:othersqty,
 					current_lat: current_lat,
 					current_lng: current_lng,
 					current_addresses: current_addresses,
@@ -427,7 +482,7 @@
 			//保存前校验数字是否合理
 			var validate = function(type) {
 				
-				var downloadqty=$("#txt-downloadqty").val();
+				/* var downloadqty=$("#txt-downloadqty").val();
 				//downloadtypeid
 				if(downloadqty!="" && downloadqty!=null && isNumber(downloadqty) && downloadqty>0){
 					
@@ -438,7 +493,7 @@
 									});
 							return false;
 					}
-				}
+				} */
 				
 
         if(type==1)//下一站时 必须
@@ -451,6 +506,8 @@
 				}
 				return true;
 			}
+			
+			
 		</script>
 	</body>
 

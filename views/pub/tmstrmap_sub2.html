@@ -67,7 +67,61 @@
 
 		<div class="mui-content">
 
-			<div class="" style="margin-top: 10px;padding: 5px;">
+ 
+					
+					<div style="font-size: 24px;text-align: center;height: 48px;background-color: white;" >
+						<h3  id="h3title" style="padding-top: 10px;">回程登记</h3>
+					</div>
+		<form class="mui-input-group" >
+					
+					
+					<div class="mui-input-row">
+						<label>结束里程</label>
+					    <input id="txt-backmileage" type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
+					</div>
+					
+					
+					
+					<div class="mui-input-row">
+						<label>加油金额</label>
+						<input type="number" id="txt-oilcost" placeholder="加油金额"  pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
+					</div>
+					
+					
+					
+					<div class="mui-input-row">
+						<label>过路费</label>
+						<input type="number" id="txt-roadtoll" placeholder="过路费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" >
+					</div>
+					
+					
+					<div class="mui-input-row">
+						<label>停车费</label>
+						<input type="number" id="txt-parkingfee" placeholder="停车费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
+					</div>
+					
+					
+					<div class="mui-input-row">
+						<label>维修费</label>
+						<input type="number" id="txt-repaircost" placeholder="维修费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
+					</div>
+					
+					
+					<div class="mui-input-row">
+						<label>客户点数</label>
+						<input type="number" id="txt-customqty" placeholder="客户点数" pattern="\d*" class="mui-input-clear" disabled="disabled" >
+					</div>
+					
+					
+					<div class="mui-input-row">
+						<label>客户地址数</label>
+						<input type="number" id="txt-addressqty" placeholder="客户地址数" pattern="\d*" class="mui-input-clear" disabled="disabled" >
+					</div>
+					
+				</form>
+				
+				
+		<!-- 	<div class="" style="margin-top: 10px;padding: 5px;">
 				<div style="text-align: center;height: 60px;">
 					<h3 style="line-height: 60px;">回程登记</h3>
 				</div>
@@ -145,7 +199,7 @@
 				<div class="mui-row" style="height: 30px;"></div>
 
 			</div>
-
+ -->
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存</button>
 			</div>
@@ -166,6 +220,8 @@
 				swipeBack: false //启用右滑关闭功能
 			});
 			var trrecordid="";
+			var vehicleno="";
+			var mileages="";
 			//var customqty="";
 			//var addressqty="";
 			
@@ -185,15 +241,59 @@
 			var self=plus.webview.currentWebview();
 			trrecordid=self.trrecordid;
 			var trsummary=self.trsummary;
+			vehicleno=self.vehicleno;
 			
 			var customqty=trsummary.customqty;
 			var addressqty=trsummary.addressqty;
 			$("#txt-customqty").val(customqty);
 			$("#txt-addressqty").val(addressqty);
 			
+			initParams();
 		}
 		
-	
+	    var initParams=function(){
+			
+			var url = getServerPath(localStorage.netmod);
+			var dataType = 'json';
+			//发送数据
+			var data = {
+				controller: 'TmsTrRecord',
+				method: 'getLatestMalesForBack',
+				trrecordid: trrecordid,
+				vehicleno:vehicleno,
+				token: TOKEN
+			};
+			//console.log(JSON.stringify(data));
+			mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				async:false,
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: success3,
+				error: err
+			});
+			
+			
+		}
+		
+		var success3= function(response) {
+			if(response != null) {
+				var syscode = response.syscode;
+				var sysreason = response.sysreason;
+				if(syscode == SYSCODE_NO) {
+					tokenOutTime(sysreason);
+				} else {
+					console.log(JSON.stringify(response));
+					var resjson=response.sysdata.TmsTrRecord_getLatestMalesForBack;
+					mileages=resjson.MILEAGES;
+					
+					$("#txt-backmileage").attr('placeholder','上次里程登记为：'+mileages);
+		
+				}
+			}
+		};
+		
 		
 		var initAction=function(){
 			//结束里程
@@ -220,7 +320,14 @@
 			var flag=validate();
 			if(flag){
 				//保存 并返回到主界面
-				doSave($("#txt-backmileage").val(),$("#txt-oilcost").val(),$("#txt-customqty").val(),$("#txt-addressqty").val(),$("#txt-roadtoll").val(),$("#txt-parkingfee").val(),$("#txt-repaircost").val(),trrecordid);
+				doSave($("#txt-backmileage").val(),
+				$("#txt-oilcost").val(),
+				$("#txt-customqty").val(),
+				$("#txt-addressqty").val(),
+				$("#txt-roadtoll").val(),
+				$("#txt-parkingfee").val(),
+				$("#txt-repaircost").val(),
+				trrecordid);
 				
 			}
 		}
@@ -254,6 +361,8 @@
 					roadtoll:roadtoll,
 					parkingfee:parkingfee,
 					repaircost:repaircost,
+					vehicleno:vehicleno,
+					username:getLoginName(),
 					token: TOKEN
 				};
 				//console.log(JSON.stringify(data));
@@ -304,13 +413,16 @@
 				return false;
 			}
 
-			/*if(Number(mileages)>Number(leavemileage)){
-				layer.tips('结束里程不能小于当前车辆的出发里程', '#txt-leavemileage', {
+			if(Number(mileages)>Number(backmileage)){
+				layer.tips('结束里程不能小于当前车辆的出发里程:'+mileages, '#txt-backmileage', {
 						  tips: [1, '#3595CC'],
-						  time: 1500
+						  time: 3500
 						});
 				return false;
-			}*/
+			}
+			
+			
+			
 			
 			/*if(flagcold=='Y'){
 				if($("#txt-leavetemp").val()==""){

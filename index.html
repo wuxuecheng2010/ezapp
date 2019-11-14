@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=rsQL4CUkAClgjVOhwTyWEqEhFkUc9Thz"></script>
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
@@ -33,9 +34,9 @@
 				<span class="mui-icon mui-icon-email"></span>
 				<span class="mui-tab-label">消息</span>
 			</a>
-			<a class="mui-tab-item" href="#tabbar-with-contact">
+			<a class="mui-tab-item" href="#tabbar-with-location">
 				<span class="mui-icon mui-icon mui-icon-compose"></span>
-				<span class="mui-tab-label">笔记</span>
+				<span class="mui-tab-label">位置</span>
 			</a>
 			<a class="mui-tab-item" href="#tabbar-with-map">
 				<span class="mui-icon mui-icon-gear"></span>
@@ -47,84 +48,7 @@
 			<div id="tabbar" class="mui-control-content mui-active">
 				<ul id="firstlist" class="mui-table-view mui-grid-view mui-grid-9">
 
-					<!--<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/test.html">
-							<img src="images/ico_salesnote.png" style="width: 50%;" />
-							</span>
-
-							<div class="mui-media-body">销售开票</div>
-						</a>
-					</li>-->
-
-					<!--<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/productstock_search.html">
-							<span>
-		                    <img src="images/ico_stock.png" style="width: 50%;"/>
-		                    </span>
-							<div class="mui-media-body">库存查询</div>
-						</a>
-					</li>
-
-
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/salesReturnApp.html">
-							<img src="images/ico_saleturnback_check.png" style="width: 50%;" />
-							<div class="mui-media-body">销退确认</div>
-						</a>
-					</li>
-					真的吗
-					
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/salesReturn.html">
-							<img src="images/ico_salesreturn.png" style="width: 50%;" />
-							<div class="mui-media-body">销退订单</div>
-						</a>
-					</li>
-					
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/salesModify.html">
-							<img src="images/ico_buier_edit.png" style="width: 50%;" />
-							<div class="mui-media-body">采购修改</div>
-						</a>
-					</li>
-
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/oosRecord.html">
-							<img src="images/ico_outofstock_callback.png" style="width: 50%;" />
-							<div class="mui-media-body">缺货反馈</div>
-						</a>
-					</li>
-
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/tmsDispatch.html">
-							<img src="images/ico_dispatch.png" style="width: 50%;" />
-							<div class="mui-media-body">运输概况</div>
-						</a>
-					</li>
-
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/salesNotice.html">
-							<img src="images/ioc_rate.png" style="width: 50%;" />
-							<div class="mui-media-body">销售进度</div>
-						</a>
-					</li>
-					
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/tmsDispatchNo.html">
-							<img src="images/ico_dispatchno.png" style="width: 50%;" />
-							<div class="mui-media-body">未发运</div>
-						</a>
-					</li>
--->
-					<!--					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-						<a href="views/bus/tmsLoadtruck.html">
-							<img src="images/ico_loadtruck.png" style="width: 50%;" />
-							<div class="mui-media-body">装车确认</div>
-						</a>
-					</li>-->
-
 				</ul>
-
 			</div>
 			<div id="tabbar-with-chat" class="mui-control-content">
 				<ul class="mui-table-view">
@@ -132,8 +56,6 @@
 						<div style="height: 40px;">
 							<p style="padding-top:10px;font-size:16px;color:#000000">未完成</p>
 						</div>
-						<!--<span class="mui-badge mui-badge-danger" id="nofinish"></span>-->
-
 					</li>
 					<li class="mui-table-view-cell" id="listY">
 						<div style="height: 40px;">
@@ -148,16 +70,12 @@
 				</ul>
 
 			</div>
-			<div id="tabbar-with-contact" class="mui-control-content">
-				<div class="mui-card">
-					<div class="mui-card-header mui-card-media" style="height:40vw;background-image:url(./images/yuantiao.jpg)"></div>
-					<div class="mui-card-content">
-						<div class="mui-card-content-inner">
-							<p>Start on May 18, 2017</p>
-							<p style="color: #333;">待开发...</p>
-						</div>
+			<div id="tabbar-with-location" class="mui-control-content">
+				
+				    <div id="allmap" style="width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";">
+					
 					</div>
-				</div>
+				
 			</div>
 			<div id="tabbar-with-map" class="mui-control-content">
 
@@ -234,6 +152,7 @@
 		<script src="./js/app.js"></script>
 		<script src="js/myinit.js"></script>
 		<script src="js/mynoticeboard.js"></script>
+		<script src="js/bus/tmstrmap/tmslocation.js"></script>
 
 		<script type="text/javascript" charset="utf-8">
 			mui.init({
@@ -322,6 +241,10 @@
 
 				//延时加载侧边栏菜单
 				main = plus.webview.currentWebview();
+				
+				
+				//延迟初始化地图
+				setTimeout(initLocation,500);
 
 			});
 
@@ -844,7 +767,18 @@
 			})
 			
 			
+			//显示地图并标注自己的位置
+			var map;
+			var watchId;
+			function initLocation(){
+				$("#allmap").css("height", window.screen.height);
+					var map = new BMap.Map('allmap');
+					map.enableScrollWheelZoom();  
 			
+					watchPos(map,watchId);
+					
+			}
+				
 			
 		</script>
 
