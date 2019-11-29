@@ -1,8 +1,9 @@
-var VERSION = "1.4.6"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
-var VID = "49"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
-var DEBUG=true;//   true-为开发模式  false-为正式模式
+var VERSION = "1.5.3"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var VID = "56"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var DEBUG=false;//   true-为开发模式  false-为正式模式
 
-var TIP = "192.168.6.103:85";
+
+var TIP = "192.168.6.108:85";
 var NIP = "192.168.0.117";
 var WIP = "122.226.128.222"
 
@@ -14,8 +15,8 @@ var DOWNLOADIP_T = "http://"+TIP+"/tpAdmin/public/"; //测试地址
 var DOWNLOADIP_N = "http://"+NIP+"/tpAdmin/public/"; //内网地址
 var DOWNLOADIP_W = "http://"+WIP+"/tpAdmin/public/"; //外网地址
 
-var MAXDISTANCE=300000;//最远距离可确认到达
-var MUSTDISTANCE=true;//到达确认是否必须参考距离
+//var MAXDISTANCE=300000;//最远距离可确认到达
+//var MUSTDISTANCE=true;//到达确认是否必须参考距离
 
 var DATERANGER = '{"type":"date","beginYear":2017,"endYear":2022}';
 var RELOGINWARNING = "对不起，登入超时，请重新登入。";
@@ -485,4 +486,22 @@ function playvoice(code,isie) {
 					document.getElementById(code).play();
 				}
 			}
+
+
+function getWmsConfig(setid){
+	var val='';
+	var wmsconfig=localStorage.wmsconfig;
+	console.log("wmsconfig:"+wmsconfig)
+	var configs=JSON.parse(wmsconfig);
+	
+	$.each(configs,function(i,c){
+		var SETID=c.SETID;
+		if(setid==SETID){
+			val=c.SETVALUE;
+			return false;
+		}
+	})
+	return val;
+}
+
 

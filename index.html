@@ -155,6 +155,8 @@
 		<script src="js/bus/tmstrmap/tmslocation.js"></script>
 
 		<script type="text/javascript" charset="utf-8">
+			
+			//var netmod;//网络模式
 			mui.init({
 				swipeBack: false, //启用右滑关闭功能
 				statusBarBackground: '#f7f7f7',
@@ -244,7 +246,18 @@
 				
 				
 				//延迟初始化地图
-				setTimeout(initLocation,500);
+				//判断是否内网 内网就不要执行
+				var netmod=localStorage.netmod;
+				if(netmod!="0")
+					setTimeout(initLocation,500);
+				
+				
+				/* //让APP后台一直运行
+				var main=plus.android.runtimeMainActivity();//意思就是找到app的主activity
+				//然后重写mui的back函数执行moveTaskToBack(false)，就返回到后台了，再次打开的时候 就不需要重新启动了，就会有比较好的用户体验了。
+				mui.back=function(){
+					main && main.moveTaskToBack(false);
+				} */
 
 			});
 
@@ -769,14 +782,17 @@
 			
 			//显示地图并标注自己的位置
 			var map;
+			var marker;//我的位置标记
 			var watchId;
+			
 			function initLocation(){
 				$("#allmap").css("height", window.screen.height);
 					var map = new BMap.Map('allmap');
 					map.enableScrollWheelZoom();  
-			
-					watchPos(map,watchId);
-					
+					//打开以我为中心的地图
+					mylocation(map,watchId,marker);
+					//监听当前位置
+					//watchPos(map,watchId,marker);
 			}
 				
 			

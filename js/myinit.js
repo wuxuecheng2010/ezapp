@@ -52,6 +52,7 @@ var success = function(response) {
 		localStorage.vehiclelist = JSON.stringify(response.vehicle);
 		localStorage.arealist=JSON.stringify(response.area);
 		localStorage.sectionlist=JSON.stringify(response.section);
+		localStorage.wmsconfig=JSON.stringify(response.wmsconfig);
 	}
 };
 

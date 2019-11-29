@@ -377,13 +377,76 @@
 			<aside id="offCanvasSide" class="mui-off-canvas-right">
 				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
 					<div class="mui-scroll">
-						<div class="title" id="aside_title">当前目的地：</div>
+						
+						<div class="title" id="aside_title">行程操作</div>
 						<div class="content">
-							<p style="font-size: large;font-weight: 600;color: #FF5053;" id="aside_custom"></p>
-							<p id="aside_addr"></p>
+							<div class="mui-row ">
+								 
+								 <div class="mui-col-sm-6 mui-col-xs-6">
+								     
+								 </div>
+								 <div class="mui-col-sm-6 mui-col-xs-6">
+								     <button id="btn-mid-return" type="button" class="mui-btn mui-btn-red mui-btn-outlined" data-midleback="0" onclick="domidleback(this)">中途返回</button>
+								 </div>
+								 
+							</div>
+							<div class="mui-row" style="margin-top: 10px;" >
+								 
+								<div class="mui-col-sm-6 mui-col-xs-6">
+								    <button id="btn-edit-go" type="button" class="mui-btn mui-btn-blue mui-btn-outlined " onclick="goedit()">出发登记</button>
+								</div>
+								<div class="mui-col-sm-6 mui-col-xs-6">
+								    <button id="btn-edit-back" type="button" class="mui-btn mui-btn-blue mui-btn-outlined"  onclick="backedit()">费用登记</button>
+								</div>
+													
+							</div>
+								
+						</div>
+							
+						<div class="title" id="aside_title">运输概况(核对车牌)：</div>
+						<div class="content">
+							<div class="mui-row">
+							        <div class="mui-col-sm-4 mui-col-xs-4">
+							            车次
+							        </div>
+							        <div class="mui-col-sm-8 mui-col-xs-8">
+							            <span id="aside-trrecordid">-</span>
+							        </div>
+									
+									<div class="mui-col-sm-4 mui-col-xs-4">
+									    状态
+									</div>
+									<div class="mui-col-sm-8 mui-col-xs-8">
+									     <span id="aside-stateid">-</span>
+									</div>
+									<div class="mui-col-sm-4 mui-col-xs-4">
+									    驾驶员
+									</div>
+									<div class="mui-col-sm-8 mui-col-xs-8">
+									    <span id="aside-driver">-</span>
+									</div>
+									<div class="mui-col-sm-4 mui-col-xs-4">
+									    车辆
+									</div>
+									<div class="mui-col-sm-8 mui-col-xs-8">
+									    <span id="aside-vehicleno">-</span>
+									</div>
+									<div class="mui-col-sm-4 mui-col-xs-4">
+									    当前目标
+									</div>
+									<div class="mui-col-sm-8 mui-col-xs-8">
+									    <p style="font-size: large;font-weight: 600;color: #FF5053;" id="aside_custom"></p>
+									    <p id="aside_addr" class="mui-hidden"></p>
+									</div>
+									
+									
+							</div>
+							
+							
+							
 							
 						</div>
-						<div class="title" style="margin-bottom: 25px;">客户清单及状态:</div>
+						<div class="title" style="margin-bottom: 25px;">运输站点及状态:</div>
 						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted" id="asidelist">
 							<li class="mui-table-view-cell" style="color: #FF5053;">
 								<a class="mui-navigate-right">
@@ -451,10 +514,12 @@
 							<div class="mui-card-content">
 								<div class="mui-card-content-inner">
 						 	   		<p>地址：<span id="inceptaddr">柏叶西路</span></p>
+									<p><span class="mui-badge mui-badge-purple"><span class="mui-icon mui-icon-map"></span>距离目标<span id="rule-arrive-distance">3000</span>米以内方可操作我已到达</span></p>
 								</div>
 							</div>
+							
 						</div>
-						<button id="btn-reach" type="button" class="btn mui-btn-block mui-btn-danger">我已到达目的地</button>
+						<button id="btn-reach" type="button" data-loading-icon="mui-spinner mui-spinner-custom" class="btn mui-btn-block mui-btn-danger">我已到达目的地</button>
 					</div>
 					
 					<div id="p2_2" class="mui-content-padded mui-hidden" >
@@ -611,10 +676,12 @@
 	
     var current_order={};
     var order_all=[];
+	var current_trrecord={};//当前车次信息
+	var trrecord_factfirstorder={};//实际第一站
 	
 	var current_refdisp=[];
 	var refdisp_all=[];
-
+    var MAXDISTANCE=getWmsConfig("16");
 
     
     
@@ -632,8 +699,14 @@
 		//初始化按钮事件
 		initaction();
 		
+		initView();
         //watchPos(map,watchId)
 	})
+	
+	function initView(){
+		$("#rule-arrive-distance").html(getWmsConfig("16"));
+	}
+	
 	
 	
 	function initaction(){
@@ -659,7 +732,6 @@
 		window.addEventListener('returnEvent0', function(event) {
 				var value = event.detail.value;
 				var ordjson = JSON.parse(value);//tms_trrecord_order行数据
-
 				//展现地图
 				dispalytrrecords(trrecordid);
 			});
@@ -673,48 +745,49 @@
 	}
 	
 
+var opentmstrmap_sub0=function(mode){
+	mui.openWindow({
+	    url:"../pub/tmstrmap_sub0.html",
+	    id:"tmstrmap_sub0.html",
+	    styles:{
+	      //top:10,//新页面顶部位置
+	      //bottom:10,//新页面底部位置
+	      width:"100%",//新页面宽度，默认为100%
+	      height:"100%"//新页面高度，默认为100%
+	      //left:20,
+		  //right:20
+	    },
+	    
+	    extras:{
+	      trrecordid:trrecordid,
+	      forwardmsg:forwardmsg,
+	      vehicleno:vehicleno,
+	      drivername:drivername,
+	      totalpieces:totalpieces,
+	      flagcold:flagcold,
+	      order_all:order_all,
+		  current_trrecord:current_trrecord,
+		  trrecord_factfirstorder:trrecord_factfirstorder,
+		  mode:mode   //1表示新打开的   2表示编辑
+	      
+	    },
+	    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+	    show:{
+	      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+	      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+	      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+	    }
+	    
+	});
+}
 	
 	//准备出发
 	var goEvent=function(){
 		
 		document.getElementById("btn-go").addEventListener('tap',function(){
 			
-			mui.openWindow({
-			    url:"../pub/tmstrmap_sub0.html",
-			    id:"tmstrmap_sub0.html",
-			    styles:{
-			      //top:10,//新页面顶部位置
-			      //bottom:10,//新页面底部位置
-			      width:"100%",//新页面宽度，默认为100%
-			      height:"100%"//新页面高度，默认为100%
-			      //left:20,
-				  //right:20
-			    },
-			    
-			    extras:{
-			      trrecordid:trrecordid,
-			      forwardmsg:forwardmsg,
-			      vehicleno:vehicleno,
-			      drivername:drivername,
-			      totalpieces:totalpieces,
-			      flagcold:flagcold,
-			      order_all:order_all
-			      
-			    },
-			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
-			    show:{
-			      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-			      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
-			      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
-			    }
-			    
-			});
-			
-			/*var mask = mui.createMask(function(){
-				plus.webview.close( "tmstrmap_sub.html" );
-				this.close();//关闭遮罩
-			});//callback为用户点击蒙版时自动执行的回调；
-			mask.show();//显示遮罩*/
+			var mode=1;//1 新打开的  
+			opentmstrmap_sub0(mode);
 			
 		});
 		
@@ -723,72 +796,152 @@
 	//我已到达事件
 	var reachEvent=function(){
 		
-		document.getElementById("btn-reach").addEventListener('tap',function(){
-			
-			    var lat="";
-				var lng="";
-				//reach(current_order,lng,lat);
-			if(MUSTDISTANCE){
-				//调用百度计算路程给出提示信息  是否要到达
-				var geolocation = new BMap.Geolocation();
-				geolocation.enableSDKLocation();
-				geolocation.getCurrentPosition(function(r){
-					
-					if(this.getStatus() == BMAP_STATUS_SUCCESS){
-				        //1、标记自己当前的位置
-						//imhere(map,r.point)
-						//map.panTo(r.point);
-						//2、测算距离
-						lng=r.point.lng;
-						lat=r.point.lat;
-						var my_point=r.point;
-						var current_order_lng=current_order.LNG;
-						var current_order_lat=current_order.LAT;
-						var current_order_point= new BMap.Point(Number(current_order_lng), Number(current_order_lat))
-						//距离
-						var distence=map.getDistance(my_point ,current_order_point);
-						//alert("distence:"+distence);
-						if(distence>MAXDISTANCE){
-							
-							//提示有点远  是否确定到达
-							var customname=current_order.CUSTOMNAME;
-							var msg='对不起,您当前的位置距离"'+customname+'"非常远，直线距离超过'+MAXDISTANCE+'米，不能确认到达。请达到目的地后再操作。';
-							
-							/* mui.alert(msg,'警告',['关闭'],function (e) {
-							   
-							},'div') */
-							
-							
-							 mui.confirm(msg,'确认',['报告位置不准','取消'],function(e){
-								if (e.index == 0) {
-										//提交位置不正确信息,供调度后台纠正错误信息
-										var transid=current_order.TRANSID;
-				   						saveLocaltionErr(transid,lng,lat);
-									} 
-							}); 
-							
-						}else{
-						    //保存到达操作
-					   		reach(current_order,lng,lat);
-						}
-				
-				
-					}else {
-						mui.toast("获取地理位置失败，请设置允许设备获取地理位置信息，之后再操作.");
-						//直接保存了
-				   		//reach(current_order,lng,lat);
-					}      
-				});
-				
-				
-			}else{
-
-				reach(current_order,lng,lat);
-			}	
-				
-			
+		mui(document.body).on('tap', '#btn-reach', function(e) {
+		    mui(this).button('loading');
+		    setTimeout(function() {
+				reachTarget();
+		        mui(this).button('reset');
+		    }.bind(this), 600);
 		});
 		
+		
+		//document.getElementById("btn-reach").addEventListener('tap',reachTarget);
+		
+	
+	}
+	
+	var reachTarget=function(){
+		
+				    var lat="";
+					var lng="";
+					//reach(current_order,lng,lat);
+					//alert(MAXDISTANCE);
+					
+				if(Number(MAXDISTANCE)>0){
+					//调用百度计算路程给出提示信息  是否要到达
+					plus.geolocation.getCurrentPosition(function(p){
+							
+							    var codns = p.coords;
+								 lat = codns.latitude;
+								 lng = codns.longitude; 
+							    //1、标记自己当前的位置
+								//imhere(map,r.point)
+								//map.panTo(r.point);
+								//2、测算距离
+								//lng=r.point.lng;
+								//lat=r.point.lat;
+								var my_point=new BMap.Point(lng,lat);
+								var current_order_lng=current_order.LNG;
+								var current_order_lat=current_order.LAT;
+								var current_order_point= new BMap.Point(Number(current_order_lng), Number(current_order_lat))
+								//距离
+								var distence=map.getDistance(my_point ,current_order_point);
+								//alert("distence:"+distence);
+								//var MAXDISTANCE=getWmsConfig("16");
+								if(distence>MAXDISTANCE){
+									
+									//提示有点远  是否确定到达
+									var customname=current_order.CUSTOMNAME;
+									var msg='对不起,您当前的位置距离"'+customname+'"非常远，直线距离超过'+MAXDISTANCE+'米，不能确认到达。请达到目的地后再操作。';
+									
+									/* mui.alert(msg,'警告',['关闭'],function (e) {
+									   
+									},'div') */
+									
+									
+									 mui.confirm(msg,'确认',['报告位置不准','取消'],function(e){
+										if (e.index == 0) {
+												//提交位置不正确信息,供调度后台纠正错误信息
+												var transid=current_order.TRANSID;
+												saveLocaltionErr(transid,lng,lat);
+											} 
+									}); 
+									
+								}else{
+								    //保存到达操作
+							   		reach(current_order,lng,lat);
+								}
+												
+												
+							
+							
+						}, function(e){
+							alert('Geolocation error: ' + e.message);
+						}, 
+						{
+							geocode: true,
+							provider:"baidu",
+							coordsType:"bd09ll"
+						});
+					
+					
+					
+					
+							/* 	
+						 		var geolocation = new BMap.Geolocation();
+								geolocation.enableSDKLocation();
+								geolocation.getCurrentPosition(function(r){
+									console.log(JSON.stringify(r));
+									if(this.getStatus() == BMAP_STATUS_SUCCESS){
+								        //1、标记自己当前的位置
+										//imhere(map,r.point)
+										//map.panTo(r.point);
+										//2、测算距离
+										lng=r.point.lng;
+										lat=r.point.lat;
+										var my_point=r.point;
+										var current_order_lng=current_order.LNG;
+										var current_order_lat=current_order.LAT;
+										var current_order_point= new BMap.Point(Number(current_order_lng), Number(current_order_lat))
+										//距离
+										var distence=map.getDistance(my_point ,current_order_point);
+										//alert("distence:"+distence);
+										//var MAXDISTANCE=getWmsConfig("16");
+										if(distence>MAXDISTANCE){
+											
+											//提示有点远  是否确定到达
+											var customname=current_order.CUSTOMNAME;
+											var msg='对不起,您当前的位置距离"'+customname+'"非常远，直线距离超过'+MAXDISTANCE+'米，不能确认到达。请达到目的地后再操作。';
+											
+						
+											
+											
+											 mui.confirm(msg,'确认',['报告位置不准','取消'],function(e){
+												if (e.index == 0) {
+														//提交位置不正确信息,供调度后台纠正错误信息
+														var transid=current_order.TRANSID;
+								   						saveLocaltionErr(transid,lng,lat);
+													} 
+											}); 
+											
+										}else{
+										    //保存到达操作
+									   		reach(current_order,lng,lat);
+										}
+								
+								
+									}else {
+										mui.toast("获取地理位置失败，请设置允许设备获取地理位置信息，之后再操作.");
+										//直接保存了
+								   		//reach(current_order,lng,lat);
+									}      
+								},
+								function(e) {}
+								,{
+						geocode: true,
+						provider:"baidu",
+						coordsType:"bd09ll"
+					}); */
+					
+					
+					
+				}else{
+		
+					reach(current_order,lng,lat);
+				}	 
+					
+				
+			
 	}
 	
 	//报告错误位置
@@ -973,7 +1126,8 @@
 					    var addressqty=memo.addressqty;
 					    if(code=="OK"){
 					    	//打开登记页面
-					    	openNotes(trrecordid,memo);//这里的memo为json格式的数据{"customqty":8,"addressqty":8}
+							var mode=1;//新增状态
+					    	opentmstrmap_sub2(trrecordid,memo,mode);//这里的memo为json格式的数据{"customqty":8,"addressqty":8}
 					    }else{
 					    	mui.toast(msg+" "+memo)
 					    }
@@ -982,7 +1136,7 @@
 				}
 			};
 			
-	var openNotes=function(trrecordid,trsummary){
+	var opentmstrmap_sub2=function(trrecordid,trsummary,mode){
 		mui.openWindow({
 			    url:"../pub/tmstrmap_sub2.html",
 			    id:"tmstrmap_sub2.html",
@@ -998,7 +1152,9 @@
 			    extras:{
 			      trrecordid:trrecordid,
 			      trsummary:trsummary,
-				  vehicleno:vehicleno
+				  vehicleno:vehicleno,
+				  current_trrecord:current_trrecord,
+				  mode:mode
 			    },
 			    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 			    show:{
@@ -1342,7 +1498,7 @@
     	        trrecordid=_trrecordid;
     	
 				var url = getServerPath(localStorage.netmod)
-				console.log(url);
+				//console.log("xxxUrl:----"+url);
 				var dataType = 'json';
 				//发送数据
 				var data = {
@@ -1378,24 +1534,42 @@
 						//alert(JSON.stringify(refdisps));
 						
 						var record=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0];
+						current_trrecord=record;
 					    var stateid=record['STATEID'];//主单状态
+						var midleback=current_trrecord.MIDLEBACK;
+						if(midleback=="1"){//按钮文字
+							$("#btn-mid-return").html("撤销中返");
+						}else if(midleback=="0"){
+							$("#btn-mid-return").html("中途返回");
+						}
+						$("#btn-mid-return").attr("data-midleback",midleback);//按钮自定义值
+						      
+							  
+						
 						vehicleno=record['VEHICLENO'];
-						vehicleid=record['VEHICLEID']
+						vehicleid=record['VEHICLEID'];
+						
+						trrecord_factfirstorder=response.sysdata.TmsTrRecord_getTrRecordPointinfos.firstorder;
 						
 					    flagcold=response.sysdata.TmsTrRecord_getTrRecordPointinfos.record[0]['FLAGCOLD'];
 						//展现运输点的位置
 						order_all=orderjsons;
 						refdisp_all=refdisps;
+						
 						dispalytrrecordsorder(orderjsons);
+						
 						//alert(JSON.stringify(current_order));
 						//展现侧边栏
 						displayaside(stateid,current_order,orderjsons);
+						
 						
 						//设置地图高度
 						setAllMapHeight("60%")
 						
 						//展现输入框
 						controllinput(stateid,orderjsons);
+						
+						console.log(JSON.stringify(flagcold));
 						
 						
 						
@@ -1598,10 +1772,43 @@
 		})
     	
     }
+	
+	var getStateStr=function(stateid){
+				//0新单，1已确认，２、运输中、３回厂、４结束
+				var str='';
+				stateid=Number(stateid);
+				switch (stateid){
+					case 0:
+						str="新单";
+						break;
+						case 1:
+							str="已确认";
+							break;
+							case 2:
+								str="运输中";
+								break;
+								case 3:
+									str="回厂";
+									break;
+									case 4:
+										str="结束";
+										break;
+					default:
+						break;
+			}
+		return str;
+	}
     
     //展现侧边栏
     var displayaside=function(stateid,current_order,orderjsons){
     	//标题
+		//概况：
+ 		$("#aside-trrecordid").html(trrecordid);
+		$("#aside-stateid").html(getStateStr(stateid));
+		$("#aside-driver").html(drivername);
+		$("#aside-vehicleno").html(vehicleno); 
+		
+		
     	if($.isEmptyObject(current_order)){
     		if(stateid==4){
     			$("#aside_custom").html("已结束");
@@ -1968,6 +2175,7 @@
 								
 								var summary="";
 								var dvalue=mileagetotal-mileagetotalgsp;
+								//alert(mileagetotal);
 								if(dvalue<=0){
 									summary='<span class="mui-badge mui-badge-success">牛掰 活地图</span>';
 								}else{
@@ -1979,7 +2187,7 @@
 									}else if(ps>0.3 && ps<0.5){
 										summary='<span class="mui-badge mui-badge-warning">不佳 下次请带导航再出发</span>';
 									}else{
-										summary='<span class="mui-badge mui-badge-danger">路盲或者智商不在线</span>';
+										summary='<span class="mui-badge mui-badge-danger">路盲</span>';
 									}
 								}
 								
@@ -1997,13 +2205,140 @@
 	}
 	
 	
+	var validata=function(){
+		
+		var stateid=current_trrecord['STATEID'];//主单状态
+		if(stateid=="0" || stateid=="1"){
+			var msg=stateid=="0"?"初始":"确认";
+			mui.alert('当前出车单信息为'+msg+'状态,不能进行当前的操作。准备出发之后放可操作.','警告','确定',function (e) {
+			  // e.index
+			},'div')
+			
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
 	
+	//出发登记编辑
+	var goedit=function(){
+		//检查当前任务的状态  只有是在途了就 就可以操作
+		//打开出发登记页面  对可操作的数据进行编辑
+		if(validata()){
+			var mode=2;//编辑
+			opentmstrmap_sub0(mode);
+			
+		}
+	}
 	
+	//费用登记编辑
+	var backedit=function(){
+		
+		var mode=2;//新增状态
+		opentmstrmap_sub2(trrecordid,"",mode);
 	
+	}
 
+	//中途返回
+	var domidleback=function(obj){
+		//按钮状态值
+		var data_midleback=$(obj).attr("data-midleback");
+		
+		
+		//检查当前单据状态  当前单据不是完成状态都可以操作
+		var stateid=current_trrecord.STATEID;
+		var midleback=current_trrecord.MIDLEBACK;
+		console.log(JSON.stringify(current_trrecord));
+		
+		if(data_midleback=="0" || data_midleback==null){//中途返回
+			if(stateid!="2"){
+			    mui.alert('当前车次状态不是运输中状态，不能作中途返回操作。','警告','确定',function (e) {
+			    },'div');
+				return ;
+			}
+			if(midleback=="1"){
+			    mui.alert('当前车次已经是中途返回，不能再次作中途返回操作。','警告','确定',function (e) {
+			    },'div');
+				return ;
+			}
+			//发出更新stateid标记为返回状态  标记midleback
+			mui.confirm('确认中途返回吗？在确认到达公司之前可以撤销本操作，到达公司之后就无法撤销了。','提醒',['取消','确认'],function (e) {
+				var index=e.index;
+				if(index==1){
+					ajaxMidleBack(1);
+				}
+			},'div')
+			
+		}else if(data_midleback=="1"){
+			//撤销中返
+			if(stateid!="3"){
+			    mui.alert('当前车次状态不是返回状态，不能作撤销操作。','警告','确定',function (e) {
+			    },'div');
+				return ;
+			}
+			if(midleback=="0"){
+			    mui.alert('当前车次是正常配送状态，不需做撤销中返操作。','警告','确定',function (e) {
+			    },'div');
+				return ;
+			}
+			mui.confirm('确定撤销中途返回吗？','提醒',['取消','确认'],function (e) {
+				var index=e.index;
+				if(index==1){
+					ajaxMidleBack(0);
+				}
+			},'div')
+			
+		}
+		
+		
+	}
 	
+	/**
+	 * @param {Object} midlebackflag 0撤销中返  1中返操作
+	 */
+	var ajaxMidleBack=function(midlebackflag){
+			var url = getServerPath(localStorage.netmod)
+			console.log(url);
+			var dataType = 'json';
+			//发送数据
+			var data = {
+				controller: 'TmsTrRecord',
+				method:'midleback',
+				trrecordid:trrecordid,
+				midlebackflag:midlebackflag,
+				token: TOKEN
+			};
+					
+			 mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: midlebacksuccess,
+				error: err
+			}); 
+	}
 	
-	
+	var midlebacksuccess=function(response){
+					if(response != null) {
+						console.log(JSON.stringify(response));
+					    var syscode = response.syscode;
+						var sysreason = response.sysreason;
+						if(syscode == SYSCODE_NO) {
+							tokenOutTime(sysreason);
+						} else {
+							console.log(JSON.stringify(response));
+							var midlebackjsons=response.sysdata.TmsTrRecord_midleback;
+							var code=midlebackjsons.code;
+							var msg=midlebackjsons.msg;
+							if(code=="ok"){
+								dispalytrrecords(trrecordid);
+							}
+							mui.toast(msg);
+						} 
+					}
+	}
 	
 	
 	

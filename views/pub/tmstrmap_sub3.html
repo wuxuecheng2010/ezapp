@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../../css/mui.poppicker.css">
+		<style>
+			html,
+			body,
+			.mui-content {
+				width: 100%;
+				height: 100%
+			}
+			.mui-content {
+				font-family: "华文细黑";
+				//background: url("../../images/background/bg.jpg") no-repeat;
+				background-color: #EFEFF4;
+				background-size: 100% 100%;
+			}
+			
+			.mui-row {
+				background-color: #FFF;
+				text-align: right;
+				filter:alpha(opacity:70); 
+				opacity:0.6;  
+				-moz-opacity:0.6;
+				-khtml-opacity: 0.6
+			}
+			
+			.inputcell {
+				height: 60px;
+				//border: 0px solid #73AD21;
+				font-size: 18px;
+			}
+			
+			.alignleft{
+				text-align: left;
+			}
+			
+			.un-editable{
+				line-height: 60px;
+				margin-left: 12px;
+			}
+			
+			.inputtxt{
+				border:none #FFFFFF;
+				border-bottom:#777777 solid 1px;
+				font-size: 30px;
+
+			}
+			
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-icon mui-icon-closeempty mui-pull-right mui-action-back" style="font-size: 32px;"></span>
+		</header>
+
+		<div class="mui-content">
+
+            <div style="font-size: 24px;text-align: center;height: 48px;background-color: white;" >
+           		<h3  id="h3title" style="padding-top: 10px;">站点数据修改</h3>
+           	</div>
+				<form class="mui-input-group" >
+					
+					
+					<div class="mui-input-row">
+						<label>出车班次</label>
+					<input type="text" class="mui-input-clear" placeholder="出车班次" id="trrecordid" disabled="disabled" >
+					</div>
+					<div class="mui-input-row">
+						<label>客户名称</label>
+					<input type="text" class="mui-input-clear" placeholder="客户名称" id="companyname" disabled="disabled" >
+					</div>
+					<div class="mui-input-row">
+						<label>客户地址</label>
+					<input type="text" class="mui-input-clear" placeholder="客户地址" id="inceptaddr" disabled="disabled">
+					</div>
+					<div class="mui-input-row">
+						<label>出发时间</label>
+					<input type="text" class="mui-input-clear" placeholder="出发时间" id="leavetime" disabled="disabled">
+					</div>
+					<div class="mui-input-row">
+						<label>到达时间<span style="color: red;">*</span></label>
+					<input type="text" class="mui-input-clear " style="background-color:#FFFFCC;" placeholder="到达时间" id="arrivetime" readonly="readonly" >
+					</div>
+					<div class="mui-input-row" id="temppanel">
+						<label>到达温度<span style="color: red;">*</span></label> 
+						<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="到达温度" id="reachtemp">
+						<span>℃</span>
+					</div>
+					<div class="mui-input-row">
+						<label>件数(扫码)</label>
+						<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty">
+					</div>
+					<div class="mui-input-row" style="padding-left: 60px;">
+						<label>自卸<span style="color: red;">*</span></label>
+						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="自卸件数" id="minesqty">
+					</div>
+					<div class="mui-input-row" style="padding-left: 60px;">
+						<label>他卸<span style="color: red;">*</span></label>
+						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
+					</div>
+					
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary"  id="btn-save">保存</button>
+						<button type="button" class="mui-btn mui-btn-danger" id="btn-cancel">取消</button>
+					</div>
+					
+				</form>
+
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+
+        <script src="../../js/bus/tmstrmap/loadqty.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script src="../../js/myinput.js"></script>
+		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
+		
+		
+		<script type="text/javascript" src="../../plugs/layer/layer.js"></script>
+		<script>
+			
+			
+
+			
+			 mui.init({
+				swipeBack: false //启用右滑关闭功能
+			});
+			var ordid=""; 
+			var trrecordid="";
+			var current_refdisp={};
+			
+
+			mui.plusReady(function() {
+
+				ajaxxing();
+
+				//初始化信息显示
+				initView();
+				
+				//初始化事件
+				initAction();
+
+			});
+
+			
+			var initView = function() {
+				var self = plus.webview.currentWebview();
+				ordid = self.ordid;
+				trrecordid=self.trrecordid;
+				current_refdisp=self.current_refdisp;
+				$("#trrecordid").val(trrecordid);
+				ajaxInitView(ordid);
+			}
+
+			var ajaxInitView=function(ordid){
+				
+								var url = getServerPath(localStorage.netmod)
+								console.log(url);
+								var dataType = 'json';
+								//发送数据
+								var data = {
+									controller: 'TmsTrRecord',
+									method:'getTrrecordOrderDtl',
+									ordid: ordid,
+									token: TOKEN
+								};
+					
+								 mui.ajax(url, {
+									data: data,
+									dataType: dataType, //服务器返回json格式数据
+									type: 'post', //HTTP请求类型
+									timeout: 10000, //超时时间设置为10秒；
+									success: querysuccess,
+									error: err
+								}); 
+			}
+			
+			
+			var querysuccess = function(response) {
+				if (response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if (syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var resjson = response.sysdata.TmsTrRecord_getTrrecordOrderDtl;
+						showView(resjson);
+					}
+				}
+			};
+			
+			var showView=function(resjson){
+				var COMPANYNAME=resjson[0]["COMPANYNAME"];
+				var INCEPTADDR=resjson[0]["INCEPTADDR"];
+				var LEAVETIME=resjson[0]["LEAVETIME"];
+				var ARRIVETIME=resjson[0]["ARRIVETIME"];
+				var MINESQTY=resjson[0]["MINESQTY"];
+				var OTHERSQTY=resjson[0]["OTHERSQTY"];
+				var  REACHTEMP=resjson[0]["REACHTEMP"];
+				var LOADQTY=resjson[0]["LOADQTY"];
+				var FLAGCOLD=resjson[0]["FLAGCOLD"];
+			
+				$("#companyname").val(COMPANYNAME);
+				$("#inceptaddr").val(INCEPTADDR);
+				$("#leavetime").val(LEAVETIME);
+				$("#arrivetime").val(ARRIVETIME);
+				$("#reachtemp").val(REACHTEMP);
+				$("#minesqty").val(MINESQTY);
+				$("#othersqty").val(OTHERSQTY);
+				$("#loadqty").val(LOADQTY);
+
+				if(FLAGCOLD=='N'){
+					$("#temppanel").addClass('mui-hidden');
+				}
+				//$("#temppanel").addClass('mui-hidden');
+				//初始化件数控件显示效果
+				InitLoadQtyAction(LOADQTY);
+			}
+			
+			var validateSave=function(){
+				
+				//验证日期是否同一天
+				var arrivetime=$("#arrivetime").val();
+				var leavetime=$("#leavetime").val();
+				
+				//验证到达时间是否晚于出发时间
+				if(leavetime>=arrivetime){
+					mui.alert('到达时间不能早于出发时间','警告','确定',function (e) {
+					   //e.index
+					},'div');
+					return false;
+				}
+				
+				var arrivetime_date=arrivetime.substring(0,10);
+				var leavetime_date=leavetime.substring(0,10);
+				if(arrivetime_date!=leavetime_date){
+					mui.alert('到达日期和出发日期不相同','警告','确定',function (e) {
+					   //e.index
+					},'div');
+					return false;
+				}
+				return true;
+			}
+
+			var initAction = function() {
+				
+				//自卸输入框  他卸输入框事件
+				$("#btn-save").click(function(){
+					if(validateSave())
+					   ajaxSave();
+				})
+				
+				$("#btn-cancel").click(function(){
+					mui.back();
+				})
+								
+				
+				//时间输入框
+				document.getElementById('arrivetime').onclick = function(){
+					//console.log($('#arrivetime').val());
+					
+					var dtPicker01 = new mui.DtPicker(); 
+					dtPicker01.setSelectedValue($('#arrivetime').val()) 
+				    dtPicker01.show(function (selectItems) { 
+				        //console.log(selectItems.y);//结果为：{text: "2016",value: 2016} 
+				        //console.log(selectItems.m);//结果为：{text: "05",value: "05"}
+				        //console.log(selectItems.d.text);//11
+				        //console.log(selectItems.h.text);//09
+				        //console.log(selectItems.i.text);//09
+				        //console.log(selectItems.text);//结果为：2016-10-11 09:09
+						$('#arrivetime').val(selectItems.text+':00');
+						
+				        //document.getElementById('arrivetime').getElementsByTagName('span')[0].innerText = '-- '+selectItems.text
+				    });
+				};
+				
+				
+				
+
+			}
+			
+			
+			var ajaxSave=function(){
+				
+				var url = getServerPath(localStorage.netmod);
+				var minesqty=$("#minesqty").val();
+				var othersqty=$("#othersqty").val();
+				var arrivetime=$("#arrivetime").val();
+ 
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'changeTrrecordOrder',
+					ordid: ordid,
+					minesqty: minesqty,
+					othersqty:othersqty,
+					arrivetime:arrivetime,
+					token: TOKEN
+				};
+				
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async: false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: changesuccess,
+					error: err
+				});
+				
+			}
+	
+			var changesuccess = function(response) {
+				if (response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if (syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						var resjson = response.sysdata.TmsTrRecord_changeTrrecordOrder;
+						mui.toast(resjson);
+						mui.back();
+					}
+				}
+			};
+
+
+
+
+
+			//保存前校验数字是否合理
+			var validate = function(type) {
+				
+				var downloadqty=$("#txt-downloadqty").val();
+				//downloadtypeid
+				if(downloadqty!="" && downloadqty!=null && isNumber(downloadqty) && downloadqty>0){
+					
+					if(downloadtypeid==""){
+							layer.tips('有卸货件数时，请选择卸货方式', '#txt-downloadtype', {
+										tips: [1, '#3595CC'],
+										time: 2000
+									});
+							return false;
+					}
+				}
+				
+
+        if(type==1)//下一站时 必须
+				if ($.isEmptyObject(trrecord_order)) {
+					layer.tips('请选择下一站目的地', '#txt-targetadd', {
+						tips: [1, '#3595CC'],
+						time: 2000
+					});
+					return false;
+				}
+				return true;
+			} 
+			
+			
+
+						
+						
+		</script>
+	</body>
+
+</html>

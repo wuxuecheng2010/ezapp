@@ -105,61 +105,7 @@
            	
            	
            </form>
-			<!-- <div class="" style="margin-top: 10px;padding: 5px;">
-				<div style="text-align: center;height: 60px;">
-					<h3 style="line-height: 60px;">信息登记</h3>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">车辆|驾驶员：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell alignleft" >
-						<span class="un-editable" ><span id="vehicleno"></span>|<span id="drivername"></span></span>
-					</div>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">开往：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell alignleft" >
-						<span class="un-editable" ><span id="forwardmsg"></span>&nbsp;&nbsp;<span id="totalpieces"></span></span>
-					</div>
-				</div>
-				
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;">*</span>出发里程：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-leavemileage" type="number" pattern="\d*" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;" >
-					</div>
-				</div>
-				
-				<div class="mui-row" id="leavetemppanel">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;">*</span>起运温度：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-leavetemp" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;" >
-					</div>
-				</div>
-				
-
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;">*</span>首站目的地：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-targetadd" type="text"  placeholder="--首站目的地--" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;" readonly="true">
-					</div>
-				</div>
-				
-				<div class="mui-row" style="height: 30px;"></div>
-
-			</div> -->
+			
 
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并出发</button>
@@ -184,12 +130,15 @@
 			var flagcold="";
 			var vehicleno="";
 			var mileages="";//当前车辆数据库中记录的里程值;
+			var current_trrecord={};
 			var trrecord_order_json=[];//原始的查询结果
 			var trrecord_order_list=[];//适应下拉选择的结果集
 			var trrecord_order={};//被选中的结果
+			var trrecord_factfirstorder={};//实际首站
 			
 			var leavemileage;//里程
 			var leavetemp;//启运温度
+			var mode;//页面状态  1新增  2编辑状态
 			mui.plusReady(function(){
 				
 				ajaxxing();
@@ -217,6 +166,9 @@
 			var totalpieces=self.totalpieces;
 			trrecordid=self.trrecordid;
 			flagcold=self.flagcold;
+			current_trrecord=self.current_trrecord;
+			trrecord_factfirstorder=self.trrecord_factfirstorder;
+			mode=self.mode;
 			trrecord_order_json=self.order_all;
 			$("#drivername").val(drivername);
 			$("#vehicleno").val(vehicleno);
@@ -266,9 +218,19 @@
 						tokenOutTime(sysreason);
 					} else {
 						console.log(JSON.stringify(response));
+						//新增状态  里程这里显示上次填的公里数  编辑状态  这里显示的是当前登记的出车公里数值
+						mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].mileages;
+						if(mode==1){
+							$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
+						}else if(mode==2){
+							var msg=JSON.stringify(current_trrecord);
+							$("#txt-leavemileage").val(current_trrecord.LEAVEMILEAGE);
+							$("#txt-leavetemp").val(current_trrecord.LEAVETEMP);
+							$("#txt-targetadd").attr("disabled","disabled");
+							$("#txt-targetadd").val(trrecord_factfirstorder.CUSTOMNAME);//客户名称信息
+						}
+					    
 						
-					    mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].mileages;
-						$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
 						//alert(mileages);
 					}
 				}
@@ -295,8 +257,7 @@
 				//保存 并返回到主界面
 				leavemileage=$("#txt-leavemileage").val();
 				leavetemp=$("#txt-leavetemp").val();
-				doSave();
-				
+				doSave(mode);
 			}
 		}
 		
@@ -312,14 +273,19 @@
 				mui.back();
 			}
 		
-		var doSave=function(){
-			var wa = plus.nativeUI.showWaiting();
-			plus.geolocation.getCurrentPosition( geoInf, function ( e ) {
-				//outSet( "获取定位位置信息失败："+e.message );
-				//定位失败处理方式  位置就不传递了
-				ajaxSave( leavemileage,leavetemp,trrecord_order,"","","")
-				wa.close()
-			},{geocode:true});
+		var doSave=function(mode){
+			if(mode==1){
+				var wa = plus.nativeUI.showWaiting();
+				plus.geolocation.getCurrentPosition( geoInf, function ( e ) {
+					//outSet( "获取定位位置信息失败："+e.message );
+					//定位失败处理方式  位置就不传递了
+					ajaxSave( leavemileage,leavetemp,trrecord_order,"","","");
+					wa.close();
+				},{geocode:true});
+			}else if(mode==2){
+				ajaxSave2( leavemileage,leavetemp,trrecordid);
+			}
+			
 			
 		}
 		
@@ -363,6 +329,7 @@
 		
 		
 		
+		
 		var ajaxSave=function ( leavemileage,leavetemp,orderobj,current_lat,current_lng,current_addresses){
 			
 				var url = getServerPath(localStorage.netmod);
@@ -386,7 +353,7 @@
 				};
 				//console.log(JSON.stringify(data));
 				mui.ajax(url, {
-					data: data,
+					data: data, 
 					dataType: dataType, //服务器返回json格式数据
 					async:false,
 					type: 'post', //HTTP请求类型
@@ -435,7 +402,7 @@
 				return false;
 			}
 
-            //alert("mileages:"+mileages+" leavemileage:"+leavemileage);
+           // alert("mileages:"+mileages+" leavemileage:"+leavemileage);
 			if(Number(mileages)>Number(leavemileage)){
 				layer.tips('出发里程不能小于当前车辆的里程,当前登记的里程为'+mileages+'公里,请确认', '#txt-leavemileage', {
 						  tips: [1, '#3595CC'],
@@ -455,7 +422,7 @@
 				}
 			}
 			
-			
+			if(mode==1)//新增时判断
 			if($.isEmptyObject(trrecord_order)){
 				layer.tips('请选择首站目的地', '#txt-targetadd', {
 						  tips: [1, '#3595CC'],
@@ -465,6 +432,60 @@
 			}
 			return true;
 		}
+		
+		
+		
+		var ajaxSave2=function ( leavemileage,leavetemp,trrecordid){
+			
+				var url = getServerPath(localStorage.netmod);
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'tmstrmapsub0readygoedit',
+					trrecordid: trrecordid,
+					leavemileage:leavemileage,
+					leavetemp:leavetemp,
+					token: TOKEN
+				};
+				//console.log(JSON.stringify(data));
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					async:false,
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: success3,
+					error: err
+				});
+			
+		}
+		
+		
+		var success3= function(response) {
+			if(response != null) {
+				var syscode = response.syscode;
+				var sysreason = response.sysreason;
+				if(syscode == SYSCODE_NO) {
+					tokenOutTime(sysreason);
+				} else {
+					console.log(JSON.stringify(response));
+					var resjson=response.sysdata.TmsTrRecord_tmstrmapsub0readygoedit;
+					var code=resjson.code;
+					var msg=resjson.msg;
+					var memo=resjson.memo;
+
+					if(code=="OK"){
+						turnToParent(JSON.stringify(trrecord_order));
+					}else{
+						toast(msg+memo);
+					}
+		
+				}
+			}
+		};
+		
 			
 		</script>
 	</body>

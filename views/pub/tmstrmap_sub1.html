@@ -191,7 +191,7 @@
 
 			mui.plusReady(function() {
 
-				ajaxxing();
+			ajaxxing();
 
 				//初始化信息显示
 				initView();
@@ -259,8 +259,8 @@
 				if (flagcold == "N") {
 					$("#leavetemppanel").addClass("mui-hidden");
 				}
-				
-				if($.isEmptyObject(trrecord_order_json)){
+				//alert($.isEmptyObject(trrecord_order_json));
+				if(!$.isEmptyObject(trrecord_order_json)){
 					$("#h3title").html("完成本站登记并前往下一站");
 				}else{
 					$("#h3title").html("完成本站登记并返回");

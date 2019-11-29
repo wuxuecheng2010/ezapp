@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>根据客户ID选择联系人</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/mui.picker.css">
+		<link rel="stylesheet" href="../../css/mui.poppicker.css">
+		<style>
+			html,
+			body,
+			.mui-content {
+				width: 100%;
+				height: 100%
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">选择联系人</h1>
+			<a id="btn_ok" class="mui-icon mui-pull-right" style="font-size: 16px;margin-top: 5px;" onclick="okClick()">OK</a>
+		</header>
+
+		<div class="mui-content">
+			
+			<div class="mui-card">
+				<div class="mui-card-header">联系人</div>
+				<div class="mui-card-content">
+					<ul class="mui-table-view" id="contactList">
+					</ul>
+				</div>
+			</div>
+				
+				
+				<div class="mui-card">
+					<div class="mui-card-header">信息预览<span class="mui-badge mui-badge-primary">点击网址在浏览器中查看</span></div>
+					<div class="mui-card-content" >
+						<ul class="mui-table-view">
+							<div id="msgArea" class="mui-table-view-cell" onclick="msgAreaClick()">
+								
+							</div>
+						</ul>
+					</div>
+				</div>
+		
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/myglobal.js"></script>
+		<script type="text/javascript" src="../../plugs/layer/layer.js"></script>
+		<script>
+
+			var icustomerid;
+			var itypeid;
+			
+			
+			mui.init({
+				swipeBack: false //启用右滑关闭功能
+			});
+			
+
+
+			mui.plusReady(function() {
+				
+				 initParams();
+
+                 initContactList();
+				 
+				 initMsgInfo();
+				 
+			});
+			
+			
+			var initParams= function(){
+				 var self = plus.webview.currentWebview();
+				 icustomerid=self.icustomerid;
+				 itypeid=self.itypeid;
+			}
+			
+			//ajaxxing();
+			var initContactList=function(){
+					var url =getServerPath(localStorage.netmod)
+					var dataType = 'json';
+					var data = {
+						controller: 'Contacts',
+						method: 'getContacts',
+						icustomerid: icustomerid,
+						itypeid:itypeid,
+						token: TOKEN
+					};
+					
+					mui.ajax(url, {
+						data: data,
+						dataType: dataType, //服务器返回json格式数据
+						type: 'post', //HTTP请求类型
+						timeout: 10000, //超时时间设置为10秒；
+						success: success,
+						error: err
+					});
+			}
+			
+			var success = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						var data=response.sysdata.Contacts_getContacts;
+						
+						displayContactList(data);
+					}
+				}
+			};
+			
+			var displayContactList=function(data){
+				$("#contactList").find("li").remove();
+				var li;
+				var vccontactmanlist=[];
+				$.each(data,function(i,c){
+					if(!vccontactmanlist.includes(c.VCCONTACTMAN)){
+						li='<li class="mui-table-view-cell">'+
+								'<div class="mui-input-row mui-checkbox">'+
+								  '<label><div class="mui-row"><div class="mui-col-sm-4 mui-col-xs-4">'+c.VCCONTACTMAN+'</div><div class="mui-col-sm-8 mui-col-xs-8">'+c.VCCONTACTPHONE+'</div></div></label>'+
+								  '<input name="tel" value="'+c.VCCONTACTPHONE+'" type="checkbox" data-vccontactman="'+c.VCCONTACTMAN+'"  data-icustomerid="'+c.ICOMPANYID+'" >'+
+								'</div>'+
+							'</li>';
+						$("#contactList").append(li);
+						vccontactmanlist.push(c.VCCONTACTMAN);
+					}
+				})
+			}
+			
+			
+			var initMsgInfo=function(){
+						var url =getServerPath(localStorage.netmod)
+						var dataType = 'json';
+						var data = {
+							controller: 'OosRecord',
+							method: 'getOosRecordNotifyMsg',
+							icustomerid: icustomerid,
+							token: TOKEN
+						};
+						
+						mui.ajax(url, {
+							data: data,
+							dataType: dataType, //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: success2,
+							error: err
+						});
+			}
+			
+			var success2 = function(response) {
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+						console.log(JSON.stringify(response));
+						//查询按钮点击时  保存到local  按照文本的形式保存
+						var data=response.sysdata.OosRecord_getOosRecordNotifyMsg;
+						displayMsgArea(data); 
+					}
+				}
+			};
+			
+			var msgAreaClick=function(){
+				
+				var msg=$("#msgArea").html();
+				var index=msg.indexOf('h');
+				var url=msg.substr(index,msg.length-index);
+				//alert(url);
+				//plus.webview.open(url)
+				
+				plus.runtime.openURL(url)
+
+
+			}
+			
+			var displayMsgArea=function(data){
+				$("#msgArea").html(data);
+			}
+			
+			var okClick=function(){
+				var res=[];
+				var l=$("#contactList input:checked");
+				$.each(l,function(i,c){
+					
+					var icustomerid=$(c).attr('data-icustomerid');
+					var vccontactman=$(c).attr('data-vccontactman');
+					var vccontactphone=$(c).val();
+
+					var contact={icustomerid:icustomerid,vccontactphone:vccontactphone,vccontactman:vccontactman};
+					res.push(contact);
+				})
+				
+				if(res.length==0){
+					mui.toast("请选择联系人。");
+					return ;
+				}
+				    
+				turnToParent(res);
+				
+			}
+			
+			var turnToParent=function(jsonstr) {
+							var mainPage = null;
+							if(!mainPage) {
+								mainPage = plus.webview.currentWebview().opener();
+							}
+							mui.fire(mainPage, "contactSelectEvent", {
+								"value": jsonstr
+							});
+							mui.back();
+						}
+			
+		</script>
+	</body>
+
+</html>

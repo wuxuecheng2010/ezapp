@@ -75,7 +75,7 @@
 		<form class="mui-input-group" >
 					
 					
-					<div class="mui-input-row">
+					<div class="mui-input-row" id="txt-backmileage-area">
 						<label>结束里程</label>
 					    <input id="txt-backmileage" type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
 					</div>
@@ -94,6 +94,11 @@
 						<input type="number" id="txt-roadtoll" placeholder="过路费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" >
 					</div>
 					
+					<div class="mui-input-row">
+						<label>车船费</label>
+						<input type="number" id="txt-roadtoll2" placeholder="车船费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" >
+					</div>
+					
 					
 					<div class="mui-input-row">
 						<label>停车费</label>
@@ -107,99 +112,20 @@
 					</div>
 					
 					
-					<div class="mui-input-row">
+					<div class="mui-input-row" id="txt-customqty-area">
 						<label>客户点数</label>
 						<input type="number" id="txt-customqty" placeholder="客户点数" pattern="\d*" class="mui-input-clear" disabled="disabled" >
 					</div>
 					
 					
-					<div class="mui-input-row">
+					<div class="mui-input-row" id="txt-addressqty-area">
 						<label>客户地址数</label>
 						<input type="number" id="txt-addressqty" placeholder="客户地址数" pattern="\d*" class="mui-input-clear" disabled="disabled" >
 					</div>
 					
 				</form>
 				
-				
-		<!-- 	<div class="" style="margin-top: 10px;padding: 5px;">
-				<div style="text-align: center;height: 60px;">
-					<h3 style="line-height: 60px;">回程登记</h3>
-				</div>
-				
-				
-				
-				
-				
-				<div class="mui-row" style="padding-top: 15px;">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;">*</span>结束里程：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-backmileage" type="number" pattern="\d*" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;" >
-					</div>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">加油金额：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-oilcost" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
-					</div>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">过路费：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-roadtoll" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
-					</div>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">停车费：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-parkingfee" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
-					</div>
-				</div>
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">维修费：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<input id="txt-repaircost" type="number"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;">
-					</div>
-				</div>
-				
-				
-				
-				<div class="mui-row">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;">客户地点数：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell" >
-						<div class="mui-row">
-							<div class="mui-col-sm-5 mui-col-xs-5">
-								<input id="txt-customqty" type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;text-align: center;"  >
-							</div>
-							<div class="mui-col-sm-2 mui-col-xs-2">
-								<input  type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;text-align: center;" value="|" disabled="disabled" >
-							</div>
-							<div class="mui-col-sm-5 mui-col-xs-5">
-								<input id="txt-addressqty" type="text"  style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 20px;text-align: center;"  >
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="mui-row" style="height: 30px;"></div>
 
-			</div>
- -->
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存</button>
 			</div>
@@ -222,6 +148,8 @@
 			var trrecordid="";
 			var vehicleno="";
 			var mileages="";
+			var mode;//页面状态 1增加  2编辑
+			var current_trrecord={};
 			//var customqty="";
 			//var addressqty="";
 			
@@ -242,13 +170,37 @@
 			trrecordid=self.trrecordid;
 			var trsummary=self.trsummary;
 			vehicleno=self.vehicleno;
+			mode=self.mode;
+			current_trrecord=self.current_trrecord;
 			
-			var customqty=trsummary.customqty;
-			var addressqty=trsummary.addressqty;
-			$("#txt-customqty").val(customqty);
-			$("#txt-addressqty").val(addressqty);
+			if(mode==1){
+				var customqty=trsummary.customqty;
+				var addressqty=trsummary.addressqty;
+				$("#txt-customqty").val(customqty);
+				$("#txt-addressqty").val(addressqty);
+				initParams();
+			}else if(mode==2){
+				//隐藏不能修改的内容
+				$("#h3title").html("费用登记");
+				if(current_trrecord.STATEID!="4"){//不是完成状态  都是应该隐藏的
+					$("#txt-backmileage-area").addClass("mui-hidden");
+					$("#txt-customqty-area").addClass("mui-hidden");
+					$("#txt-addressqty-area").addClass("mui-hidden");
+				}
+				
+			}
 			
-			initParams();
+			//加载费用信息
+			$("#txt-roadtoll").val(current_trrecord.ROADTOLL);
+			$("#txt-roadtoll2").val(current_trrecord.ROADTOLL2);
+			$("#txt-oilcost").val(current_trrecord.OILCOST);
+			$("#txt-repaircost").val(current_trrecord.REPAIRCOST);
+			$("#txt-parkingfee").val(current_trrecord.PARKINGFEE);
+			
+			$("#txt-backmileage").val(current_trrecord.BACKMILEAGE);
+			$("#txt-customqty").val(current_trrecord.CUSTOMQTY);
+			$("#txt-addressqty").val(current_trrecord.ADDRESSQTY);
+			
 		}
 		
 	    var initParams=function(){
@@ -320,15 +272,15 @@
 			var flag=validate();
 			if(flag){
 				//保存 并返回到主界面
-				doSave($("#txt-backmileage").val(),
-				$("#txt-oilcost").val(),
-				$("#txt-customqty").val(),
-				$("#txt-addressqty").val(),
-				$("#txt-roadtoll").val(),
-				$("#txt-parkingfee").val(),
-				$("#txt-repaircost").val(),
-				trrecordid);
-				
+					doSave($("#txt-backmileage").val(),
+					$("#txt-oilcost").val(),
+					$("#txt-customqty").val(),
+					$("#txt-addressqty").val(),
+					$("#txt-roadtoll").val(),
+					$("#txt-roadtoll2").val(),
+					$("#txt-parkingfee").val(),
+					$("#txt-repaircost").val(),
+					trrecordid);
 			}
 		}
 		
@@ -344,7 +296,7 @@
 				mui.back();
 			}
 		
-		var doSave=function( backmileage,oilcost,customqty,addressqty,roadtoll,parkingfee,repaircost,trrecordid){
+		var doSave=function( backmileage,oilcost,customqty,addressqty,roadtoll,roadtoll2,parkingfee,repaircost,trrecordid){
 				var url = getServerPath(localStorage.netmod);
 				//var _ordid=orderobj.ORDID;
 				console.log(url);
@@ -359,9 +311,11 @@
 					customqty:customqty,
 					addressqty:addressqty,
 					roadtoll:roadtoll,
+					roadtoll2:roadtoll2,
 					parkingfee:parkingfee,
 					repaircost:repaircost,
 					vehicleno:vehicleno,
+					mode:mode,
 					username:getLoginName(),
 					token: TOKEN
 				};
@@ -391,9 +345,13 @@
 						var memo=resjson.memo;
 						if(code=="OK"){
 							turnToParent(JSON.stringify({'trrecordid':trrecordid}));
+							 if(mode==2){
+								mui.toast(msg);
+							}
 						}else{
 							toast(msg+memo);
 						}
+						
 
 					}
 				}
@@ -403,49 +361,30 @@
 		
 		//保存前校验数字是否合理
 		var validate=function(){
-			//校验表单数字
-			var backmileage=$("#txt-backmileage").val();//填写的里程
-			if(backmileage==""){
-				layer.tips('结束里程不能为空', '#txt-backmileage', {
-						  tips: [1, '#3595CC'],
-						  time: 1500
-						});
-				return false;
-			}
+			if(mode==1){
+					//校验表单数字
+					var backmileage=$("#txt-backmileage").val();//填写的里程
+					if(backmileage==""){
+						layer.tips('结束里程不能为空', '#txt-backmileage', {
+								  tips: [1, '#3595CC'],
+								  time: 1500
+								});
+						return false;
+					}
 
-			if(Number(mileages)>Number(backmileage)){
-				layer.tips('结束里程不能小于当前车辆的出发里程:'+mileages, '#txt-backmileage', {
-						  tips: [1, '#3595CC'],
-						  time: 3500
-						});
-				return false;
+					if(Number(mileages)>Number(backmileage)){
+						layer.tips('结束里程不能小于当前车辆的出发里程:'+mileages, '#txt-backmileage', {
+								  tips: [1, '#3595CC'],
+								  time: 3500
+								});
+						return false;
+					}
 			}
-			
-			
-			
-			
-			/*if(flagcold=='Y'){
-				if($("#txt-leavetemp").val()==""){
-					layer.tips('本车次含有冷链药品，请输入起运温度', '#txt-leavetemp', {
-						  tips: [1, '#3595CC'],
-						  time: 1500
-						});
-					return false;
-					
-				}
-			}*/
-			
-			
-			/*if($.isEmptyObject(trrecord_order)){
-				layer.tips('请选择首站目的地', '#txt-targetadd', {
-						  tips: [1, '#3595CC'],
-						  time: 1500
-						});
-				return false;
-			}*/
 			return true;
 		}
 			
+			
+	
 		</script>
 	</body>
 
