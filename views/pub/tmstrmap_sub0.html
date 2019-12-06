@@ -221,7 +221,8 @@
 						//新增状态  里程这里显示上次填的公里数  编辑状态  这里显示的是当前登记的出车公里数值
 						mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].mileages;
 						if(mode==1){
-							$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
+							//$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
+							$("#txt-leavemileage").val(mileages);
 						}else if(mode==2){
 							var msg=JSON.stringify(current_trrecord);
 							$("#txt-leavemileage").val(current_trrecord.LEAVEMILEAGE);
@@ -479,7 +480,10 @@
 					if(code=="OK"){
 						turnToParent(JSON.stringify(trrecord_order));
 					}else{
-						toast(msg+memo);
+						//mui.altertoast(msg+memo);
+						mui.alert(msg,'提示','确定',function (e) {
+						   //e.index
+						},'div')
 					}
 		
 				}

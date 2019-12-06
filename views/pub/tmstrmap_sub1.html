@@ -265,6 +265,15 @@
 				}else{
 					$("#h3title").html("完成本站登记并返回");
 				}
+				
+				//增加默认输入件数的逻辑
+				if(downloadqty>=30){
+					$("#othersqty").val(downloadqty);
+					$("#minesqty").val("0");
+				}else{
+					$("#othersqty").val("0");
+					$("#minesqty").val(downloadqty);
+				}
 
 			}
 

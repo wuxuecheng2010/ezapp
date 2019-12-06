@@ -349,7 +349,9 @@
 								mui.toast(msg);
 							}
 						}else{
-							toast(msg+memo);
+							mui.alert(msg,'提示','确定',function (e) {
+							   //e.index
+							},'div');
 						}
 						
 

@@ -1833,7 +1833,7 @@ var opentmstrmap_sub0=function(mode){
     		var index=i+1;
     		var STEP=c.STEP;
     		var ORDID=c.ORDID;
-    		
+    		var FLAGCOLD=c.FLAGCOLD;
 
 			var lilistcolor="";
 			var stepinfo="";
@@ -1857,12 +1857,14 @@ var opentmstrmap_sub0=function(mode){
 				default:
 					break;
 			}
+			
+			var orderindexclass=FLAGCOLD=='Y'?'mui-badge-purple':'mui-badge-warning';
     		
     		var li='<li class="mui-table-view-cell '+lilistcolor+'">'
     		+'<a class="mui-navigate-right">'
                 +'  <div class="mui-row">'
                 +'    <div class="mui-col-sm-2 mui-col-xs-2">'
-                 +'     <span class="mui-badge mui-badge-warning" style="margin: 0 auto; margin-top: 12px;">'+index+'</span>'
+                 +'     <span class="mui-badge '+orderindexclass+'" style="margin: 0 auto; margin-top: 12px;">'+index+'</span>'
                  +'   </div>'
                  +'   <div class="mui-col-sm-10 mui-col-xs-10">'
                  +'     <div  class="mui-row">'

@@ -309,6 +309,7 @@
 				var data = {
 					controller: 'TmsTrRecord',
 					method: 'changeTrrecordOrder',
+					trrecordid:trrecordid,
 					ordid: ordid,
 					minesqty: minesqty,
 					othersqty:othersqty,
@@ -337,8 +338,21 @@
 					} else {
 						console.log(JSON.stringify(response));
 						var resjson = response.sysdata.TmsTrRecord_changeTrrecordOrder;
-						mui.toast(resjson);
-						mui.back();
+						var code=resjson.code;
+						var msg=resjson.msg;
+						var memo=resjson.memo;
+						
+						if(code=="OK"){
+								mui.toast(msg);
+								mui.back();
+						}else{
+							mui.alert(msg,'提示','确定',function (e) {
+							   //e.index
+							},'div');
+						}
+						
+						//mui.toast(resjson);
+						
 					}
 				}
 			};
