@@ -41,6 +41,10 @@
 			.right{
 				text-align: right;
 			}
+			.disabled {
+			    pointer-events:none; //使其不可点击
+			    opacity:0.6;         //使其样式变为不可用
+			}
 		</style>
 	</head>
 
@@ -84,8 +88,38 @@
 	                </div>
 				</li>-->
 			</ul>
+			
+			
 
 		</div>
+		
+		<ul class="mui-table-view" style="margin-top: 10px;" id="feedbackpanl">
+		    <li class="mui-table-view-cell " style="background: #FFFFCC;">未扫码原因:(请如实选择)</li>
+			<ul class="mui-table-view mui-table-view-radio" id="feedbackoptionlist">
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">Item 1</a>
+				</li>
+			</ul>
+			<li class="mui-table-view-cell ">
+				<div style="height: 50px;">
+					<div class="mui-input-row">
+					        <label>备注</label>
+					        <input   id="fmemo" type="text" class="mui-input-clear" placeholder="如需备注，请填此处" style="background: #FFFFCC;">
+					</div>
+				</div>
+			</li>
+			<li class="mui-table-view-cell ">
+				<div style="height: 150px;">
+					<button type="button" id="btnsave" class="mui-btn mui-btn-blue mui-btn-block">保存</button>
+					<button type="button" id="btncancell" class="mui-btn mui-btn-success mui-btn-block mui-action-back" >取消</button>
+				</div>
+			</li>
+			
+		</ul>
+			<div style="height: 100px;">
+				
+			</div>
+		
 
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.picker.min.js"></script>
@@ -101,6 +135,12 @@
 			var employeename ="";//复核人或者装箱人
 			var customname="";
 			var carrydate="";
+			var carryupid="";
+			var dispatchid_="";
+			var dispatchdtlid_="";
+			var usestatus="";
+			var ftypeid="";
+			var ftypename="";
 			mui.init({
 				gestureConfig: {
 					longtap: true //默认为false
@@ -109,17 +149,221 @@
 
 			mui.plusReady(function() {
 				init();
-				setTitle();
+				//根据包裹信息初始化当前界面数据
+				
+				
+				initFeedBackOptions();
 				ajax(keyid, packagetype);
-
+				initBoxStatusLogs();//初始化包裹的状态 已及提交的日志信息  输入框的状态灯
+				initSave();
 			})
 
-			/*			function getEmployeeid() {
-							var self = plus.webview.currentWebview();
-							return self.employeeid;
+function initBoxStatusLogs(){
+	ajaxLoadBoxStatusLogs();
+	setTitle();
+}
 
-						}*/
+function ajaxLoadBoxStatusLogs(){
+		//利用RunJS的Echo Ajax功能测试
+		var url =getServerPath(localStorage.netmod)
+		var dataType = 'json';
+		
+		//发送数据
+		var data = {
+			controller: 'TmsLoadTruck',
+			method: 'getBoxStatusAndLog',
+			carryupid: carryupid,
+			dispatchid: dispatchid_,
+			token: TOKEN
+		};
+	
+		console.log(JSON.stringify(data));
+	
+		mui.ajax(url, {
+			data: data,
+			dataType: dataType, //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			success: ajaxLoadBoxStatusLogsSuccess,
+			error: err
+		}); 
 
+}
+
+function ajaxLoadBoxStatusLogsSuccess(response){
+	if(response != null) {
+		var syscode = response.syscode;
+		var sysreason = response.sysreason;
+		if(syscode == SYSCODE_NO) {
+			tokenOutTime(sysreason);
+		} else {
+			console.log(JSON.stringify(response));
+			var data=response.sysdata.TmsLoadTruck_getBoxStatusAndLog;
+			var BOXDATA=data.BOXDATA;
+			var BOXFDATA=data.BOXFDATA;
+			
+			usestatus=BOXDATA[0].USESTATUS;
+			
+			setStatus(usestatus,BOXFDATA);
+			
+			
+			//查询按钮点击时  保存到local  按照文本的形式保存
+			//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsEmployeeDispatch);
+			//displayui(response.sysdata.WmsBox_wmsBoxDtl);
+	        
+		}
+	}
+	
+	
+}
+
+function setStatus(usestatus,BOXFDATA){
+	if(usestatus=="2"){
+		//$("#btnsave").attr("disabled","disabled");
+		$("#feedbackpanl input,button").attr("disabled","disabled");
+		$("#feedbackpanl li").addClass("disabled");
+	}
+	if(!$.isEmptyObject(BOXFDATA)){
+		 fmemo=BOXFDATA[0].FMEMO;
+		 ftypeid=BOXFDATA[0].FTYPEID;
+		$("#fmemo").val(fmemo);
+		
+		
+		
+		$("#feedbackoptionlist li").each(function(i,c){
+			
+			var _ddlid=$(c).find("#ddlid").html();
+			if(ftypeid==_ddlid){
+				$(c).addClass("mui-selected");
+			}
+			
+		})
+		
+		
+	}
+	
+}
+			
+function initSave(){
+	mui(document.body).on('tap', '#btnsave', function(e) {
+		//校验数据
+		if(ftypeid==""){
+			mui.toast('请选择未扫码原因！');
+			return ;
+		}
+		if(ftypename.indexOf("计入")){
+			mui.confirm('您当前选择的未扫码原因，点击保存后，经调度审核后，会被认定是扫码装车了的，确定继续吗？','确认',['确认','取消'],function (e) {
+			   console.log(e.index);
+			   if(e.index==0){
+				   mui("#btnsave").button('loading');
+				   saveLog();
+			   }else if(e.index==1){
+				   return ;
+			   }
+			},'div')
+			
+		}else{
+			mui.confirm('您当前选择的未扫码原因，保存之后，只是一个记录信息，并不会认定是扫码装车了','确认',['确认','取消'],function (e) {
+			   if(e.index==0){
+			   				   mui("#btnsave").button('loading');
+			   				   saveLog();
+			   }else if(e.index==1){
+			   				   return ;
+			   }
+			},'div')
+		}
+
+	});
+	
+}
+
+function saveLog(){
+	
+		//利用RunJS的Echo Ajax功能测试
+		var url =getServerPath(localStorage.netmod)
+		var dataType = 'json';
+		
+		//发送数据
+		var data = {
+			controller: 'TmsLoadTruck',
+			method: 'saveBoxCodeFeedLog',
+			carryupid: carryupid,
+			dispatchid_: dispatchid_,
+			dispatchdtlid_:dispatchdtlid_,
+			ddlid:ftypeid,
+			fuserid:getWMSEmployeeID(),
+			fmemo:$("#fmemo").val(),
+			token: TOKEN
+		};
+	
+		console.log(JSON.stringify(data));
+	
+		mui.ajax(url, {
+			data: data,
+			dataType: dataType, //服务器返回json格式数据
+			type: 'post', //HTTP请求类型
+			timeout: 10000, //超时时间设置为10秒；
+			success: saveSuccess,
+			error: myerr
+		}); 
+}
+
+
+var myerr = function(xhr, type, errorThrown) {
+	//异常处理；
+	err(xhr, type, errorThrown);
+	mui("#btnsave").button('reset');
+}
+
+
+function saveSuccess(response){
+	if(response != null) {
+		var syscode = response.syscode;
+		var sysreason = response.sysreason;
+		if(syscode == SYSCODE_NO) {
+			tokenOutTime(sysreason);
+		} else {
+			console.log(JSON.stringify(response));
+			var data=response.sysdata.TmsLoadTruck_saveBoxCodeFeedLog;
+			mui.alert(data.msg,'结果','确定',function (e) {
+				if(e.index==0){
+					mui("#btnsave").button('reset');
+				}
+				   
+			},'div')
+			//查询按钮点击时  保存到local  按照文本的形式保存
+			//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsEmployeeDispatch);
+			//displayui(response.sysdata.WmsBox_wmsBoxDtl);
+	        
+		}
+	}
+	
+	
+}
+
+
+function initFeedBackOptions(){
+	
+	var BOXCODE_FTYPE=JSON.parse(localStorage.BOXCODE_FTYPE);
+	$("#feedbackoptionlist").find("li").remove();
+	for(var i=0;i<BOXCODE_FTYPE.length;i++){
+		var htmloption='<li class="mui-table-view-cell">'+
+					       '<a class="mui-navigate-right" id="ddlname">'+BOXCODE_FTYPE[i].DDLNAME+'</a>'+
+						   '<a class="mui-navigate-right mui-hidden" id="ddlid">'+BOXCODE_FTYPE[i].DDLID+'</a>'+
+				       '</li>';
+	    
+		$("#feedbackoptionlist").append(htmloption);
+	}
+	
+	var list = document.querySelector('#feedbackoptionlist');
+	list.addEventListener('selected',function(e){
+		ftypeid=$(e.detail.el).find("#ddlid").html();
+		ftypename=$(e.detail.el).find("#ddlname").html();
+		//console.log("当前选中的为："+e.detail.el.innerText);
+		//console.log("当前选中的为："+$(e.detail.el).find("#ddlid").html());
+	});
+	
+}
 			function init() {
 				var self = plus.webview.currentWebview();
 				keyid = self.keyid;
@@ -129,10 +373,15 @@
 				flag=self.flag;
 				customname=self.customname;
 				carrydate=self.carrydate;
+				carryupid=self.carryupid;
+				dispatchid_=self.dispatchid_;
+				dispatchdtlid_=self.dispatchdtlid_;
+				usestatus=self.usestatus;
 			}
 			
 			function setTitle(){
-				jQuery(".mui-title").html(boxcode+"装箱清单");
+				var classstyle=usestatus=="2"?"scaned":"unscaned";
+				jQuery(".mui-title").html(boxcode+"装箱清单").addClass(classstyle);
 				jQuery("#customname").html(customname);
 				jQuery("#employeename").html(employeename);
 				jQuery("#carrydate").html(carrydate);
@@ -182,7 +431,6 @@
 						//查询按钮点击时  保存到local  按照文本的形式保存
 						//localStorage.tmsdispatchlist = JSON.stringify(response.sysdata.TmsDispatch_tmsEmployeeDispatch);
 						displayui(response.sysdata.WmsBox_wmsBoxDtl);
-
 					}
 				}
 			};

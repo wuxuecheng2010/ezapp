@@ -111,6 +111,11 @@
 						<input type="number" id="txt-repaircost" placeholder="维修费" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;">
 					</div>
 					
+					<div class="mui-input-row" id="txt-unloadcharges-area" onclick="queryUnloadChargesDtl()" >
+						<label>卸货费</label>
+						<input type="text" id="txt-unloadcharges"  class="mui-navigate-right  " readonly="readonly"   >
+					</div>
+					
 					
 					<div class="mui-input-row" id="txt-customqty-area">
 						<label>客户点数</label>
@@ -123,8 +128,22 @@
 						<input type="number" id="txt-addressqty" placeholder="客户地址数" pattern="\d*" class="mui-input-clear" disabled="disabled" >
 					</div>
 					
-				</form>
+					
+					
 				
+					<!-- <ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right">
+								
+									<label>卸货费</label>
+									<span>1234</span>
+									
+							</a>
+						</li>
+					</ul> -->
+					
+				</form>
+			
 
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存</button>
@@ -200,8 +219,11 @@
 			$("#txt-backmileage").val(current_trrecord.BACKMILEAGE);
 			$("#txt-customqty").val(current_trrecord.CUSTOMQTY);
 			$("#txt-addressqty").val(current_trrecord.ADDRESSQTY);
+			var txt_unloadcharges=""+current_trrecord.UNLOADCHARGES+"      ("+"点击看详情"+")";
+			$("#txt-unloadcharges").val(txt_unloadcharges);
 			
 		}
+		
 		
 	    var initParams=function(){
 			
@@ -385,6 +407,31 @@
 			return true;
 		}
 			
+			
+			
+			var queryUnloadChargesDtl=function(){
+				mui.openWindow({
+				    url:"../pub/tmstrmap_sub2_sub1.html",
+				    id:"tmstrmap_sub2_sub1.html",
+				    styles:{
+				      //top:10,//新页面顶部位置
+				      //bottom:10,//新页面底部位置
+				      width:"100%",//新页面宽度，默认为100%
+				      height:"100%"//新页面高度，默认为100%
+				    },
+				    
+				    extras:{
+				      trrecordid:trrecordid,
+				    },
+				    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+				    show:{
+				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+				      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+				      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+				    }
+				    
+				});
+			}
 			
 	
 		</script>

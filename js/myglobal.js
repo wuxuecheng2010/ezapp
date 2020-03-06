@@ -1,9 +1,9 @@
-var VERSION = "1.5.3"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
-var VID = "56"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
-var DEBUG=true;//   true-为开发模式  false-为正式模式
+var VERSION = "1.6.6"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var VID = "69"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var DEBUG=false;//   true-为开发模式  false-为正式模式
 
 
-var TIP = "192.168.1.108:85";
+var TIP = "192.168.1.114:85";
 var NIP = "192.168.0.117";
 var WIP = "122.226.128.222"
 
@@ -25,6 +25,8 @@ var SYSCODE_OK = "OK";
 var SYSCODE_NO = "NO";
 var PASSWORD_MIN_LEN = 4; //密码长度控制
 var COPY_INFO = "";
+
+var MAX_CURRENTLOAD_SIZE=4;
 
 var UPDATE_MODEL_ONLOAD = "ONLOAD"; //软件打开时检测
 var UPDATE_MODEL_ONCLICK = "ONCLICK"; //软件在设置中点击再升级

@@ -173,6 +173,10 @@
 						'<span style="display: none;" id="packagetype">' + content.PACKAGETYPE + '</span>' +
 						'<span style="display: none;" id="keyid">' + content.KEYID + '</span>' +
 						'<span style="display: none;" id="boxcode">' + content.BOXCODE + '</span>' +
+						'<span style="display: none;" id="carryupid">' + content.CARRYUPID + '</span>' +
+						'<span style="display: none;" id="dispatchid_">' + content.DISPATCHID_ + '</span>' +
+						'<span style="display: none;" id="dispatchdtlid_">' + content.DISPATCHDTLID_ + '</span>' +
+						'<span style="display: none;" id="usestatus">' + content.USESTATUS + '</span>' +
 						'</a>' +
 						'</li>'
 					);
@@ -186,7 +190,11 @@
 									var employeename =jQuery(this).find('#employeename').html();
 									var flag="read";
 									var carrydate=jQuery(this).find('#carrydate').html();
-									showBoxDtl(keyid,boxcode,packagetype,employeename,flag,customname,carrydate);
+									var carryupid=jQuery(this).find('#carryupid').html();
+									var dispatchid_=jQuery(this).find('#dispatchid_').html();
+									var dispatchdtlid_=jQuery(this).find('#dispatchdtlid_').html();
+									var usestatus=jQuery(this).find('#usestatus').html();
+									showBoxDtl(keyid,boxcode,packagetype,employeename,flag,customname,carrydate,carryupid,dispatchid_,dispatchdtlid_,usestatus);
 								});
 
 			}
@@ -198,7 +206,7 @@
 				 * @param {Object} packagetype
 				 * @param {Object} flag
 				 */
-				var showBoxDtl=function(keyid,boxcode,packagetype,employeename,flag,customname,carrydate){
+				var showBoxDtl=function(keyid,boxcode,packagetype,employeename,flag,customname,carrydate,carryupid,dispatchid_,dispatchdtlid_,usestatus){
 
 					mui.openWindow({
 								url: 'wmsBoxDtl.html',
@@ -210,7 +218,11 @@
 									employeename:employeename,
 									flag:flag,
 									customname:customname,
-									carrydate:carrydate
+									carrydate:carrydate,
+									carryupid:carryupid,
+									dispatchid_:dispatchid_,
+									dispatchdtlid_:dispatchdtlid_,
+									usestatus:usestatus
 								},
 								waiting: {
 									autoShow: false

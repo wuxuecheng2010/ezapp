@@ -21,3 +21,15 @@ var ERR_BARCODE_STYLE={
 	"info":"条码格式错误。",
 	"code":"err_barcode_style"
 };
+
+var IN_TRUCK = {
+	"id": 5,
+	"info": "当前条码已装上本车。",
+	"code": "in_truck"
+};
+
+var  WR_DISP = {
+	"id": 6,
+	"info": "当前出库条码不属于您所选择的派车车次。",
+	"code": "wrong_disp"
+};

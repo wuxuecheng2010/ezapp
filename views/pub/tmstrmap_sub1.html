@@ -71,11 +71,22 @@
            	</div>
 <form class="mui-input-group" >
 
-	<div class="mui-input-row">
-		<label>件数(扫码)</label>
+	<!-- <div class="mui-input-row">
+		<label>件数(扫码)<span id="txt_qtycancel"></span></label>
 		<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="txt-downloadqty">
 		
-	</div>
+	</div> -->
+	<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a>
+					<label>件数(扫码)</label>
+					&nbsp;&nbsp;
+					<!-- <input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty"> -->
+				    <span id="txt-downloadqty"></span>
+					<span id="txt_qtycancel" ></span>
+				</a>
+			</li>
+		</ul>
 	<div class="mui-input-row " style="display: none;">
 		<label>卸货方式</label>
 		<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
@@ -91,6 +102,23 @@
 		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
 	</div>
 	
+	<ul class="mui-table-view">
+			
+			<li class="mui-table-view-cell">
+				<a>
+					 <div>卸货费小计:￥<span id="txt_unloadcharges"></span></div>
+				</a>
+			</li>
+			
+			<li class="mui-table-view-cell">
+				<a style="font-size: 12px;">
+					<div>当前客户卸货费说明:自卸-<span id="txt_minesprice"></span> 他卸-<span id="txt_othersprice"></span></div>
+				</a>
+			</li>
+		
+		</ul>
+	
+
 	
 	<div class="mui-input-row" id="selectpanel">
 		<label>下一站<span style="color: red;">*</span></label>
@@ -101,54 +129,6 @@
 </form>
 
 
-<!-- 
-			<div  style="margin-top: 10px;padding: 5px;">
-				<div style="text-align: center;height: 60px;">
-					<h3 style="line-height: 60px;" id="h3title">完成并前往下一站</h3>
-				</div>
-
-				<div class="mui-row" style="padding-top: 15px;">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;"></span>卸货件数：</span>
-					</div>
-
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell">
-						<div class="mui-row">
-							<div class="mui-col-sm-5 mui-col-xs-5">
-								<input id="txt-downloadqty" readOnly="true"  type="number" pattern="\d*" placeholder="本站件数" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 18px;">
-
-							</div>
-							<div class="mui-col-sm-2 mui-col-xs-2">
-								<input type="text" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size:20px;text-align: center;"
-								 value="|" readOnly="true">
-							</div>
-							<div class="mui-col-sm-5 mui-col-xs-5">
-								<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
-								 readonly="true">
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<div>
-					&nbsp;
-				</div>
-
-				<div id="selectpanel" class="mui-row" style="padding-top: 15px;">
-					<div class="mui-col-sm-5 mui-col-xs-5 inputcell">
-						<span style="line-height: 60px;"><span style="color: red;">*</span>下一站：</span>
-					</div>
-					<div class="mui-col-sm-7 mui-col-xs-7 inputcell">
-						<input id="txt-targetadd" type="text" placeholder="--下一站--" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;"
-						 readonly="true">
-					</div>
-				</div>
-
-
-			</div>
-			
-			 -->
 			
 
 			<div id="savepanel" class="mui-content-padded" style="margin-top: 20px;">
@@ -214,7 +194,7 @@
 				}
 
 				//初始化他自卸方式下拉选择
-				initDownloadTypeSelect();
+				//initDownloadTypeSelect();
 
 				//初始化按钮选项
 				initAction();
@@ -246,12 +226,23 @@
 				flagcold = self.flagcold;
 				trrecord_order_json = self.order_all;
 				current_order = self.current_order;
+				
 				current_refdisp=self.current_refdisp;
 				refdisp_all=self.refdisp_all;
 				//alert(current_refdisp);
-				//alert(JSON.stringify(current_refdisp));
+				console.log(JSON.stringify(current_order));
 				var downloadqty=getCount(current_refdisp);
-				$("#txt-downloadqty").val(downloadqty);
+				$("#txt-downloadqty").html(downloadqty);
+				var MINESQTYCANCEL= current_order.MINESQTYCANCEL;
+				var OTHERSQTYCANCEL=current_order.OTHERSQTYCANCEL;
+				var txtqtycancel_m=MINESQTYCANCEL=="0"?"":"自卸"+MINESQTYCANCEL+"件";
+				var txtqtycancel_o=OTHERSQTYCANCEL=="0"?"":"他卸"+MINESQTYCANCEL+"件";
+				var txtqtycancel=txtqtycancel_m+" "+txtqtycancel_o;
+				txtqtycancel=txtqtycancel.replace(' ','')==""?"":'撤销'+txtqtycancel;
+				if(txtqtycancel!="")
+				$("#txt_qtycancel").addClass("mui-badge mui-badge-danger");
+				$("#txt_qtycancel").html(txtqtycancel);
+				
 				$("#drivername").html(drivername);
 				$("#vehicleno").html(vehicleno);
 				$("#forwardmsg").html(forwardmsg);
@@ -274,8 +265,12 @@
 					$("#othersqty").val("0");
 					$("#minesqty").val(downloadqty);
 				}
-
+				
+				updateUnloadcharges(current_order);
+				
 			}
+			
+			
 
 			
 
@@ -295,7 +290,7 @@
 				});
 
 				//卸货件数qty
-                InitLoadQtyAction(getCount(current_refdisp));
+                InitLoadQtyAction(getCount(current_refdisp),current_order);
 
 			}
 			
@@ -311,7 +306,7 @@
 						}
 
 			var saveRecordOrder = function(type) {
-				var downloadqty=$("#txt-downloadqty").val();
+				var downloadqty=$("#txt-downloadqty").html();
 				current_order.DOWNLOADQTY=downloadqty;
 				current_order.DOWNLOADTYPEID=downloadtypeid;
 				
@@ -515,6 +510,7 @@
 				}
 				return true;
 			}
+			
 			
 			
 		</script>

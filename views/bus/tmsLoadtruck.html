@@ -296,9 +296,9 @@
 				//监听自定义选择返回事件
 				window.addEventListener('widgetSelectEvent', function(event) {
 					var value = event.detail.value;
-					var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
-					var json = JSON.parse(jsonvalue)
-					console.log(value.substr(1, value.length - 2));
+					//var jsonvalue = value.substr(1, value.length - 2); //去掉前后中括号
+					 json = JSON.parse(value);
+					//console.log(value.substr(1, value.length - 2));
 					//console.log("console******:" + console);
 					displaypanl(json);
 					setfocus();

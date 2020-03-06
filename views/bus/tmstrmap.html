@@ -383,7 +383,7 @@
 							<div class="mui-row ">
 								 
 								 <div class="mui-col-sm-6 mui-col-xs-6">
-								     
+								    
 								 </div>
 								 <div class="mui-col-sm-6 mui-col-xs-6">
 								     <button id="btn-mid-return" type="button" class="mui-btn mui-btn-red mui-btn-outlined" data-midleback="0" onclick="domidleback(this)">中途返回</button>
@@ -781,13 +781,82 @@ var opentmstrmap_sub0=function(mode){
 	});
 }
 	
+	//同步获取近期的出车任务
+	var tmstrrecords_current=null;
+	function loadtrrecordsasync(){
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'getTrRecordBydriver',
+					driverid1: getWMSEmployeeID(),
+					stateids: "1,2,3,4",
+					datatype: 1,
+					token: TOKEN
+				};
+				//console.log(data);
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					async:false,//同步
+					timeout: 10000, //超时时间设置为10秒；
+					success: success1async,
+					error: err
+				});
+	}
+	
+	var success1async = function(response) {
+		if(response != null) {
+			var syscode = response.syscode;
+			var sysreason = response.sysreason;
+			if(syscode == SYSCODE_NO) {
+				tokenOutTime(sysreason);
+			} else {
+				
+				var trrecordjsons=response.sysdata.TmsTrRecord_getTrRecordBydriver;
+				tmstrrecords_current=trrecordjsons;
+				
+			}
+		}
+	};
+	
 	//准备出发
 	var goEvent=function(){
-		
+	
 		document.getElementById("btn-go").addEventListener('tap',function(){
 			
-			var mode=1;//1 新打开的  
-			opentmstrmap_sub0(mode);
+			//###提前判断当前行程是否有未完成的
+			loadtrrecordsasync();
+			console.log(JSON.stringify(tmstrrecords_current));
+			if(!$.isEmptyObject(tmstrrecords_current)){
+				var trrecordid;
+				var stateid;
+				var flagallfinish=true;
+				
+				for(var i=0;i<tmstrrecords_current.length;i++){
+					 trrecordid=tmstrrecords_current[i].TRRECORDID;
+					 stateid=tmstrrecords_current[i].STATEID;
+					if( stateid=="2" || stateid=="3"){
+						
+						flagallfinish=false;
+						break;
+					}
+				}
+			}
+
+         if(flagallfinish){
+			 var mode=1;//1 新打开的
+			 opentmstrmap_sub0(mode);
+		 }else{
+			 //提示先完成之前的线路
+			 mui.alert('发现车次'+trrecordid+'未完成，请先完成。点击"确定"前往该车次。先完成','警告','确定',function (e) {
+			 	dispalytrrecords(trrecordid);
+			 },'div');
+		 }
+			
 			
 		});
 		
@@ -866,73 +935,14 @@ var opentmstrmap_sub0=function(mode){
 							
 							
 						}, function(e){
-							alert('Geolocation error: ' + e.message);
+							//alert('Geolocation error: ' + e.message);
+							reach(current_order,'','');
 						}, 
 						{
 							geocode: true,
 							provider:"baidu",
 							coordsType:"bd09ll"
 						});
-					
-					
-					
-					
-							/* 	
-						 		var geolocation = new BMap.Geolocation();
-								geolocation.enableSDKLocation();
-								geolocation.getCurrentPosition(function(r){
-									console.log(JSON.stringify(r));
-									if(this.getStatus() == BMAP_STATUS_SUCCESS){
-								        //1、标记自己当前的位置
-										//imhere(map,r.point)
-										//map.panTo(r.point);
-										//2、测算距离
-										lng=r.point.lng;
-										lat=r.point.lat;
-										var my_point=r.point;
-										var current_order_lng=current_order.LNG;
-										var current_order_lat=current_order.LAT;
-										var current_order_point= new BMap.Point(Number(current_order_lng), Number(current_order_lat))
-										//距离
-										var distence=map.getDistance(my_point ,current_order_point);
-										//alert("distence:"+distence);
-										//var MAXDISTANCE=getWmsConfig("16");
-										if(distence>MAXDISTANCE){
-											
-											//提示有点远  是否确定到达
-											var customname=current_order.CUSTOMNAME;
-											var msg='对不起,您当前的位置距离"'+customname+'"非常远，直线距离超过'+MAXDISTANCE+'米，不能确认到达。请达到目的地后再操作。';
-											
-						
-											
-											
-											 mui.confirm(msg,'确认',['报告位置不准','取消'],function(e){
-												if (e.index == 0) {
-														//提交位置不正确信息,供调度后台纠正错误信息
-														var transid=current_order.TRANSID;
-								   						saveLocaltionErr(transid,lng,lat);
-													} 
-											}); 
-											
-										}else{
-										    //保存到达操作
-									   		reach(current_order,lng,lat);
-										}
-								
-								
-									}else {
-										mui.toast("获取地理位置失败，请设置允许设备获取地理位置信息，之后再操作.");
-										//直接保存了
-								   		//reach(current_order,lng,lat);
-									}      
-								},
-								function(e) {}
-								,{
-						geocode: true,
-						provider:"baidu",
-						coordsType:"bd09ll"
-					}); */
-					
 					
 					
 				}else{
@@ -1417,7 +1427,7 @@ var opentmstrmap_sub0=function(mode){
 				if(trrecordid!=null){//正常任务菜单事件
 					dispalytrrecords(trrecordid);
 					//$("#routename").html(forwardmsg+"#"+trrecordid+"班次");
-					$(".mui-title").html(trrecordid+"班次");
+					//$(".mui-title").html(drivername+" "+trrecordid+"班次");
 				}else{//非任务菜单 比如显示刷新任务
 					loadtrrecords();
 				}
@@ -1557,6 +1567,10 @@ var opentmstrmap_sub0=function(mode){
 						refdisp_all=refdisps;
 						
 						dispalytrrecordsorder(orderjsons);
+						
+						
+						//标题栏
+						$(".mui-title").html(drivername+" "+trrecordid+"班次");
 						
 						//alert(JSON.stringify(current_order));
 						//展现侧边栏
@@ -2095,9 +2109,20 @@ var opentmstrmap_sub0=function(mode){
 		
 	}
 	
+	var getSelectOrder=function(ordid){
+		var select_order={};
+		for(var i=0;i<order_all.length;i++){
+			var ORDID=order_all[i].ORDID;
+			if(ordid==ORDID){
+				select_order= order_all[i];
+				break;
+			}
+		}
+		return select_order;
+	}
 	//打开已完成节点的编辑界面
 	var openOrdidPanel=function(ordid){
-		
+		var selected_order=getSelectOrder(ordid);
 		mui.openWindow({
 		    url:"../pub/tmstrmap_sub3.html",
 		    id:"tmstrmap_sub3.html",
@@ -2116,7 +2141,8 @@ var opentmstrmap_sub0=function(mode){
 			  refdisp_all:refdisp_all */
 			  
 			  trrecordid:trrecordid,
-			  ordid:ordid
+			  ordid:ordid,
+			  selected_order:selected_order
 		    },
 		    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
 		    show:{
@@ -2296,6 +2322,30 @@ var opentmstrmap_sub0=function(mode){
 		
 	}
 	
+	
+	var queryFee=function(){
+		mui.openWindow({
+		    url:"../pub/tmstrmap_sub4.html",
+		    id:"tmstrmap_sub4.html",
+		    styles:{
+		      //top:10,//新页面顶部位置
+		      //bottom:10,//新页面底部位置
+		      width:"100%",//新页面宽度，默认为100%
+		      height:"100%"//新页面高度，默认为100%
+		    },
+		    
+		    extras:{
+		      trrecordid:trrecordid,
+		    },
+		    createNew:false,//是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+		    show:{
+		      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+		      aniShow:"slide-in-top",//页面显示动画，默认为”slide-in-right“；
+		      duration:500//页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+		    }
+		    
+		});
+	}
 	/**
 	 * @param {Object} midlebackflag 0撤销中返  1中返操作
 	 */

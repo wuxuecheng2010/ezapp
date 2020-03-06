@@ -99,10 +99,24 @@
 						<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="到达温度" id="reachtemp">
 						<span>℃</span>
 					</div>
-					<div class="mui-input-row">
-						<label>件数(扫码)</label>
+					<!-- <div class="mui-input-row">
+						<label>件数(扫码)<span id="txt_qtycancel"></span></label>
 						<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty">
-					</div>
+					
+					</div> -->
+					<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a>
+									<label>件数(扫码)</label>
+									&nbsp;&nbsp;
+									<!-- <input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty"> -->
+								    <span id="loadqty"></span>
+									<span id="txt_qtycancel" ></span>
+								</a>
+							</li>
+							
+						</ul>
+					
 					<div class="mui-input-row" style="padding-left: 60px;">
 						<label>自卸<span style="color: red;">*</span></label>
 						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="自卸件数" id="minesqty">
@@ -111,7 +125,21 @@
 						<label>他卸<span style="color: red;">*</span></label>
 						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
 					</div>
-					
+					<ul class="mui-table-view">
+							
+							<li class="mui-table-view-cell">
+								<a>
+									 <div>卸货费小计:￥<span id="txt_unloadcharges"></span></div>
+								</a>
+							</li>
+							
+							<li class="mui-table-view-cell">
+								<a style="font-size: 12px;">
+									<div>当前客户卸货费说明:自卸-<span id="txt_minesprice"></span> 他卸-<span id="txt_othersprice"></span></div>
+								</a>
+							</li>
+						
+						</ul>
 					<div class="mui-button-row">
 						<button type="button" class="mui-btn mui-btn-primary"  id="btn-save">保存</button>
 						<button type="button" class="mui-btn mui-btn-danger" id="btn-cancel">取消</button>
@@ -144,6 +172,7 @@
 			var ordid=""; 
 			var trrecordid="";
 			var current_refdisp={};
+			var selected_order={};
 			
 
 			mui.plusReady(function() {
@@ -165,6 +194,7 @@
 				trrecordid=self.trrecordid;
 				current_refdisp=self.current_refdisp;
 				$("#trrecordid").val(trrecordid);
+				selected_order=self.selected_order;
 				ajaxInitView(ordid);
 			}
 
@@ -224,14 +254,27 @@
 				$("#reachtemp").val(REACHTEMP);
 				$("#minesqty").val(MINESQTY);
 				$("#othersqty").val(OTHERSQTY);
-				$("#loadqty").val(LOADQTY);
+				$("#loadqty").html(LOADQTY);
+				
+				var MINESQTYCANCEL= resjson[0].MINESQTYCANCEL;
+				var OTHERSQTYCANCEL=resjson[0].OTHERSQTYCANCEL;
+				var txtqtycancel_m=MINESQTYCANCEL=="0"?"":"自卸"+MINESQTYCANCEL+"件";
+				var txtqtycancel_o=OTHERSQTYCANCEL=="0"?"":"他卸"+MINESQTYCANCEL+"件";
+				var txtqtycancel=txtqtycancel_m+" "+txtqtycancel_o;
+				txtqtycancel=txtqtycancel.replace(' ','')==""?"":'存在撤销'+txtqtycancel;
+				$("#txt_qtycancel").html(txtqtycancel);
+				if(txtqtycancel!="")
+				$("#txt_qtycancel").addClass("mui-badge mui-badge-danger");
+				
 
 				if(FLAGCOLD=='N'){
 					$("#temppanel").addClass('mui-hidden');
 				}
 				//$("#temppanel").addClass('mui-hidden');
 				//初始化件数控件显示效果
-				InitLoadQtyAction(LOADQTY);
+				InitLoadQtyAction(LOADQTY,selected_order);
+				
+				updateUnloadcharges(selected_order);
 			}
 			
 			var validateSave=function(){

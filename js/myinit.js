@@ -226,17 +226,35 @@ var isLatestVersion=function(currentVersion,obj){
 var updatesoft = function(url) {
 	//var url="http://172.18.109.99:85/myphp/file/myzb.apk"; // 下载文件地址
 	console.log(url);
-	plus.nativeUI.showWaiting("下载中，请稍后...");
+	//plus.nativeUI.showWaiting("下载中，请稍后...");
 	var dtask = plus.downloader.createDownload(url, {}, function(d, status) {
 		if(status == 200) { // 下载成功
 			var path = d.filename;
 			console.log(d.filename);
-			plus.nativeUI.closeWaiting();
+			//plus.nativeUI.closeWaiting();
+			mui.toast(d.filename);
 			plus.runtime.install(path); // 安装下载的apk文件
 		} else { //下载失败
 			alert("Download failed: " + status);
 		}
 	});
+
+		dtask.addEventListener("statechanged",function(task,status){
+					if(!dtask){return;}
+					switch(task.state){
+						case 1: mui.toast('开始下载...');break;//开始
+						case 2: mui.toast('链接到服务器...');break;//链接到服务器
+						case 3:
+							var progressVal = (task.downloadedSize/task.totalSize)*100;
+								mui('#bar').progressbar({progress:progressVal}).show();
+								
+							break;
+						case 4: mui.toast('下载完成');
+						$("#bar").addClass('mui-hidden');
+						break;
+					}
+				});
+		
 
 	dtask.start();
 }

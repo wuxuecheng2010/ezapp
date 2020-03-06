@@ -276,13 +276,15 @@
 		
 		var doSave=function(mode){
 			if(mode==1){
-				var wa = plus.nativeUI.showWaiting();
+				/* var wa = plus.nativeUI.showWaiting();
 				plus.geolocation.getCurrentPosition( geoInf, function ( e ) {
 					//outSet( "获取定位位置信息失败："+e.message );
 					//定位失败处理方式  位置就不传递了
 					ajaxSave( leavemileage,leavetemp,trrecord_order,"","","");
 					wa.close();
-				},{geocode:true});
+				},{geocode:true}); */
+				ajaxSave( leavemileage,leavetemp,trrecord_order,"","","");
+				
 			}else if(mode==2){
 				ajaxSave2( leavemileage,leavetemp,trrecordid);
 			}
