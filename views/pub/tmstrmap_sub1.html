@@ -332,6 +332,24 @@
 					return ;
 				}
 				
+				//判断件数是否为负数
+				if(minesqty<0){
+					layer.tips('自卸件数不能为负数', '#minesqty', {
+							  tips: [1, '#3595CC'],
+							  time: 2500
+							});
+					return ;
+				}
+				if(othersqty<0){
+					layer.tips('他卸件数不能为负数', '#othersqty', {
+							  tips: [1, '#3595CC'],
+							  time: 2500
+							});
+					return ;
+				}
+				
+				
+				
 				if(validate(type))
 				doFinish(current_order, trrecord_order);
 

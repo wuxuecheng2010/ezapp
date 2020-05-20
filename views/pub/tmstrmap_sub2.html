@@ -174,7 +174,8 @@
 			
 			mui.plusReady(function(){
 				
-				ajaxxing();
+				//取消转转转
+				//ajaxxing();
 				
 				//初始化信息显示
 				initView();
@@ -219,8 +220,54 @@
 			$("#txt-backmileage").val(current_trrecord.BACKMILEAGE);
 			$("#txt-customqty").val(current_trrecord.CUSTOMQTY);
 			$("#txt-addressqty").val(current_trrecord.ADDRESSQTY);
-			var txt_unloadcharges=""+current_trrecord.UNLOADCHARGES+"      ("+"点击看详情"+")";
-			$("#txt-unloadcharges").val(txt_unloadcharges);
+			
+			
+			//var txt_unloadcharges=""+current_trrecord.UNLOADCHARGES+"      ("+"点击看详情"+")";
+			//$("#txt-unloadcharges").val(txt_unloadcharges);
+			ajaxLoadunLoadcharges(trrecordid);
+			
+		}
+		
+		var ajaxLoadunLoadcharges=function(trrecordid){
+			
+			var url = getServerPath(localStorage.netmod);
+			var dataType = 'json';
+			//发送数据
+			var data = {
+				controller: 'TmsTrRecord',
+				method: 'getTrrecord',
+				trrecordid: trrecordid,
+				token: TOKEN
+			};
+			//console.log(JSON.stringify(data));
+			mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				async:false,
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: success4,
+				error: err
+			});
+			
+			
+		}
+		
+		var success4=function(response){
+			
+			if(response != null) {
+				var syscode = response.syscode;
+				var sysreason = response.sysreason;
+				if(syscode == SYSCODE_NO) {
+					tokenOutTime(sysreason);
+				} else {
+					console.log(JSON.stringify(response));
+					var resjson=response.sysdata.TmsTrRecord_getTrrecord;
+					var txt_unloadcharges=""+resjson[0].UNLOADCHARGES+"      ("+"点击看详情"+")";
+					$("#txt-unloadcharges").val(txt_unloadcharges);
+					
+				}
+			}
 			
 		}
 		

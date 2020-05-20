@@ -110,6 +110,12 @@
 			<div class="mui-content-padded" style="margin-top: 20px;">
 				<button id="btn-save" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存并出发</button>
 			</div>
+			
+			<div>
+				
+				<p style="font-size: xx-small;margin-top: 100px;color: #E8E800" id="txt-miles"></p>
+				
+			</div>
 
 		</div>
 
@@ -222,7 +228,10 @@
 						mileages=response.sysdata.TmsTrRecord_gettmstrmapsub0.vehicleinfo[0].mileages;
 						if(mode==1){
 							//$("#txt-leavemileage").attr('placeholder','上次里程登记为：'+mileages);
-							$("#txt-leavemileage").val(mileages);
+							$("#txt-leavemileage").attr('placeholder','请看车辆里程表，在此登记里程');
+							$("#txt-miles").html(mileages);
+							
+							//$("#txt-leavemileage").val(mileages);
 						}else if(mode==2){
 							var msg=JSON.stringify(current_trrecord);
 							$("#txt-leavemileage").val(current_trrecord.LEAVEMILEAGE);

@@ -50,6 +50,7 @@ function geoInf(position, map, watchId,marker) {
 			var lat_ = MYLOCATION.lat;
 			var lng_ = MYLOCATION.lng;
 			//if(lat_!=lat || lng_!= longt ){
+				
 			if (position.addresses != MYLOCATION.address) {
 				//alert(lat_+":"+lat  +" "+ lng_+":"+longt);
 				saveLocation(paramsStr);
