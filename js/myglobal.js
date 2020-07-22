@@ -1,9 +1,9 @@
-var VERSION = "1.6.8"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
-var VID = "71"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var VERSION = "1.6.9"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
+var VID = "72"; //版本号  每次升级前修改一次  数据库中保存的版本号 加一行，与之对应；
 var DEBUG=false;//   true-为开发模式  false-为正式模式
 
 
-var TIP = "192.168.1.106:85";
+var TIP = "192.168.1.102:85";
 var NIP = "192.168.0.117";
 var WIP = "122.226.128.222"
 
@@ -72,7 +72,28 @@ function initNetMod(doc) {
 
 }
 
-
+function getIP(netmod){
+	
+	switch(netmod) {
+		case "0":
+			return NIP;
+			break;
+	
+		case "1":
+			return WIP;
+			break;
+	
+		case "2":
+			return TIP;
+			break;
+	
+		default:
+			return WIP;
+			break;
+	}
+	
+	
+}
 
 /**
  * 根据本地记录的netmod值 获取网络地址

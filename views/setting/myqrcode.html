@@ -178,23 +178,95 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">软件下载二维码</h1>
+			<h1 class="mui-title">软件下载二维码 </h1>
 		</header>
 		<div class="mui-content">
 			<div class="mui-content-padded">
-				<p>扫描下方二维码，进行软件下载(适用Android手机)</p>
+				<p>扫描下方二维码，进行软件下载(适用Android手机) </p>
 				<p style="text-align: center;">
-					<img src="../../images/myqrcode.png" data-preview-src="" data-preview-group="1" />
+					<img src="../../images/myqrcode.png" data-preview-src="" data-preview-group="1" id="qrcodeimg" style="width: 80%;" />
 				</p>
+				<p>
+					<h5>版本号：<span id="vision"></span> </h5>
+					<h5>上传时间：<span id="distributedate"></span></h5>
+					<h5>上传人：<span id="distributeman"></span></h5>
+					<h5>服务器:<span id="serverIP"></span></h5>
+				</p>
+				
 			</div>
 			
 		</div>
 	</body>
-	<script src="../../js/mui.js"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/mui.zoom.js"></script>
 	<script src="../../js/mui.previewimage.js"></script>
+	<script src="../../js/myglobal.js"></script>
 	<script>
 		mui.previewImage();
+		
+		
+		$(function(){
+			if(localStorage.netmod!=2)
+			ajaxLoad();
+			
+		})
+		
+		var ajaxLoad = function() {
+			//利用RunJS的Echo Ajax功能测试
+			var url =getServerPath(localStorage.netmod)
+			var dataType = 'json';
+			//var vcproductinfo = ShortPY(document.getElementById('vcproductinfo').value.toUpperCase());
+			//发送数据
+			var data = {
+				controller: 'Versions',
+				method: 'max_versions',
+				token: TOKEN
+			};
+		
+			//mui.post(url, data, success, dataType);
+			mui.ajax(url, {
+				data: data,
+				dataType: dataType, //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: success,
+				error: err
+			});
+		
+		};
+		//成功响应的回调函数
+		var success = function(response) {
+			if(response != null) {
+				var syscode = response.syscode;
+				var sysreason = response.sysreason;
+				if(syscode == SYSCODE_NO) {
+					tokenOutTime(sysreason);
+				} else {
+					console.log(JSON.stringify(response));
+					console.log(JSON.stringify(response.sysdata.Versions_max_versions));
+					
+					var Versions_max_versions=response.sysdata.Versions_max_versions;
+					if(Versions_max_versions.length==1){
+						var latest_version_file=Versions_max_versions[0].filepath;
+						var IP=getIP(localStorage.netmod);
+						var src="http://"+IP+"/b2c/index.php?m=Home&c=Index&a=qr_code&data=http://"+IP+"/tpAdmin/public/"+latest_version_file;
+						$("#qrcodeimg").attr("src",src);
+						$("#vision").html(Versions_max_versions[0].vision);
+						$("#distributedate").html(Versions_max_versions[0].distributedate);
+						$("#distributeman").html(Versions_max_versions[0].distributeman);
+						$("#serverIP").html(IP);
+						//console.log(src);
+					}
+					//查询按钮点击时  保存到local  按照文本的形式保存
+					//localStorage.salesnoticeslist = JSON.stringify(response.sysdata.Versions_max_versions);
+					//displayui(response.sysdata.SalesNotice_salesNotices);
+					//searchnotice(response.sysdata.SalesNotice_salesNotices);
+				}
+			}
+		};
+		
+		
 	</script>
 
 </html>
