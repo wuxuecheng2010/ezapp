@@ -73,6 +73,8 @@
 			</ul>
 
 		</div>
+		
+		
 
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.picker.min.js"></script>
@@ -88,6 +90,12 @@
 			});
 			var g_dispatchid = "";
 			var transid="";
+			
+			var vehicleid="";
+			var tkdocid="";
+			var employeeid="";
+			
+			
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
 				var dispatchid = self.dispatchid;
@@ -98,6 +106,12 @@
 				}
 				g_dispatchid = dispatchid;
 				var title = self.title;
+				vehicleid=self.vehicleid;
+				
+				tkdocid=self.tkdocid;
+				//alert(JSON.stringify(self));
+				employeeid=self.employeeid;
+				
 				//var pagetitle=dispatchid+"| "+title
 				setTitle(dispatchid, title, '明细');
 				ajax(dispatchid,transid);
@@ -147,6 +161,12 @@
 						//console.log("888*response.sysdata.SalesNotice_salesNotice******"+JSON.stringify(response.sysdata.SalesNotice_salesNotice));
 						displayui(response.sysdata.TmsDispatch_tmsDispCustomerLoadNUMdtl);
 						//searchnotice(response.sysdata.SalesNotice_salesNotice.docids);
+						
+						
+						
+						
+
+
 
 					}
 				}
@@ -217,6 +237,11 @@
 					//turnToParent(jsonstr);
 					openBoxDtl(dispatchid, transid, customname,printclass);
 				});
+				
+				
+				
+				
+				
 
 			}
 
@@ -229,7 +254,13 @@
 						dispatchid: dispatchid,
 						transid: transid,
 						customname: customname,
-						printclass:printclass
+						printclass:printclass,
+						
+						vehicleid:vehicleid,
+						tkdocid:tkdocid,
+						employeeid:employeeid
+						
+						
 					},
 					waiting: {
 						autoShow: false

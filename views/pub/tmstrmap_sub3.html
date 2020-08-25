@@ -68,84 +68,136 @@
 
 		<div class="mui-content">
 
-            <div style="font-size: 24px;text-align: center;height: 48px;background-color: white;" >
-           		<h3  id="h3title" style="padding-top: 10px;">站点数据修改</h3>
-           	</div>
-				<form class="mui-input-group" >
-					
-					
-					<div class="mui-input-row">
-						<label>出车班次</label>
-					<input type="text" class="mui-input-clear" placeholder="出车班次" id="trrecordid" disabled="disabled" >
-					</div>
-					<div class="mui-input-row">
-						<label>客户名称</label>
-					<input type="text" class="mui-input-clear" placeholder="客户名称" id="companyname" disabled="disabled" >
-					</div>
-					<div class="mui-input-row">
-						<label>客户地址</label>
+			<div style="font-size: 24px;text-align: center;height: 48px;background-color: white;">
+				<h3 id="h3title" style="padding-top: 10px;">站点数据修改</h3>
+			</div>
+			<form class="mui-input-group">
+
+
+				<div class="mui-input-row">
+					<label>出车班次</label>
+					<input type="text" class="mui-input-clear" placeholder="出车班次" id="trrecordid" disabled="disabled">
+				</div>
+				<div class="mui-input-row">
+					<label>客户名称</label>
+					<input type="text" class="mui-input-clear" placeholder="客户名称" id="companyname" disabled="disabled">
+				</div>
+				<div class="mui-input-row">
+					<label>客户地址</label>
 					<input type="text" class="mui-input-clear" placeholder="客户地址" id="inceptaddr" disabled="disabled">
-					</div>
-					<div class="mui-input-row">
-						<label>出发时间</label>
+				</div>
+				<div class="mui-input-row">
+					<label>出发时间</label>
 					<input type="text" class="mui-input-clear" placeholder="出发时间" id="leavetime" disabled="disabled">
-					</div>
-					<div class="mui-input-row">
-						<label>到达时间<span style="color: red;">*</span></label>
-					<input type="text" class="mui-input-clear " style="background-color:#FFFFCC;" placeholder="到达时间" id="arrivetime" readonly="readonly" >
-					</div>
-					<div class="mui-input-row" id="temppanel">
-						<label>到达温度<span style="color: red;">*</span></label> 
-						<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="到达温度" id="reachtemp">
-						<span>℃</span>
-					</div>
-					<!-- <div class="mui-input-row">
+				</div>
+				<div class="mui-input-row">
+					<label>到达时间<span style="color: red;">*</span></label>
+					<input type="text" class="mui-input-clear " style="background-color:#FFFFCC;" placeholder="到达时间" id="arrivetime"
+					 readonly="readonly">
+				</div>
+				<div class="mui-input-row" id="temppanel">
+					<label>到达温度<span style="color: red;">*</span></label>
+					<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="到达温度" id="reachtemp">
+					<span>℃</span>
+				</div>
+				<!-- <div class="mui-input-row">
 						<label>件数(扫码)<span id="txt_qtycancel"></span></label>
 						<input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty">
 					
 					</div> -->
-					<ul class="mui-table-view">
-							<li class="mui-table-view-cell">
-								<a>
-									<label>件数(扫码)</label>
-									&nbsp;&nbsp;
-									<!-- <input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty"> -->
-								    <span id="loadqty"></span>
-									<span id="txt_qtycancel" ></span>
-								</a>
-							</li>
-							
-						</ul>
-					
-					<div class="mui-input-row" style="padding-left: 60px;">
-						<label>自卸<span style="color: red;">*</span></label>
-						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="自卸件数" id="minesqty">
-					</div>
-					<div class="mui-input-row" style="padding-left: 60px;">
-						<label>他卸<span style="color: red;">*</span></label>
-						<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
-					</div>
-					<ul class="mui-table-view">
-							
-							<li class="mui-table-view-cell">
-								<a>
-									 <div>卸货费小计:￥<span id="txt_unloadcharges"></span></div>
-								</a>
-							</li>
-							
-							<li class="mui-table-view-cell">
-								<a style="font-size: 12px;">
-									<div>当前客户卸货费说明:自卸-<span id="txt_minesprice"></span> 他卸-<span id="txt_othersprice"></span></div>
-								</a>
-							</li>
-						
-						</ul>
-					<div class="mui-button-row">
-						<button type="button" class="mui-btn mui-btn-primary"  id="btn-save">保存</button>
-						<button type="button" class="mui-btn mui-btn-danger" id="btn-cancel">取消</button>
-					</div>
-					
-				</form>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a>
+							<label>件数(扫码)</label>
+							&nbsp;&nbsp;
+							<!-- <input type="number" class="mui-input-clear" placeholder="" disabled="disabled" id="loadqty"> -->
+							<span id="loadqty"></span>
+							<span id="txt_qtycancel"></span>
+						</a>
+					</li>
+
+				</ul>
+
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>自卸<span style="color: red;">*</span></label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="自卸件数" id="minesqty">
+				</div>
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>他卸<span style="color: red;">*</span></label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
+				</div>
+
+
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a>
+							<label>顺带送货</label>
+						</a>
+					</li>
+
+				</ul>
+
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>自卸</label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="顺带自卸件数"
+					 id="minesqty_sd" onchange="updateCharges()">
+				</div>
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>他卸</label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="顺带他卸件数"
+					 id="othersqty_sd" onchange="updateCharges()">
+				</div>
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>备注</label>
+					<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" id="memo_sd">
+				</div>
+
+
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a>
+							<label>退货带回</label>
+						</a>
+					</li>
+
+				</ul>
+
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>自卸</label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="退货自卸件数"
+					 id="minesqty_th" onchange="updateCharges()">
+				</div>
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>他卸</label>
+					<input type="number" pattern="\d*" class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="退货他卸件数"
+					 id="othersqty_th" onchange="updateCharges()">
+				</div>
+				<div class="mui-input-row" style="padding-left: 60px;">
+					<label>备注</label>
+					<input type="text" class="mui-input-clear" style="background-color:#FFFFCC;" id="memo_th">
+				</div>
+
+				<ul class="mui-table-view">
+
+					<li class="mui-table-view-cell">
+						<a>
+							<div>卸货费小计:￥<span id="txt_unloadcharges"></span></div>
+						</a>
+					</li>
+
+					<li class="mui-table-view-cell">
+						<a style="font-size: 12px;">
+							<div>当前客户卸货费说明:自卸-<span id="txt_minesprice"></span> 他卸-<span id="txt_othersprice"></span></div>
+						</a>
+					</li>
+
+				</ul>
+				<div class="mui-button-row">
+					<button type="button" class="mui-btn mui-btn-primary" id="btn-save">保存</button>
+					<button type="button" class="mui-btn mui-btn-danger" id="btn-cancel">取消</button>
+				</div>
+
+			</form>
 
 		</div>
 
@@ -154,26 +206,22 @@
 		<script src="../../js/mui.poppicker.js"></script>
 		<script src="../../js/jquery-3.2.1.min.js"></script>
 
-        <script src="../../js/bus/tmstrmap/loadqty.js"></script>
+		<script src="../../js/bus/tmstrmap/loadqty.js"></script>
 		<script src="../../js/myglobal.js"></script>
 		<script src="../../js/myinput.js"></script>
 		<script src="../../js/bus/tmstrmap/tmstrmap.js"></script>
-		
-		
+
+
 		<script type="text/javascript" src="../../plugs/layer/layer.js"></script>
 		<script>
-			
-			
-
-			
-			 mui.init({
+			mui.init({
 				swipeBack: false //启用右滑关闭功能
 			});
-			var ordid=""; 
-			var trrecordid="";
-			var current_refdisp={};
-			var selected_order={};
-			
+			var ordid = "";
+			var trrecordid = "";
+			var current_refdisp = {};
+			var selected_order = {};
+
 
 			mui.plusReady(function() {
 
@@ -181,47 +229,47 @@
 
 				//初始化信息显示
 				initView();
-				
+
 				//初始化事件
 				initAction();
 
 			});
 
-			
+
 			var initView = function() {
 				var self = plus.webview.currentWebview();
 				ordid = self.ordid;
-				trrecordid=self.trrecordid;
-				current_refdisp=self.current_refdisp;
+				trrecordid = self.trrecordid;
+				current_refdisp = self.current_refdisp;
 				$("#trrecordid").val(trrecordid);
-				selected_order=self.selected_order;
+				selected_order = self.selected_order;
 				ajaxInitView(ordid);
 			}
 
-			var ajaxInitView=function(ordid){
-				
-								var url = getServerPath(localStorage.netmod)
-								console.log(url);
-								var dataType = 'json';
-								//发送数据
-								var data = {
-									controller: 'TmsTrRecord',
-									method:'getTrrecordOrderDtl',
-									ordid: ordid,
-									token: TOKEN
-								};
-					
-								 mui.ajax(url, {
-									data: data,
-									dataType: dataType, //服务器返回json格式数据
-									type: 'post', //HTTP请求类型
-									timeout: 10000, //超时时间设置为10秒；
-									success: querysuccess,
-									error: err
-								}); 
+			var ajaxInitView = function(ordid) {
+
+				var url = getServerPath(localStorage.netmod)
+				console.log(url);
+				var dataType = 'json';
+				//发送数据
+				var data = {
+					controller: 'TmsTrRecord',
+					method: 'getTrrecordOrderDtl',
+					ordid: ordid,
+					token: TOKEN
+				};
+
+				mui.ajax(url, {
+					data: data,
+					dataType: dataType, //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					success: querysuccess,
+					error: err
+				});
 			}
-			
-			
+
+
 			var querysuccess = function(response) {
 				if (response != null) {
 					var syscode = response.syscode;
@@ -235,18 +283,26 @@
 					}
 				}
 			};
-			
-			var showView=function(resjson){
-				var COMPANYNAME=resjson[0]["COMPANYNAME"];
-				var INCEPTADDR=resjson[0]["INCEPTADDR"];
-				var LEAVETIME=resjson[0]["LEAVETIME"];
-				var ARRIVETIME=resjson[0]["ARRIVETIME"];
-				var MINESQTY=resjson[0]["MINESQTY"];
-				var OTHERSQTY=resjson[0]["OTHERSQTY"];
-				var  REACHTEMP=resjson[0]["REACHTEMP"];
-				var LOADQTY=resjson[0]["LOADQTY"];
-				var FLAGCOLD=resjson[0]["FLAGCOLD"];
-			
+
+			var showView = function(resjson) {
+				var COMPANYNAME = resjson[0]["COMPANYNAME"];
+				var INCEPTADDR = resjson[0]["INCEPTADDR"];
+				var LEAVETIME = resjson[0]["LEAVETIME"];
+				var ARRIVETIME = resjson[0]["ARRIVETIME"];
+				var MINESQTY = resjson[0]["MINESQTY"];
+				var OTHERSQTY = resjson[0]["OTHERSQTY"];
+
+				var MINESQTY_SD = resjson[0]["MINESQTY_SD"];
+				var OTHERSQTY_SD = resjson[0]["OTHERSQTY_SD"];
+				var MEMO_SD = resjson[0]["MEMO_SD"];
+				var MINESQTY_TH = resjson[0]["MINESQTY_TH"];
+				var OTHERSQTY_TH = resjson[0]["OTHERSQTY_TH"];
+				var MEMO_TH = resjson[0]["MEMO_TH"];
+
+				var REACHTEMP = resjson[0]["REACHTEMP"];
+				var LOADQTY = resjson[0]["LOADQTY"];
+				var FLAGCOLD = resjson[0]["FLAGCOLD"];
+
 				$("#companyname").val(COMPANYNAME);
 				$("#inceptaddr").val(INCEPTADDR);
 				$("#leavetime").val(LEAVETIME);
@@ -254,112 +310,136 @@
 				$("#reachtemp").val(REACHTEMP);
 				$("#minesqty").val(MINESQTY);
 				$("#othersqty").val(OTHERSQTY);
-				$("#loadqty").html(LOADQTY);
-				
-				var MINESQTYCANCEL= resjson[0].MINESQTYCANCEL;
-				var OTHERSQTYCANCEL=resjson[0].OTHERSQTYCANCEL;
-				var txtqtycancel_m=MINESQTYCANCEL=="0"?"":"自卸"+MINESQTYCANCEL+"件";
-				var txtqtycancel_o=OTHERSQTYCANCEL=="0"?"":"他卸"+MINESQTYCANCEL+"件";
-				var txtqtycancel=txtqtycancel_m+" "+txtqtycancel_o;
-				txtqtycancel=txtqtycancel.replace(' ','')==""?"":'存在撤销'+txtqtycancel;
-				$("#txt_qtycancel").html(txtqtycancel);
-				if(txtqtycancel!="")
-				$("#txt_qtycancel").addClass("mui-badge mui-badge-danger");
-				
 
-				if(FLAGCOLD=='N'){
+				$("#minesqty_sd").val(MINESQTY_SD);
+				$("#othersqty_sd").val(OTHERSQTY_SD);
+				$("#memo_sd").val(MEMO_SD);
+				$("#minesqty_th").val(MINESQTY_TH);
+				$("#othersqty_th").val(OTHERSQTY_TH);
+				$("#memo_th").val(MEMO_TH);
+
+				$("#loadqty").html(LOADQTY);
+
+				var MINESQTYCANCEL = resjson[0].MINESQTYCANCEL;
+				var OTHERSQTYCANCEL = resjson[0].OTHERSQTYCANCEL;
+				var txtqtycancel_m = MINESQTYCANCEL == "0" ? "" : "自卸" + MINESQTYCANCEL + "件";
+				var txtqtycancel_o = OTHERSQTYCANCEL == "0" ? "" : "他卸" + MINESQTYCANCEL + "件";
+				var txtqtycancel = txtqtycancel_m + " " + txtqtycancel_o;
+				txtqtycancel = txtqtycancel.replace(' ', '') == "" ? "" : '存在撤销' + txtqtycancel;
+				$("#txt_qtycancel").html(txtqtycancel);
+				if (txtqtycancel != "")
+					$("#txt_qtycancel").addClass("mui-badge mui-badge-danger");
+
+
+				if (FLAGCOLD == 'N') {
 					$("#temppanel").addClass('mui-hidden');
 				}
 				//$("#temppanel").addClass('mui-hidden');
 				//初始化件数控件显示效果
-				InitLoadQtyAction(LOADQTY,selected_order);
-				
+				InitLoadQtyAction(LOADQTY, selected_order);
+
 				updateUnloadcharges(selected_order);
 			}
-			
-			var validateSave=function(){
-				
+
+			var validateSave = function() {
+
 				//验证日期是否同一天
-				var arrivetime=$("#arrivetime").val();
-				var leavetime=$("#leavetime").val();
-				
+				var arrivetime = $("#arrivetime").val();
+				var leavetime = $("#leavetime").val();
+
 				//验证到达时间是否晚于出发时间
-				if(leavetime>=arrivetime){
-					mui.alert('到达时间不能早于出发时间','警告','确定',function (e) {
-					   //e.index
-					},'div');
+				if (leavetime >= arrivetime) {
+					mui.alert('到达时间不能早于出发时间', '警告', '确定', function(e) {
+						//e.index
+					}, 'div');
 					return false;
 				}
-				
-				var arrivetime_date=arrivetime.substring(0,10);
-				var leavetime_date=leavetime.substring(0,10);
-				if(arrivetime_date!=leavetime_date){
-					mui.alert('到达日期和出发日期不相同','警告','确定',function (e) {
-					   //e.index
-					},'div');
+
+				var arrivetime_date = arrivetime.substring(0, 10);
+				var leavetime_date = leavetime.substring(0, 10);
+				if (arrivetime_date != leavetime_date) {
+					mui.alert('到达日期和出发日期不相同', '警告', '确定', function(e) {
+						//e.index
+					}, 'div');
 					return false;
 				}
 				return true;
 			}
 
 			var initAction = function() {
-				
+
 				//自卸输入框  他卸输入框事件
-				$("#btn-save").click(function(){
-					if(validateSave())
-					   ajaxSave();
+				$("#btn-save").click(function() {
+					if (validateSave())
+						ajaxSave();
 				})
-				
-				$("#btn-cancel").click(function(){
+
+				$("#btn-cancel").click(function() {
 					mui.back();
 				})
-								
-				
+
+
 				//时间输入框
-				document.getElementById('arrivetime').onclick = function(){
+				document.getElementById('arrivetime').onclick = function() {
 					//console.log($('#arrivetime').val());
-					
-					var dtPicker01 = new mui.DtPicker(); 
-					dtPicker01.setSelectedValue($('#arrivetime').val()) 
-				    dtPicker01.show(function (selectItems) { 
-				        //console.log(selectItems.y);//结果为：{text: "2016",value: 2016} 
-				        //console.log(selectItems.m);//结果为：{text: "05",value: "05"}
-				        //console.log(selectItems.d.text);//11
-				        //console.log(selectItems.h.text);//09
-				        //console.log(selectItems.i.text);//09
-				        //console.log(selectItems.text);//结果为：2016-10-11 09:09
-						$('#arrivetime').val(selectItems.text+':00');
-						
-				        //document.getElementById('arrivetime').getElementsByTagName('span')[0].innerText = '-- '+selectItems.text
-				    });
+
+					var dtPicker01 = new mui.DtPicker();
+					dtPicker01.setSelectedValue($('#arrivetime').val())
+					dtPicker01.show(function(selectItems) {
+						//console.log(selectItems.y);//结果为：{text: "2016",value: 2016} 
+						//console.log(selectItems.m);//结果为：{text: "05",value: "05"}
+						//console.log(selectItems.d.text);//11
+						//console.log(selectItems.h.text);//09
+						//console.log(selectItems.i.text);//09
+						//console.log(selectItems.text);//结果为：2016-10-11 09:09
+						$('#arrivetime').val(selectItems.text + ':00');
+
+						//document.getElementById('arrivetime').getElementsByTagName('span')[0].innerText = '-- '+selectItems.text
+					});
 				};
-				
-				
-				
+
+
+
 
 			}
-			
-			
-			var ajaxSave=function(){
-				
+
+
+			var ajaxSave = function() {
+
 				var url = getServerPath(localStorage.netmod);
-				var minesqty=$("#minesqty").val();
-				var othersqty=$("#othersqty").val();
-				var arrivetime=$("#arrivetime").val();
- 
+				var minesqty = $("#minesqty").val();
+				var othersqty = $("#othersqty").val();
+
+				var minesqty_th = $("#minesqty_th").val();
+				var othersqty_th = $("#othersqty_th").val();
+				var memo_th = $("#memo_th").val();
+				var minesqty_sd = $("#minesqty_sd").val();
+				var othersqty_sd = $("#othersqty_sd").val();
+				var memo_sd = $("#memo_sd").val();
+
+				var arrivetime = $("#arrivetime").val();
+
 				var dataType = 'json';
 				//发送数据
 				var data = {
 					controller: 'TmsTrRecord',
 					method: 'changeTrrecordOrder',
-					trrecordid:trrecordid,
+					trrecordid: trrecordid,
 					ordid: ordid,
 					minesqty: minesqty,
-					othersqty:othersqty,
-					arrivetime:arrivetime,
+					othersqty: othersqty,
+
+					minesqty_th: minesqty_th,
+					othersqty_th: othersqty_th,
+					memo_th: memo_th,
+					minesqty_sd: minesqty_sd,
+					othersqty_sd: othersqty_sd,
+					memo_sd: memo_sd,
+
+					arrivetime: arrivetime,
 					token: TOKEN
 				};
-				
+
 				mui.ajax(url, {
 					data: data,
 					dataType: dataType, //服务器返回json格式数据
@@ -369,9 +449,9 @@
 					success: changesuccess,
 					error: err
 				});
-				
+
 			}
-	
+
 			var changesuccess = function(response) {
 				if (response != null) {
 					var syscode = response.syscode;
@@ -381,21 +461,21 @@
 					} else {
 						console.log(JSON.stringify(response));
 						var resjson = response.sysdata.TmsTrRecord_changeTrrecordOrder;
-						var code=resjson.code;
-						var msg=resjson.msg;
-						var memo=resjson.memo;
-						
-						if(code=="OK"){
-								mui.toast(msg);
-								mui.back();
-						}else{
-							mui.alert(msg,'提示','确定',function (e) {
-							   //e.index
-							},'div');
+						var code = resjson.code;
+						var msg = resjson.msg;
+						var memo = resjson.memo;
+
+						if (code == "OK") {
+							mui.toast(msg);
+							mui.back();
+						} else {
+							mui.alert(msg, '提示', '确定', function(e) {
+								//e.index
+							}, 'div');
 						}
-						
+
 						//mui.toast(resjson);
-						
+
 					}
 				}
 			};
@@ -406,36 +486,38 @@
 
 			//保存前校验数字是否合理
 			var validate = function(type) {
-				
-				var downloadqty=$("#txt-downloadqty").val();
+
+				var downloadqty = $("#txt-downloadqty").val();
 				//downloadtypeid
-				if(downloadqty!="" && downloadqty!=null && isNumber(downloadqty) && downloadqty>0){
-					
-					if(downloadtypeid==""){
-							layer.tips('有卸货件数时，请选择卸货方式', '#txt-downloadtype', {
-										tips: [1, '#3595CC'],
-										time: 2000
-									});
-							return false;
+				if (downloadqty != "" && downloadqty != null && isNumber(downloadqty) && downloadqty > 0) {
+
+					if (downloadtypeid == "") {
+						layer.tips('有卸货件数时，请选择卸货方式', '#txt-downloadtype', {
+							tips: [1, '#3595CC'],
+							time: 2000
+						});
+						return false;
 					}
 				}
-				
 
-        if(type==1)//下一站时 必须
-				if ($.isEmptyObject(trrecord_order)) {
-					layer.tips('请选择下一站目的地', '#txt-targetadd', {
-						tips: [1, '#3595CC'],
-						time: 2000
-					});
-					return false;
-				}
+
+				if (type == 1) //下一站时 必须
+					if ($.isEmptyObject(trrecord_order)) {
+						layer.tips('请选择下一站目的地', '#txt-targetadd', {
+							tips: [1, '#3595CC'],
+							time: 2000
+						});
+						return false;
+					}
 				return true;
-			} 
-			
-			
+			}
 
-						
-						
+
+			function updateCharges() {
+
+				updateUnloadcharges(selected_order);
+
+			}
 		</script>
 	</body>
 

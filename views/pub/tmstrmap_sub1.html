@@ -87,11 +87,7 @@
 				</a>
 			</li>
 		</ul>
-	<div class="mui-input-row " style="display: none;">
-		<label>卸货方式</label>
-		<input id="txt-downloadtype" type="text" placeholder="自/他" style="border:none #FFFFFF;border-bottom:#777777 solid 1px;font-size: 16px;text-align: center;"
-		 readonly="true">
-	</div>
+
 	
 	<div class="mui-input-row" style="padding-left: 60px;">
 		<label>自卸<span style="color: red;">*</span></label>
@@ -101,6 +97,54 @@
 		<label>他卸<span style="color: red;">*</span></label>
 		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="他卸件数" id="othersqty">
 	</div>
+	
+	
+	<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a>
+					<label>顺带送货<span style="color: red;">【按需填写】</span></label>
+				</a>
+			</li>
+		</ul>
+
+	
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>自卸</label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" value="0" id="minesqty_sd" onchange="updateCharges()">
+	</div>
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>他卸</label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" value="0" id="othersqty_sd" onchange="updateCharges()">
+	</div>
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>顺带备注</label>
+		<input type="text"   class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="说点什么？"  id="memo_sd">
+	</div>
+	
+	
+	
+	<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a>
+					<label>退货带回<span style="color: red;">【按需填写】</span></label>
+				</a>
+			</li>
+		</ul>
+	
+	
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>自卸</label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" value="0" id="minesqty_th" onchange="updateCharges()">
+	</div>
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>他卸</label>
+		<input type="number" pattern="\d*"  class="mui-input-clear" style="background-color:#FFFFCC;" value="0" id="othersqty_th" onchange="updateCharges()">
+	</div>
+	<div class="mui-input-row" style="padding-left: 60px;">
+		<label>退货备注</label>
+		<input type="text"   class="mui-input-clear" style="background-color:#FFFFCC;" placeholder="记录点什么？"  id="memo_th">
+	</div>
+	
 	
 	<ul class="mui-table-view">
 			
@@ -116,7 +160,7 @@
 				</a>
 			</li>
 		
-		</ul>
+	</ul>
 	
 
 	
@@ -438,6 +482,13 @@
 				var c_downloadtypeid=_current_order.DOWNLOADTYPEID;
 				var minesqty=$("#minesqty").val();
 				var othersqty=$("#othersqty").val();
+				
+				var minesqty_sd=$("#minesqty_sd").val()==""?0:$("#minesqty_sd").val();
+				var othersqty_sd=$("#othersqty_sd").val()==""?0:$("#othersqty_sd").val();
+				
+				var minesqty_th=$("#minesqty_th").val()==""?0:$("#minesqty_th").val();
+				var othersqty_th=$("#othersqty_th").val()==""?0:$("#othersqty_th").val();
+				
 				var n_ordid = "";
 				if (!$.isEmptyObject(_trrecord_order))
 					n_ordid = _trrecord_order.ORDID;
@@ -453,6 +504,12 @@
 					n_ordid: n_ordid,
 					minesqty:minesqty,
 					othersqty:othersqty,
+					minesqty_sd:minesqty_sd,
+					othersqty_sd:othersqty_sd,
+					memo_sd:$("#memo_sd").val(),
+					minesqty_th:minesqty_th,
+					othersqty_th:othersqty_th,
+					memo_th:$("#memo_th").val(),
 					current_lat: current_lat,
 					current_lng: current_lng,
 					current_addresses: current_addresses,
@@ -530,6 +587,11 @@
 			}
 			
 			
+			function updateCharges(){
+				
+				updateUnloadcharges(current_order);
+				
+			}
 			
 		</script>
 	</body>

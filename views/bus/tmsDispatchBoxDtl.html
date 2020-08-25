@@ -67,6 +67,19 @@
 			</ul>
 
 		</div>
+		
+		
+		<div id="pop_memu" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" id="btn_scan" onclick="handscan()">
+					<input type="hidden" id="boxid" />
+					<a href="#" style="color: #FF3B30;" id="btn_scan_text" >手动扫码</a>
+				</li>
+				<li class="mui-table-view-cell" id="btn_cancel">
+					<a href="#" style="color: #FF3B30;" id="btn_scan_text" onclick="mui('#pop_memu').popover('toggle')">取消</a>
+				</li>
+			</ul>
+		</div>
 
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.picker.min.js"></script>
@@ -80,6 +93,17 @@
 			var customname="";
 			var companyname="";
 			var printclass="";
+			
+			var vehicleid="";//:vehicleid,
+			var tkdocid="";//:tkdocid,
+			var employeeid="";//:employeeid,
+			
+			
+			var barcode="";
+			var carryupid="";
+			var dispatchdtlid_=""
+			
+			
 			mui.init({
 				gestureConfig: {
 					longtap: true //默认为false
@@ -100,10 +124,15 @@
 
 			function init() {
 				var self = plus.webview.currentWebview();
+				//alert(JSON.stringify(self));
 				dispatchid = self.dispatchid;
 				transid = self.transid;
 				printclass=self.printclass;
 				customname=self.customname;
+				
+				vehicleid=self.vehicleid;
+				tkdocid=self.tkdocid;
+				employeeid=self.employeeid;
 			
 			}
 
@@ -197,7 +226,106 @@
 									showBoxDtl(keyid,boxcode,packagetype,employeename,flag,customname,carrydate,carryupid,dispatchid_,dispatchdtlid_,usestatus);
 								});
 
+
+
+                      longtapcopy(jQuery(".mui-table-view-cell"), mui('#pop_memu'));
+					  loogtap_valueget();
+					  
+					  
+
 			}
+			
+			
+			var loogtap_valueget = function() {
+			
+				jQuery.each(jQuery(".mui-table-view-cell"), function(i, elem) {
+					elem.addEventListener('longtap', function() {
+			
+					//alert($(elem).find("#boxcode").html());
+					//jQuery("#boxid").val($(elem).find("#boxcode").html());
+						
+						 barcode=$(elem).find("#boxcode").html();
+						 carryupid=$(elem).find("#carryupid").html();
+						 dispatchdtlid_=$(elem).find("#dispatchdtlid_").html();
+			
+					});
+				});
+			}
+			
+			
+			var handscan=function(){
+				
+				
+				mui("#pop_memu").popover('toggle');
+				var data = {
+					controller: 'TmsLoadTruck',
+					method: 'ajaxSubmit',
+					dispatchid: dispatchid,
+					barcode: barcode,
+					carryupid:carryupid,
+					vehicleid:vehicleid,
+					tkdocid:tkdocid,
+					employeeid:employeeid,
+					last_transid:0,
+					dispatchdtlid_:dispatchdtlid_,
+					token: TOKEN
+				};
+				
+				//alert(JSON.stringify(data));
+				
+				ajaxSubmit(data);
+
+
+
+
+				
+			}
+			
+			//提交
+			 var ajaxSubmit=function(data){
+							
+							//利用RunJS的Echo Ajax功能测试
+							var url =getServerPath(localStorage.netmod)
+			
+							var dataType = 'json';
+							
+							//发送数据
+							mui.ajax(url, {
+								data: data,
+								dataType: dataType, //服务器返回json格式数据
+								type: 'post', //HTTP请求类型
+								timeout: 10000, //超时时间设置为10秒；
+								success: ajaxSubmitSuccess,
+								error: err
+							});
+						
+						} 
+
+
+			var ajaxSubmitSuccess = function(response) {
+				console.log(".........." + JSON.stringify(response));
+				if(response != null) {
+					var syscode = response.syscode;
+					var sysreason = response.sysreason;
+					if(syscode == SYSCODE_NO) {
+						tokenOutTime(sysreason);
+					} else {
+							console.log(JSON.stringify(response));
+							var ajaxSubmitJson=response.sysdata.TmsLoadTruck_ajaxSubmit;
+							var code=ajaxSubmitJson.code;
+							ajax(dispatchid, transid,printclass);
+							if(code=="OK"){
+								mui.toast("条码:"+barcode+"手动扫码 "+ajaxSubmitJson.code);
+								ajax(dispatchid, transid,printclass);
+							}else{
+								mui.toast("条码:"+barcode+"手动扫码失敗。原因:"+ajaxSubmitJson.code);
+							}
+
+						}
+				}
+			};
+
+
 
 				/**
 				 * 显示包装箱详细内容

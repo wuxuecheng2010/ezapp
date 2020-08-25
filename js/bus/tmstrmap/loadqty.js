@@ -22,9 +22,15 @@ var updateUnloadcharges=function(selected_order){
 				$("#txt_othersprice").html(othersprice);
 				var othersqty=$("#othersqty").val();
 				var minesqty=$("#minesqty").val();
+				
+				var othersqty_th=$("#othersqty_th").val();
+				var minesqty_th=$("#minesqty_th").val();
+				var othersqty_sd=$("#othersqty_sd").val();
+				var minesqty_sd=$("#minesqty_sd").val();
+				
 				var minsprice=Number(selected_order.MINESPRICE);
 				var othersprice=Number(selected_order.OTHERSPRICE);
-				var unloadcharges=(minsprice*minesqty+othersprice*othersqty).toFixed(1);
+				var unloadcharges=(minsprice*minesqty+othersprice*othersqty+      minsprice*minesqty_th+othersprice*othersqty_th   +minsprice*minesqty_sd+othersprice*othersqty_sd).toFixed(1);
 				$("#txt_unloadcharges").html(unloadcharges);
 			}
 			
